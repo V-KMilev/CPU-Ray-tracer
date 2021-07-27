@@ -1,12 +1,12 @@
 #pragma once
 
-#include "hittable.h"
+#include "Hittable.h"
 #include "Vec.h"
 
-class sphere : public hittable {
+class Sphere : public Hittable {
     public:
-        sphere() {}
-        sphere(Point center, float radius) : center(center), radius(radius) {};
+        Sphere() {}
+        Sphere(Point center, float radius) : center(center), radius(radius) {};
 
         virtual bool hit(
             const Ray& ray, float distance_min, float distance_max, hit_record& record) const override;
@@ -16,7 +16,7 @@ class sphere : public hittable {
         float radius;                                                                                           // Sphere: radius
 };
 
-bool sphere::hit(const Ray& ray, float distance_min, float distance_max, hit_record& record) const {
+bool Sphere::hit(const Ray& ray, float distance_min, float distance_max, hit_record& record) const {
 
     Vec oc = ray.getOrigin() - center;                                                                          // Vec OC: camera to center
     
@@ -42,6 +42,9 @@ bool sphere::hit(const Ray& ray, float distance_min, float distance_max, hit_rec
     record.distance = root;
     record.point = ray.at(record.distance);
     record.normal = (record.point - center) / radius;
+
+    Vec outward_normal = (record.point - center) / radius;
+    record.set_face_normal(ray, outward_normal);
 
     return true;
 }
