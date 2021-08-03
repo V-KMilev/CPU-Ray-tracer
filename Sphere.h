@@ -9,14 +9,14 @@ class Sphere : public Hittable {
         Sphere(Point center, float radius) : center(center), radius(radius) {};
 
         virtual bool hit(
-            const Ray& ray, float distance_min, float distance_max, hit_record& record) const override;
+            const Ray &ray, float distance_min, float distance_max, hit_record &record) const override;
 
     public:
         Point center;                                                                                           // Sphere: center
         float radius;                                                                                           // Sphere: radius
 };
 
-bool Sphere::hit(const Ray& ray, float distance_min, float distance_max, hit_record& record) const {
+bool Sphere::hit(const Ray &ray, float distance_min, float distance_max, hit_record &record) const {
 
     Vec oc = ray.getOrigin() - center;                                                                          // Vec OC: camera to center
     

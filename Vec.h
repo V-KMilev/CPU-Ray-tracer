@@ -1,7 +1,7 @@
 #pragma once
 
-#include <cmath>
 #include <fstream>
+#include <cmath>
 
 class Vec {
     public:
@@ -17,7 +17,7 @@ class Vec {
         float operator [] (int i) const { return e[i]; }
         float& operator [] (int i) { return e[i]; }
 
-        Vec& operator += (const Vec& v) {
+        Vec& operator += (const Vec &v) {
             e[0] += v.e[0];
             e[1] += v.e[1];
             e[2] += v.e[2];
@@ -55,7 +55,7 @@ class Vec {
 using Point = Vec;                                                                  // 3D point
 using Color = Vec;                                                                  // RGB color
 
-// Vec Utility Functions
+// Vec Utility Functions:
 
 inline std::ostream& operator << (std::ostream &out, const Vec &v) {
     return out << v.e[0] << ' ' << v.e[1] << ' ' << v.e[2];
@@ -102,12 +102,4 @@ inline Vec cross(const Vec &u, const Vec &v) {
 
 inline Vec unit_vector(Vec v) {
     return v / v.length();
-}
-
-// Write the translated [0,255] value of each color component.
-void write_color(std::ofstream& out, Color pixel_color) {
-    
-    out << static_cast<int>(255.999 * pixel_color.getX())   << ' '
-        << static_cast<int>(255.999 * pixel_color.getY())   << ' '
-        << static_cast<int>(255.999 * pixel_color.getZ())   << '\n';
 }

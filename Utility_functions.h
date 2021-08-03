@@ -1,27 +1,24 @@
 #pragma once
 
-#include <cmath>
-#include <limits>
-#include <memory>
-
-#include <random>
 #include <cstdlib>
+#include <random>
+#include <memory>
+#include <limits>
+#include <cmath>
 
 #include "Ray.h"
 #include "Vec.h"
-
-// Usings
 
 using std::shared_ptr;
 using std::make_shared;
 using std::sqrt;
 
-// Constants
+// Constants:
 
-const float infinity = std::numeric_limits<float>::infinity();
-const float pi = 3.1415926535897932385;
+const double infinity = std::numeric_limits<float>::infinity();
+const double pi = 3.1415926535897932385;
 
-// Utility Functions
+// Utility Functions:
 
 inline float degrees_to_radians(float degrees) {
     return degrees * pi / 180.0;

@@ -5,7 +5,7 @@
 class Ray {
     public:
         Ray() {}
-        Ray(const Point& origin, const Vec& directon) : origin(origin), directon(directon) {}
+        Ray(const Point &origin, const Vec &directon) : origin(origin), directon(directon) {}
 
         Point getOrigin() const { return origin; }
         Vec getDirection() const { return directon; }
@@ -15,6 +15,6 @@ class Ray {
         }
 
     public:
-        Point origin;       // original start ponint
-        Vec directon;       // directon
+        Point origin;                                                                                           // original start ponint
+        Vec directon;                                                                                           // directon
 };
