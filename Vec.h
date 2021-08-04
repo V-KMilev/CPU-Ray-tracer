@@ -3,6 +3,8 @@
 #include <fstream>
 #include <cmath>
 
+#include "Utility_functions.h"
+
 class Vec {
     public:
         Vec() : e{0, 0, 0} {}
@@ -11,6 +13,14 @@ class Vec {
         float getX() const { return e[0]; }
         float getY() const { return e[1]; }
         float getZ() const { return e[2]; }
+
+        inline static Vec random() {
+            return Vec(random_float(), random_float(), random_float());
+        }
+
+        inline static Vec random(float min, float max) {
+            return Vec(random_float(min, max), random_float(min, max), random_float(min, max));
+        }
 
         Vec operator -() const { return Vec(-e[0], -e[1], -e[2]); }
         
@@ -102,4 +112,12 @@ inline Vec cross(const Vec &u, const Vec &v) {
 
 inline Vec unit_vector(Vec v) {
     return v / v.length();
+}
+
+ Vec random_in_unit_sphere() {
+    for(;;) {
+        Vec point = Vec::random(-1, 1);
+        if (point.length_squared() >= 1) { continue; }
+        return point;
+    }
 }

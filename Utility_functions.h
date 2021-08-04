@@ -6,9 +6,6 @@
 #include <limits>
 #include <cmath>
 
-#include "Ray.h"
-#include "Vec.h"
-
 using std::shared_ptr;
 using std::make_shared;
 using std::sqrt;

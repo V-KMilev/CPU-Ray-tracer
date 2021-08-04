@@ -43,7 +43,7 @@ bool Sphere::hit(const Ray &ray, float distance_min, float distance_max, hit_rec
     record.point = ray.at(record.distance);
     record.normal = (record.point - center) / radius;
 
-    Vec outward_normal = (record.point - center) / radius;
+    Vec outward_normal = record.normal;
     record.set_face_normal(ray, outward_normal);
 
     return true;
