@@ -4,21 +4,32 @@
 
 class Camera {
     public:
-        Camera() {
+        Camera(
+            Point lookfrom,                                                                             // Camera: Looking from
+            Point lookat,                                                                               // Camera: Looking at
+            Vec view_up,                                                                                // Camera: view up
+            float fov,                                                                                  // vertical field-of-view in degrees
+            float aspect_ratio                                                                          // Image: aspect ratio
+        ) {
+            float degrees = degrees_to_radians(fov);
+            float height = tan(degrees / 2);
 
-            float aspect_ratio = 16.0 / 9.0;                                                            // Image: aspect ratio
-            float viewport_height = 2.0;                                                                // Camera: viewport height
+            float viewport_height = 2.0 * height;                                                       // Camera: viewport height
             float viewport_width = aspect_ratio * viewport_height;                                      // Camera: viewport width
             float focal_length = 1.0;                                                                   // Camera: focal length: length origin to world
  
-            vertical = Vec(0.0, viewport_height, 0.0);
-            horizontal = Vec(viewport_width, 0.0, 0.0);
-            origin = Point(0, 0, 0);
-            lower_left_corner = origin - horizontal / 2 - vertical / 2 - Vec(0, 0, focal_length);
+            Vec w = unit_vector(lookfrom - lookat);
+            Vec u = unit_vector(cross(view_up, w));
+            Vec v = cross(w, u);
+
+            origin = lookfrom;
+            horizontal = viewport_width * u;
+            vertical = viewport_height * v;
+            lower_left_corner = origin - horizontal/2 - vertical/2 - w;
         }
 
         Ray get_Ray(float image_u, float image_v) const {
-            return Ray(origin, lower_left_corner + image_v * vertical + image_u * horizontal - origin);
+           return Ray(origin, lower_left_corner + image_u * horizontal + image_v * vertical - origin);
         }
 
     private:

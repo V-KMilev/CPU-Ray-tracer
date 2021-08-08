@@ -1,11 +1,17 @@
 #include <iostream>
+#include <iomanip> 
 #include <fstream>
 
 #include "Utility_functions.h"
+
 #include "Hittable_list.h"
 #include "Hittable.h"
+
+#include "Material.h"
 #include "Sphere.h"
+
 #include "Camera.h"
+
 #include "Color.h"
 #include "Vec.h"
 #include "Ray.h"
@@ -18,13 +24,20 @@ Color ray_color(const Ray &ray, const Hittable &world, int depth) {
         return Color(0,0,0);
     }
 
-    if (world.hit(ray, 0, infinity, record)) {
-         Point target = record.point + record.normal + random_in_unit_sphere();
-        return 0.5 * ray_color(Ray(record.point, target - record.point), world, depth - 1);                     // Sphere pixel
+    if (world.hit(ray, 0.001, infinity, record)) {
+        
+        Ray scattered;
+        Color attenuation;
+        
+        if (record.material_ptr -> scatter(ray, record, attenuation, scattered)) {
+            return attenuation * ray_color(scattered, world, depth - 1);
+        }
+
+        return Color(0,0,0);
     }
 
     Vec unit_direction = unit_vector(ray.getDirection());
-    
+
     float distance = 0.5 * (unit_direction.getY() + 1.0);
     return (1.0 - distance) * Color(1.0, 0.0, 0.0) + distance * Color(0.5, 0.7, 1.0);                           // Blend Value
 }
@@ -35,11 +48,11 @@ int main() {
     // Image: 1 is full image heigth
     // IMAGE:
     const float aspect_ratio = 16.0 / 9.0;                                                                      // Image: Aspect ratio: resolution
-    const int image_width = 1000;                                                                               // Image: Width
+    const int image_width = 1920;                                                                               // Image: Width
     const int image_height = static_cast<int>(image_width / aspect_ratio);                                      // Image: Height
     
-    const int samples_per_pixel = 100;
-    const int max_depth = 50;
+    const int samples_per_pixel = 700;                                                                          // Rays per pixel
+    const int max_depth = 250;                                                                                  // Ray bounce limit
 
     // World set: +x goes right from the camera
     // World set: +y goes down from the camera
@@ -47,17 +60,45 @@ int main() {
     // WOLRD left hand:
     Hittable_list world;
 
-    world.add(make_shared<Sphere>(Point(2.0,    -1.0, -1.0), 0.5));
-    world.add(make_shared<Sphere>(Point(-0.5,    0.0, -2.0), 0.5));
-    world.add(make_shared<Sphere>(Point(1.0,    0.25, -1.0), 0.5));
-    world.add(make_shared<Sphere>(Point(-1.25,  0.25, -0.5), 0.5));
-    world.add(make_shared<Sphere>(Point(-0.75, -0.75, -1.0), 0.5));
-    world.add(make_shared<Sphere>(Point(0.5,   -1.25, -2.0), 0.5));
- 
-    world.add(make_shared<Sphere>(Point(0.0,    10.5, -1.0), 10.0));
+    shared_ptr<Material> material_sphere_g = make_shared<Lambertian>(Color(0.2, 0.2, 0.2));
+    shared_ptr<Material> material_sphere_c = make_shared<Glass>(Color(0.8, 0.8, 0.8));
+    shared_ptr<Material> material_sphere_m = make_shared<Metal>(Color(0.8, 0.8, 0.8), 0.3);
 
-    // CAMERA:
-    Camera camera;
+    for (int i = 0; i < 100; i++) {
+
+        shared_ptr<Material> material_sphere_l = make_shared<Lambertian>(Color(random_float(0, 1), random_float(0, 1), random_float(0, 1)));
+
+        if(i % 4 == 0 || i % 3 == 0) {
+            world.add(make_shared<Sphere>
+            (
+                Point(random_float(-30, 30), random_float(0, -20), random_float(5, -30)),
+                random_float(0.5, 2.5),
+                material_sphere_l
+            ));
+
+        } else if(i % 5 == 0 || i % 7 == 0) {
+            world.add(make_shared<Sphere>
+            (
+                Point(random_float(-30, 30), random_float(0, -20), random_float(5, -30)),
+                random_float(0.5, 2.5),
+                material_sphere_m
+            ));
+        } else {
+            world.add(make_shared<Sphere>
+            (
+                Point(random_float(-30, 30), random_float(0, -20), random_float(5, -30)),
+                random_float(0.5, 2.5),
+                material_sphere_c
+            ));
+        }
+    }
+
+    world.add(make_shared<Sphere>(Point(0.0, 300.5, -1.0), 300.0, material_sphere_g));
+ 
+    // CAMERA: World rules applied
+    Camera camera(Point(-3,-9,15), Point(0,-7,-1), Vec(0,2,0), 90, aspect_ratio);
+
+    clock_t start_time = clock();
 
     std::ofstream out("RTout.ppm");
 
@@ -66,13 +107,13 @@ int main() {
     std::cerr << "\rWriting...\n";
     for (int y = 0; y < image_height; y++) {
 
-        if(y % 100 == 0) { std::cout << "+"; }
+        if(y % 10 == 0) { std::cerr << "\rDone: " << y * 100 / image_height << "%"; }
 
         for (int x = 0; x < image_width; x++) {
            
             Color pixel_color(0, 0, 0);
            
-            for (int s = 0; s < samples_per_pixel; ++s) {
+            for (int s = 0; s < samples_per_pixel; s++) {
              
                 float u = (x + random_float()) / (image_width  - 1);
                 float v = (y + random_float()) / (image_height - 1);
@@ -85,6 +126,14 @@ int main() {
         }
     }
 
-    std::cerr << "\rDone!\n";
+    std::cerr << "\rDone! 100%\n";
     out.close();
+    
+    clock_t end_time = clock();
+
+
+    std::cerr << std::fixed << "\rTime: "
+              << std::setprecision(0) << ((end_time - start_time) / CLOCKS_PER_SEC) / 3600.0 << ","
+              << std::setprecision(2) << ((end_time - start_time) / CLOCKS_PER_SEC) / 60.0 << " h.";
 }
+// 7680

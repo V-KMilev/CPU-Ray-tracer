@@ -2,11 +2,15 @@
 
 #include "Ray.h"
 
+class Material;
+
 struct hit_record {
     float distance;                                                                                 // hit_record: distance
     Point point;                                                                                    // hit_record: hit point
     Vec normal;                                                                                     // hit_record: parale
     
+    shared_ptr<Material> material_ptr;                                                              // hit_record: material hitted
+
     bool front_face;                                                                                // hit_record: parallel to the tangent
 
     inline void set_face_normal(const Ray &r, const Vec &outward_normal) {

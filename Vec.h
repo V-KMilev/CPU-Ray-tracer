@@ -22,6 +22,12 @@ class Vec {
             return Vec(random_float(min, max), random_float(min, max), random_float(min, max));
         }
 
+        bool near_zero() const {
+            // Return true if the vector is close to zero in all dimensions.
+            const auto near_zero = 1e-8;
+            return (fabs(e[0]) < near_zero) && (fabs(e[1]) < near_zero) && (fabs(e[2]) < near_zero);
+        }
+
         Vec operator -() const { return Vec(-e[0], -e[1], -e[2]); }
         
         float operator [] (int i) const { return e[i]; }
@@ -120,4 +126,12 @@ inline Vec unit_vector(Vec v) {
         if (point.length_squared() >= 1) { continue; }
         return point;
     }
+}
+
+Vec random_unit_vector() {
+    return unit_vector(random_in_unit_sphere());
+}
+
+Vec reflect(const Vec &v, const Vec &n) {
+    return v - 2*dot(v,n)*n;
 }
