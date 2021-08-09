@@ -1,5 +1,7 @@
 #include <iostream>
+#include <iomanip> 
 #include <fstream>
+#include <ctime>
 
 #include "Utility_functions.h"
 
@@ -36,18 +38,28 @@ Color ray_color(const Ray &ray, const Hittable &world, int depth) {
     }
 
     Vec unit_direction = unit_vector(ray.getDirection());
-    
+
     float distance = 0.5 * (unit_direction.getY() + 1.0);
     return (1.0 - distance) * Color(1.0, 0.0, 0.0) + distance * Color(0.5, 0.7, 1.0);                           // Blend Value
 }
 
 int main() {
 
+    clock_t start_time = clock();
+
+    time_t now_s = time(0);
+   
+    // convert now to string form
+    char* dt = ctime(&now_s);
+
+    std::cerr << "\rStart time: " << dt;
+
+
     // Image: 1.5 in full image width
     // Image: 1 is full image heigth
     // IMAGE:
     const float aspect_ratio = 16.0 / 9.0;                                                                      // Image: Aspect ratio: resolution
-    const int image_width = 1920;                                                                               // Image: Width
+    const int image_width = 100;                                                                               // Image: Width
     const int image_height = static_cast<int>(image_width / aspect_ratio);                                      // Image: Height
     
     const int samples_per_pixel = 500;                                                                          // Rays per pixel
@@ -59,53 +71,50 @@ int main() {
     // WOLRD left hand:
     Hittable_list world;
 
-    shared_ptr<Material> material_sphere_G = make_shared<Lambertian>(Color(0.1, 0.1, 0.1));
-    // shared_ptr<Material> material_sphere_L = make_shared<Lambertian>(Color(1.0, 0.4, 0.4));
-    shared_ptr<Material> material_sphere_C = make_shared<Glass>(Color(1.0, 1.0, 1.0));
-    shared_ptr<Material> material_sphere_M = make_shared<Metal>(Color(0.8, 0.8, 0.8), 0.3);
+    shared_ptr<Material> material_sphere_g = make_shared<Lambertian>(Color(0.2, 0.2, 0.2));
+    shared_ptr<Material> material_sphere_c = make_shared<Glass>(Color(0.8, 0.8, 0.8));
+    shared_ptr<Material> material_sphere_m = make_shared<Metal>(Color(0.8, 0.8, 0.8), 0.3);
 
-    for (int i = 0; i < 30; i++) {
+    for (int i = 0; i < 100; i++) {
 
-        shared_ptr<Material> material_sphere_L = make_shared<Lambertian>(Color(random_float(0.0, 1.0),random_float(0.0, 1.0), random_float(0.0, 1.0)));
+        shared_ptr<Material> material_sphere_l = make_shared<Lambertian>(Color(random_float(0, 1), random_float(0, 1), random_float(0, 1)));
 
-        if(i % 6 == 0 || i % 2 == 0) {
+        if(i % 4 == 0 || i % 3 == 0) {
             world.add(make_shared<Sphere>
-                (
-                Point(random_float(-10.0, 10.0) + 1,random_float(0.0, -7.0) + 1,random_float(10.0, -10.0) + 1),
-                random_float(0.5, 1.5),
-                material_sphere_M
-                ));
+            (
+                Point(random_float(-30, 30), random_float(0, -20), random_float(5, -30)),
+                random_float(0.5, 2.5),
+                material_sphere_l
+            ));
 
-        } else if (i % 7 == 0 || i % 3 == 0 || i % 5 == 0) {
+        } else if(i % 5 == 0 || i % 7 == 0) {
             world.add(make_shared<Sphere>
-                (
-                Point(random_float(-10.0, 10.0) + 1,random_float(0.0, -7.0) + 1,random_float(10.0, -10.0) + 1),
-                random_float(0.5, 1.5),
-                material_sphere_C
-                ));
-
+            (
+                Point(random_float(-30, 30), random_float(0, -20), random_float(5, -30)),
+                random_float(0.5, 2.5),
+                material_sphere_m
+            ));
         } else {
             world.add(make_shared<Sphere>
-                (
-                Point(random_float(-10.0, 10.0) + 1,random_float(0.0, -7.0) + 1,random_float(10.0, -10.0) + 1),
-                random_float(0.5, 1.5),
-                material_sphere_L
-                ));
+            (
+                Point(random_float(-30, 30), random_float(0, -20), random_float(5, -30)),
+                random_float(0.5, 2.5),
+                material_sphere_c
+            ));
         }
     }
 
-    world.add(make_shared<Sphere>(Point(0.0, 100.5, -1.0), 100.0, material_sphere_G));
+    world.add(make_shared<Sphere>(Point(0.0, 300.5, -1.0), 300.0, material_sphere_g));
 
     // CAMERA: World rules applied
     Camera camera(Point(7.0, -5.0, 13.0), Point(0.0, 0.0, -1.0), Vec(0.0, 1.0, 0.0), 90.0, aspect_ratio);
-
-    clock_t start_time = clock();
 
     std::ofstream out("RTout.ppm");
 
     out << "P3\n" << image_width << " " << image_height << "\n255\n";
 
-    std::cerr << "\rWriting...\n";
+    std::cerr << "\n\rWriting...\n";
+
     for (int y = 0; y < image_height; y++) {
 
         if(y % 10 == 0) { std::cerr << "\rDone: " << y * 100 / image_height << "%"; }
@@ -114,7 +123,7 @@ int main() {
            
             Color pixel_color(0, 0, 0);
            
-            for (int s = 0; s < samples_per_pixel; ++s) {
+            for (int s = 0; s < samples_per_pixel; s++) {
              
                 float u = (x + random_float()) / (image_width  - 1);
                 float v = (y + random_float()) / (image_height - 1);
@@ -127,14 +136,19 @@ int main() {
         }
     }
 
-    std::cerr << "\rDone!\n";
+    std::cerr << "\rDone! 100%";
     out.close();
 
     clock_t end_time = clock();
 
-    clock_t clock_ticks_taken = end_time - start_time;
-    double timeInSecondsFR = clock_ticks_taken / (double) CLOCKS_PER_SEC;
-    
-    std::cerr << "\rTime: " << timeInSecondsFR << "\n";
+    std::cerr << std::fixed << "\n\rTime: " << std::setprecision(2) << ((end_time - start_time) / CLOCKS_PER_SEC) / 3600.0 << " h.";
+
+    time_t now_e = time(0);
+
+    // convert now to string form
+    dt = ctime(&now_e);
+
+    std::cerr << "\n\n\rEnd time: " << dt;
 
 }
+// 7680

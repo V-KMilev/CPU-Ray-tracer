@@ -40,7 +40,7 @@ class Lambertian : public Material {
 
 class Metal : public Material {
     public:
-        Metal(const Color &albedo, float fuzz) : albedo(albedo), fuzz(fuzz < 1 ? fuzz : 1) {}
+        Metal(const Color &albedo, float fuzz) : albedo(albedo), fuzz(fuzz < 1.0 ? fuzz : 1.0) {}
 
         virtual bool scatter(
             const Ray &ray_in, const hit_record &record, Color &attenuation, Ray &scattered) const override {
