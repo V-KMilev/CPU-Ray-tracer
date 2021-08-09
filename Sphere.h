@@ -6,7 +6,8 @@
 class Sphere : public Hittable {
     public:
         Sphere() {}
-        Sphere(Point center, float radius) : center(center), radius(radius) {};
+        Sphere(Point center, float radius, shared_ptr<Material> material) 
+            : center(center), radius(radius), material_ptr(material) {};
 
         virtual bool hit(
             const Ray &ray, float distance_min, float distance_max, hit_record &record) const override;
@@ -14,6 +15,7 @@ class Sphere : public Hittable {
     public:
         Point center;                                                                                           // Sphere: center
         float radius;                                                                                           // Sphere: radius
+        shared_ptr<Material> material_ptr;                                                                      // Sphere: material
 };
 
 bool Sphere::hit(const Ray &ray, float distance_min, float distance_max, hit_record &record) const {
@@ -42,6 +44,7 @@ bool Sphere::hit(const Ray &ray, float distance_min, float distance_max, hit_rec
     record.distance = root;
     record.point = ray.at(record.distance);
     record.normal = (record.point - center) / radius;
+    record.material_ptr = material_ptr;
 
     Vec outward_normal = record.normal;
     record.set_face_normal(ray, outward_normal);

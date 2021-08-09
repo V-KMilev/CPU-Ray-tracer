@@ -14,12 +14,20 @@ class Vec {
         float getY() const { return e[1]; }
         float getZ() const { return e[2]; }
 
+        // Utility functions to set random Vec
+
         inline static Vec random() {
             return Vec(random_float(), random_float(), random_float());
         }
 
         inline static Vec random(float min, float max) {
             return Vec(random_float(min, max), random_float(min, max), random_float(min, max));
+        }
+
+        bool near_zero() const {
+            // Return true if the vector is close to zero in all dimensions.
+            const float close_to_zero = 1e-8;
+            return (fabs(e[0]) < close_to_zero) && (fabs(e[1]) < close_to_zero) && (fabs(e[2]) < close_to_zero);
         }
 
         Vec operator -() const { return Vec(-e[0], -e[1], -e[2]); }
@@ -114,10 +122,25 @@ inline Vec unit_vector(Vec v) {
     return v / v.length();
 }
 
- Vec random_in_unit_sphere() {
+// Utility function to set random point in sphere
+
+Vec random_in_unit_sphere() {
+    
     for(;;) {
         Vec point = Vec::random(-1, 1);
+        
         if (point.length_squared() >= 1) { continue; }
+        
         return point;
     }
+}
+
+Vec random_unit_vector() {
+    return unit_vector(random_in_unit_sphere());
+}
+
+// Reflection
+
+Vec reflect(const Vec &v, const Vec &n) {
+    return v - 2*dot(v,n)*n;
 }
