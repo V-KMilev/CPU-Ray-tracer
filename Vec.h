@@ -86,6 +86,7 @@ inline Vec operator + (const Vec &u, const Vec &v) {
 inline Vec operator - (const Vec &u, const Vec &v) {
     return Vec(u.e[0] - v.e[0], u.e[1] - v.e[1], u.e[2] - v.e[2]);
 }
+    // IMAGE:
 
 inline Vec operator * (const Vec &u, const Vec &v) {
     return Vec(u.e[0] * v.e[0], u.e[1] * v.e[1], u.e[2] * v.e[2]);
@@ -142,5 +143,25 @@ Vec random_unit_vector() {
 // Reflection
 
 Vec reflect(const Vec &v, const Vec &n) {
-    return v - 2*dot(v,n)*n;
+    return v - 2 * dot(v,n) * n;
+}
+
+Vec refract(const Vec &uv, const Vec &n, float etai_over_etat) {
+    
+    float cos_theta = fmin(dot(-uv, n), 1.0);
+    Vec r_out_perp =  etai_over_etat * (uv + cos_theta * n);
+    Vec r_out_parallel = -sqrt(fabs(1.0 - r_out_perp.length_squared())) * n;
+    
+    return r_out_perp + r_out_parallel;
+}
+
+Vec random_in_unit_disk() {
+    
+    for(;;) {
+        Vec point = Vec(random_float(-1.0 ,1.0), random_float(-1.0 ,1.0), 0.0);
+        
+        if (point.length_squared() >= 1.0) { continue; }
+        
+        return point;
+    }
 }
