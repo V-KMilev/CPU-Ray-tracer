@@ -86,7 +86,6 @@ inline Vec operator + (const Vec &u, const Vec &v) {
 inline Vec operator - (const Vec &u, const Vec &v) {
     return Vec(u.e[0] - v.e[0], u.e[1] - v.e[1], u.e[2] - v.e[2]);
 }
-    // IMAGE:
 
 inline Vec operator * (const Vec &u, const Vec &v) {
     return Vec(u.e[0] * v.e[0], u.e[1] * v.e[1], u.e[2] * v.e[2]);
@@ -97,7 +96,7 @@ inline Vec operator * (float distance, const Vec &v) {
 }
 
 inline Vec operator * (const Vec &v, float distance) {
-    return v * distance;
+    return distance * v;
 }
 
 inline Vec operator / (Vec v, float distance) {
@@ -140,7 +139,7 @@ Vec random_unit_vector() {
     return unit_vector(random_in_unit_sphere());
 }
 
-// Reflection
+// Utility function for reflection
 
 Vec reflect(const Vec &v, const Vec &n) {
     return v - 2 * dot(v,n) * n;

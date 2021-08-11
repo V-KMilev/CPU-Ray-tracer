@@ -24,45 +24,52 @@ Hittable_list random_scene() {
     // WOLRD left hand:
     Hittable_list world;
 
-    shared_ptr<Material> material_sphere_g = make_shared<Lambertian>(Color(0.7, 0.7, 0.7));
+    shared_ptr<Material> material_sphere_g = make_shared<Lambertian>(Color(0.1, 0.1, 0.1));
     shared_ptr<Material> material_sphere_c = make_shared<Glass>(Color(0.8, 0.8, 0.8));
     shared_ptr<Material> material_sphere_m = make_shared<Metal>(Color(0.8, 0.8, 0.8), 0.3);
     shared_ptr<Material> material_sphere_d = make_shared<dielectric>(1.5);
 
-    for (int i = 0; i < 100; i++) {
+    for (int i = -10; i < 10; i++) {
+        for (int j = -10; j < 10; j++) {
+        
+            shared_ptr<Material> material_sphere_l = make_shared<Lambertian>(Color(random_float(0, 1), random_float(0, 1), random_float(0, 1)));
 
-        shared_ptr<Material> material_sphere_l = make_shared<Lambertian>(Color(random_float(0, 1), random_float(0, 1), random_float(0, 1)));
+            Point position(j * 5 * random_float(), -0.5, i * 5 * random_float());
 
-        if(i % 3 == 0 || i % 7 == 0) {
-            world.add(make_shared<Sphere>
-            (
-                Point(random_float(-30, 30), random_float(0, -20), random_float(5, -30)),
-                random_float(0.5, 2.5),
-                material_sphere_l
-            ));
-        } else if(i % 4 == 0) {
-            world.add(make_shared<Sphere>
-            (
-                Point(random_float(-30, 30), random_float(0, -20), random_float(5, -30)),
-                random_float(0.5, 2.5),
-                material_sphere_m
-            ));
-        } else if(i % 5 == 0) {
-            world.add(make_shared<Sphere>
-            (
-                Point(random_float(-30, 30), random_float(0, -20), random_float(5, -30)),
-                random_float(0.5, 2.5),
-                material_sphere_d
-            ));
-        } else {
-            world.add(make_shared<Sphere>
-            (
-                Point(random_float(-30, 30), random_float(0, -20), random_float(5, -30)),
-                random_float(0.5, 2.5),
-                material_sphere_c
-            ));
+            if(i % 3 == 0 || i % 7 == 0) {
+                world.add(make_shared<Sphere>(
+                    position,
+                    random_float(0.5, 1.0),
+                    material_sphere_l
+                ));
+            
+            } else if(i % 4 == 0) {
+                world.add(make_shared<Sphere>(
+                    position,
+                    random_float(0.5, 1.0),
+                    material_sphere_m
+                ));
+            
+            }  else if(i % 5 == 0) {
+                world.add(make_shared<Sphere>(
+                    position,
+                    random_float(0.5, 1.0),
+                    material_sphere_d
+                ));
+            
+            } else {
+                world.add(make_shared<Sphere>(
+                    position,
+                    random_float(0.5, 1.0),
+                    material_sphere_c
+                ));
+            }
         }
     }
+
+    world.add(make_shared<Sphere>(Point(-10.0, -3.5, -17.0), 3.5, material_sphere_c));
+    world.add(make_shared<Sphere>(Point(-0.0, -3.5, -20.0), 3.5, material_sphere_d));
+    world.add(make_shared<Sphere>(Point(+10.0, -3.5, -17.0), 3.5, material_sphere_m));
 
     world.add(make_shared<Sphere>(Point(0.0, 1000.5, -1.0), 1000.0, material_sphere_g));
 
@@ -72,7 +79,7 @@ Hittable_list random_scene() {
 Color ray_color(const Ray &ray, const Hittable &world, int depth) {
     
     hit_record record;
-     // If we've exceeded the ray bounce limit, no more light is gathered.
+    // If we've exceeded the ray bounce limit, no more light is gathered.
     if (depth <= 0) {
         return Color(0,0,0);                                                                                    // Set current pixel value to black
     }
@@ -98,8 +105,8 @@ Color ray_color(const Ray &ray, const Hittable &world, int depth) {
 int main() {
 
     clock_t start_time = clock();
-
     time_t now_s = time(0);
+
     // convert now to string form
     char* dt = ctime(&now_s);
 
@@ -118,17 +125,19 @@ int main() {
     Hittable_list world = random_scene();
 
     // CAMERA: World rules applied
-    Point lookfrom  (+0.0, -5.0, +7.0);
-    Point lookat    (+0.0, -5.0, +0.0);
-    Vec view_up     (+0.0, +1.0, +0.0);                                                                         // I don't know why its +1 and not -1
+    Point lookfrom  (+20.0, -5.0, +10.0);
+    Point lookat    (-0.0, -4.5, -17.0);
+    Vec view_up     (+0.0, +1.0, +0.0);                                                                         // Its +1 because of the camera's coordinate not the world's
 
-    float dist_to_focus = 1.0;
-    float aperture = 1.0;
+    float dist_to_focus = 1000.0;
+    float aperture = 0.1;
 
-    Camera camera(lookfrom, lookat, view_up, 90.0, aspect_ratio, aperture, dist_to_focus);
+    Camera camera(lookfrom, lookat, view_up, 37.0, aspect_ratio, aperture, dist_to_focus);
 
+    // OUT STREAM:
     std::ofstream out("RTout.ppm");
-
+ 
+    // RENDER:
     out << "P3\n" << image_width << " " << image_height << "\n255\n";
 
     std::cerr << "\n\rWriting...\n";
@@ -158,14 +167,14 @@ int main() {
     out.close();
 
     clock_t end_time = clock();
-
-    std::cerr << std::fixed << "\n\rTime: " << std::setprecision(2)  << ((end_time - start_time) / CLOCKS_PER_SEC) / 60.0 << " m.";
-
     time_t now_e = time(0);
+
     // convert now to string form
     dt = ctime(&now_e);
 
+    std::cerr << std::fixed << "\n\rTime: " << std::setprecision(2)  << ((end_time - start_time) / CLOCKS_PER_SEC) / 60.0 << " m.";
     std::cerr << "\n\n\rEnd time: " << dt;
 
 }
 // 7680
+// 1337
