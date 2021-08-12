@@ -36,13 +36,13 @@ class Camera {
 
             lower_left_corner = origin - horizontal/2 - vertical/2 - focus_dist * w;
 
-            lens_radius = aperture / 2;
+            lens_radius = aperture / 2;                                                                 // Camera: light input set
         }
 
        Ray get_Ray(float image_u, float image_v) const {
             
-            Vec rd = lens_radius * random_in_unit_disk();
-            Vec offset = u * rd.getX() + v * rd.getY();
+            Vec rd = lens_radius * random_in_unit_disk();                                               // Ray: get offset postion
+            Vec offset = u * rd.getX() + v * rd.getY();                                                 // Ray: get cordinates of the offseted positon on the camera lens
 
             return Ray
             (
@@ -52,12 +52,12 @@ class Camera {
         }
 
     private:
-    Vec u, v, w;                                                                                    // Camera: x, y, z;
-    Vec vertical;                                                                                   // Camera: vertical
-    Vec horizontal;                                                                                 // Camera: horizontal
+    Vec u, v, w;                                                                                        // Camera: x, y, z;
+    Vec vertical;                                                                                       // Camera: vertical
+    Vec horizontal;                                                                                     // Camera: horizontal
     
-    Point origin;                                                                                   // Camera: original point
-    Point lower_left_corner;                                                                        // Camera: lower left corner
+    Point origin;                                                                                       // Camera: original point
+    Point lower_left_corner;                                                                            // Camera: lower left corner
 
     float lens_radius;
 };
