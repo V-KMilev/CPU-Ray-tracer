@@ -15,6 +15,6 @@ class Ray {
         }
 
     public:
-        Point origin;                                                                                           // original start ponint
+        Point origin;                                                                                           // original start point
         Vec directon;                                                                                           // directon
 };

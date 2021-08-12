@@ -34,7 +34,7 @@ Hittable_list random_scene() {
         
             shared_ptr<Material> material_sphere_l = make_shared<Lambertian>(Color(random_float(0, 1), random_float(0, 1), random_float(0, 1)));
 
-            Point position(j * 5 * random_float(), -0.5, i * 5 * random_float());
+            Point position(j * 10 * random_float(), -0.5, i * 10 * random_float());
 
             if(i % 3 == 0 || i % 7 == 0) {
                 world.add(make_shared<Sphere>(
@@ -115,7 +115,7 @@ int main() {
     // Image: 1.5 in full image width
     // Image: 1 is full image heigth
     const float aspect_ratio = 16.0 / 9.0;                                                                      // Image: Aspect ratio: resolution
-    const int image_width = 100;                                                                               // Image: Width
+    const int image_width = 2048;                                                                               // Image: Width
     const int image_height = static_cast<int>(image_width / aspect_ratio);                                      // Image: Height
     
     const int samples_per_pixel = 700;                                                                          // Rays per pixel
@@ -129,7 +129,7 @@ int main() {
     Point lookat    (-0.0, -4.5, -17.0);
     Vec view_up     (+0.0, +1.0, +0.0);                                                                         // Its +1 because of the camera's coordinate not the world's
 
-    float dist_to_focus = 1000.0;
+    float dist_to_focus = 100.0;
     float aperture = 0.1;
 
     Camera camera(lookfrom, lookat, view_up, 37.0, aspect_ratio, aperture, dist_to_focus);
