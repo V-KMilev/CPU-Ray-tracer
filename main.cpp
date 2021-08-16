@@ -7,6 +7,7 @@
 
 #include "Hittable_list.h"
 #include "Hittable.h"
+#include "Bucket.h"
 
 #include "Material.h"
 #include "Sphere.h"
@@ -36,7 +37,7 @@ Hittable_list random_scene() {
 
             Point position(j * 10 * random_float(), 0.0, i * 10 * random_float());
 
-            if(i % 3 == 0 || i % 7 == 0) {
+            if (i % 3 == 0 || i % 7 == 0) {
                 world.add(make_shared<Sphere>(
                     position,
                     random_float(0.5, 1.0),
@@ -115,7 +116,7 @@ int main() {
     // Image: 1.5 in full image width
     // Image: 1 is full image heigth
     const float aspect_ratio = 16.0 / 9.0;                                                                      // Image: Aspect ratio: resolution
-    const int image_width = 500;                                                                                // Image: Width
+    const int image_width = 200;                                                                                // Image: Width
     const int image_height = static_cast<int>(image_width / aspect_ratio);                                      // Image: Height
     
     const int samples_per_pixel = 700;                                                                          // Rays per pixel
@@ -138,43 +139,55 @@ int main() {
     std::ofstream out("RTout.ppm");
  
     // RENDER:
-    out << "P3\n" << image_width << " " << image_height << "\n255\n";
+    std::vector<Bucket> buckets;
 
-    std::cerr << "\n\rWriting...\n";
+    buckets = bucket_segmentation(image_width, image_height);
 
-    for (int y = 0; y < image_height; y++) {
+    std::vector<Color> pixels (image_height * image_width);
 
-        std::cerr << "\rDone: " << y * 100 / image_height << "%";
+    std::cerr << "\n\rRendering...\n";
 
-        for (int x = 0; x < image_width; x++) {
-           
-            Color pixel_color(0, 0, 0);
-           
-            for (int s = 0; s < samples_per_pixel; s++) {
+    #pragma omp parallel for
+    for (int idx = 0; idx < buckets_size; idx++) {
+        
+        Bucket bucket = buckets[idx];
+
+        for (int y = bucket.start_y; y < bucket.end_y; y++) {
+            for (int x = bucket.start_x; x < bucket.end_x; x++) {
+
+                Color pixel_color(0, 0, 0);
+
+                for (int s = 0; s < samples_per_pixel; s++) {
              
-                float u = (x + random_float()) / (image_width  - 1);
-                float v = (y + random_float()) / (image_height - 1);
-                
-                Ray ray = camera.get_Ray(u, v);
-                
-                pixel_color += ray_color(ray, world, max_depth);
+                    float u = (x + random_float()) / (image_width - 1);
+                    float v = (y + random_float()) / (image_height - 1);
+
+                    Ray ray = camera.get_Ray(u, v);
+
+                    pixel_color += ray_color(ray, world, max_depth);
+                }
+                pixels[image_width * y + x] = color_fix(pixel_color, samples_per_pixel);
             }
-            write_color(out, pixel_color, samples_per_pixel);
         }
+        // if (idx % 10 == 0) { std::cerr << "+"; }
     }
 
-    std::cerr << "\rDone! 100%";
+    // FILE WRITE:
+    out << "P3\n" << image_width << " " << image_height << "\n255\n";
+
+    for (int idx = 0; idx < pixels.size(); idx++) {
+        out << static_cast<int>(256 * clamp(pixels[idx].getX(), 0.0, 0.999)) << ' '
+            << static_cast<int>(256 * clamp(pixels[idx].getY(), 0.0, 0.999)) << ' '
+            << static_cast<int>(256 * clamp(pixels[idx].getZ(), 0.0, 0.999)) << '\n';
+    }
     out.close();
 
-    clock_t end_time = clock();
     time_t now_e = time(0);
 
     // convert now to string form
     dt = ctime(&now_e);
 
-    std::cerr << std::fixed << "\n\rTime: " << std::setprecision(2)  << ((end_time - start_time) / CLOCKS_PER_SEC) / 60.0 << " m.";
-    std::cerr << "\n\n\rEnd time: " << dt;
-
+    std::cerr << "\n\rEnd time: " << dt;
 }
 // 7680
 // 1337
