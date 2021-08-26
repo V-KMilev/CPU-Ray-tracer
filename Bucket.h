@@ -2,52 +2,53 @@
 
 #include <vector>
 
-#include "Vec.h"
+const int bucket_size = { 64 };
 
-const int percent = 10;                                                                       // percent
-
-const int buckets_size = percent * percent;                                                   // vector size
- 
-// bucket is percent of the image width x percent of the image height
 struct Bucket {
-    
-    int start_x;                                                                              // Start index by x
-    int start_y;                                                                              // Start index by y
-    int end_x;                                                                                // End index by x
-    int end_y;                                                                                // End index by y
+
+	int start_x;																				// Start index x
+	int start_y;																				// Start index y
+	int end_x;																					// End index x
+	int end_y;																					// End index y
 };
 
-std::vector<Bucket> bucket_segmentation(int image_width, int image_height) {
+std::vector<Bucket> bucket_segmentation(const int image_width, const int image_height) {
 
-    const int height_percent = image_height/percent;                                          // percent of the image height
-    const int width_percent = image_width/percent;                                            // percent of the image width 
+	const int columns = { image_width / bucket_size };
+	const int rows = { image_height / bucket_size };
 
-    std::vector<Bucket> buckets (buckets_size);
+	const int leftover_column = { image_width - bucket_size * columns };
+	const int leftover_row = { image_height - bucket_size * rows };
 
-    Bucket bucket;
+	const int numb_of_buckets = { rows * columns };
 
-    int counter = 0;
+	std::vector<Bucket> buckets(numb_of_buckets);
 
-    for(int y = 0; y < image_height - height_percent; y += height_percent) {
-        for (int x = 0; x < image_width - width_percent; x += width_percent) {
-            
-            bucket.start_x = x;
-            bucket.start_y = y;
+	Bucket bucket;
 
-            if (counter % 10 == 9 && image_width != width_percent * percent) {
-                bucket.end_x = x + (image_width - width_percent * (percent - 1));             // Get the rest of the pixel by width
-            } else {
-                bucket.end_x = x + width_percent;
-            }
+	int bucket_idx = { 0 };
+	int row_idx = { 0 };
 
-            if (counter >= 90 && image_height != height_percent * percent) {
-                bucket.end_y = y + (image_height - height_percent * (percent -1));            // Get the rest of the pixel by height
-            } else {
-                bucket.end_y = y + height_percent;
-            }
+	for (int y = 0; y < image_height - bucket_size; y+=bucket_size, row_idx++) {
+		for (int x = 0; x < image_width - bucket_size; x+=bucket_size) {
 
-            buckets[counter++] = bucket;
-        }
-    }
-    return buckets;
+			bucket.start_x = x;
+			bucket.start_y = y;
+
+			if (bucket_idx == row_idx * columns + (columns - 1)) {
+				bucket.end_x = x + bucket_size + leftover_column;
+			}
+			else {
+				bucket.end_x = x + bucket_size;
+			}
+
+			if(bucket_idx > numb_of_buckets - columns - 1) {
+				bucket.end_y = y + bucket_size + leftover_row;
+			} else {
+				bucket.end_y = y + bucket_size;
+			}
+			buckets[bucket_idx++] = bucket;
+		}
+	}
+	return buckets;
 }

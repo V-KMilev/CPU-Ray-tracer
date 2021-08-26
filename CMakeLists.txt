@@ -8,7 +8,7 @@ find_package(OpenMP REQUIRED)
 add_definitions(-D_CRT_SECURE_NO_WARNINGS)
 
 set(SOURCES
-    main.cpp
+	main.cpp
 )
 
 # add the executable
