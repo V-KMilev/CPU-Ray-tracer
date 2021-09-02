@@ -5,6 +5,8 @@
 
 #include "Utility_functions.h"
 
+#include "Thread_manager.h"
+
 #include "Hittable_list.h"
 #include "Hittable.h"
 #include "Bucket.h"
@@ -82,7 +84,7 @@ Color ray_color(const Ray &ray, const Hittable &world, int depth) {
 	hit_record record;
 	// If we've exceeded the ray bounce limit, no more light is gathered.
 	if (depth <= 0) {
-		return Color(0, 0, 0);																	// Set current pixel value to black
+		return Color(0, 0, 0);                                                                 // Set current pixel value to black
 	}
 
 	if (world.hit(ray, 0.001, infinity, record)) { // 0.001 to fix shadow problem
@@ -100,12 +102,11 @@ Color ray_color(const Ray &ray, const Hittable &world, int depth) {
 	Vec unit_direction = unit_vector(ray.getDirection());
 	float distance = 0.5 * (unit_direction.getY() + 1.0);
 
-	return (1.0 - distance) * Color(1.0, 0.0, 0.0) + distance * Color(0.5, 0.7, 1.0);			// Blend Value
+	return (1.0 - distance) * Color(1.0, 0.0, 0.0) + distance * Color(0.5, 0.7, 1.0);          // Blend Value
 }
 
 int main(int argc, char** argv) {
 
-	clock_t start_time = clock();
 	time_t now_s = time(0);
 
 	// convert now to string form
@@ -115,12 +116,12 @@ int main(int argc, char** argv) {
 
 	// Image: 1.5 in full image width
 	// Image: 1 is full image heigth
-	const float aspect_ratio = { 16.0 / 9.0 };													// Image: Aspect ratio: resolution
-	const int image_width = { 300 };															// Image: Width
-	const int image_height = { static_cast<int>(image_width / aspect_ratio) };					// Image: Height
+	const float aspect_ratio = { 16.0 / 9.0 };                                                  // Image: Aspect ratio: resolution
+	const int image_width = { 300 };                                                            // Image: Width
+	const int image_height = { static_cast<int>(image_width / aspect_ratio) };                  // Image: Height
 
-	const int samples_per_pixel= { 100 };														// Rays per pixel
-	const int max_depth = { 2 };																// Ray bounce limit per pixel
+	const int samples_per_pixel= { 100 };                                                       // Rays per pixel
+	const int max_depth = { 2 };                                                                // Ray bounce limit per pixel
 
 	// WORLD:
 	Hittable_list world = random_scene();
@@ -128,7 +129,7 @@ int main(int argc, char** argv) {
 	// CAMERA: World rules applied
 	Point lookfrom(+20.0, -5.0, +10.0);
 	Point lookat(-0.0, -4.5, -17.0);
-	Vec view_up(+0.0, +1.0, +0.0);																// Its +1 because of the camera's coordinate not the world's
+	Vec view_up(+0.0, +1.0, +0.0);                                                              // Its +1 because of the camera's coordinate not the world's
 
 	float dist_to_focus = lookat.getZ() < 0 ? lookat.getZ() * (-1) : lookat.getZ();
 	float aperture = 0.1;
@@ -139,13 +140,18 @@ int main(int argc, char** argv) {
 	std::ofstream out("RTout.ppm");
 
 	// RENDER:
+	std::cerr << "Rendering...\n";
+
 	std::vector<Bucket> buckets;
 
 	buckets = bucket_segmentation(image_width, image_height);
 
 	std::vector<Color> pixels(image_height * image_width);
+	
+	//THREAD MANAGER:
+	ThreadPool pool(pool.MAX_NUMBER_OF_THREADS);
 
-	std::cerr << "\n\rRendering...\n";
+	auto work = pool.enter_queue([]() {});
 
 	for (int idx = 0; idx < buckets.size(); idx++) {
 

@@ -6,7 +6,7 @@
 
 struct hit_record;
 
-class Material {																				// Abstract Class
+class Material {                                                                                // Abstract Class
 	public:
 		virtual bool scatter(
 			const Ray &ray_in, const hit_record &record, Color &attenuation, Ray &scattered
@@ -34,7 +34,7 @@ class Lambertian : public Material {
 		}
 
 	public:
-		Color albedo;																			// Characterizes the reflectivity of the surface of objects
+		Color albedo;                                                                           // Characterizes the reflectivity of the surface of objects
 
 };
 
@@ -54,8 +54,8 @@ class Metal : public Material {
 		}
 
 	public:
-		Color albedo;																			// Characterizes the reflectivity of the surface of objects
-		float fuzz;																				// Fuzz value
+		Color albedo;                                                                           // Characterizes the reflectivity of the surface of objects
+		float fuzz;                                                                             // Fuzz value
 };
 
 class Glass : public Material {
@@ -74,7 +74,7 @@ class Glass : public Material {
 		}
 
 	public:
-		Color albedo;																			// Characterizes the reflectivity of the surface of objects
+		Color albedo;                                                                           // Characterizes the reflectivity of the surface of objects
 };
 
 class dielectric : public Material {
@@ -106,7 +106,7 @@ class dielectric : public Material {
 		}
 
 	public:
-		float refraction_idx;																	// Index of Refraction
+		float refraction_idx;                                                                   // Index of Refraction
 	
 	private:
 		static float reflectance(double cosine, double ref_idx) {

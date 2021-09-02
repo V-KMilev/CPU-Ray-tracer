@@ -20,14 +20,14 @@ class Hittable_list : public Hittable {
 			const Ray &ray, float distance_min, float distance_max, hit_record &record) const override;
 
 	public:
-		std::vector<shared_ptr<Hittable>> objects;																	// vector of hitted objects
+		std::vector<shared_ptr<Hittable>> objects;                                                                  // vector of hitted objects
 };
 
 bool Hittable_list::hit(const Ray &ray, float distance_min, float distance_max, hit_record &record) const {
 	
-	hit_record temp_record;																							// temporarily hit_record
-	bool hit_anything = false;																						// if anything is hit
-	float closest_so_far = distance_max;																			// closest hit
+	hit_record temp_record;                                                                                         // temporarily hit_record
+	bool hit_anything = false;                                                                                      // if anything is hit
+	float closest_so_far = distance_max;                                                                            // closest hit
 
 	for (const shared_ptr<Hittable>& object : objects) {
 		

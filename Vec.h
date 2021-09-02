@@ -70,8 +70,8 @@ class Vec {
 		float e[3];
 };
 
-using Point = Vec;																	// 3D point
-using Color = Vec;																	// RGB color
+using Point = Vec;                                                                  // 3D point
+using Color = Vec;                                                                  // RGB color
 
 // Vec Utility Functions:
 
