@@ -20,3 +20,4 @@ Color color_gama(Color pixel_color, int samples_per_pixel) {
 	return Color(red, green, blue);
 
 }
+

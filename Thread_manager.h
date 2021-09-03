@@ -7,88 +7,105 @@
 #include <future>
 #include <vector>
 #include <thread>
+#include <atomic>
 #include <queue>
 
+#include "Bucket.h"
+
+void render(const Bucket &bucket);
+
+const int MAX_NUMBER_OF_THREADS = std::thread::hardware_concurrency();
 
 class ThreadPool {
-	public:
-		const int MAX_NUMBER_OF_THREADS = std::thread::hardware_concurrency();
+public:
+	// using Task = std::function<Bucket()>;             // Task is used as void funtion(void)
+
+	explicit ThreadPool(std::size_t num_Threads) {    // explicit so size_t to size_t only
+		start(num_Threads);
+	}
+
+	~ThreadPool() {
+		stop();
+	}
+
+	void enter_queue(const Bucket &b) {                           // Promise to get in future
+
+		{
+			std::unique_lock<std::mutex> lock(my_Event_Mutex);    // Lock to make it single threaded
+			// Add new Task at the end of the queue
+			my_Tasks.emplace(std::move(b));
+			counter++;
+		}
+
+		my_Event_Var.notify_all();                                // Wakeup all threads
+	}
+
+	void master_wait() {
+		std::unique_lock<std::mutex> lock(my_Master_Mutex);                         // Lock to make it single threaded
 		
-		using Task = std::function<void()>;
-
-		explicit ThreadPool(std::size_t num_Threads) {
-			start(num_Threads);
+		while (!done) {
+			my_Release_Master.wait(lock, [=]() { return my_Stopping || done; });    // Wait until there is no break condition
 		}
+		done = false;
+	}
 
-		~ThreadPool() {
-			stop();
-		}
+private:
+	std::vector<std::thread> my_Threads;          // Vector to hold all the threads
 
-		template<class T>
-		auto enter_queue(T task) -> std::future<decltype(task())> {
-			
-			auto wrapper = std::make_shared<std::packaged_task<decltype(task()) ()>>(std::move(task));
-			{
-				std::unique_lock<std::mutex> lock(my_Event_Mutex);
-				my_Tasks.emplace(
+	std::condition_variable my_Event_Var;         // Variable for current thread condition
+	std::condition_variable my_Release_Master;    // Variable for master thread condition
+
+	std::mutex my_Master_Mutex;                   // Master mutex
+	std::mutex my_Event_Mutex;                    // Current event mutex
+
+	bool my_Stopping = false;                     // Boolen for stopped thread
+	bool done = false;                            // Boolen for all Task are done
+
+	std::queue<Bucket> my_Tasks;                  // Queue with the Tasks
+
+	std::atomic<int> counter = {0};               // Task index
+
+	void start(std::size_t num_Threads) {
+
+		for (int i = 0; i < num_Threads; i++) {
+
+			// Add new thread at the end of the vector
+			my_Threads.emplace_back(
 				[=]() {
-					(*wrapper)();
-				});
-			}
+					while (true) {
 
-			my_Event_Var.notify_all();
+						Bucket task;
+						{
+							std::unique_lock<std::mutex> lock(my_Event_Mutex);                   // Lock to make it single threaded
+							my_Event_Var.wait(lock, [=]()
+											  { return my_Stopping || !my_Tasks.empty(); });     // Wait until there is no break condition
 
-			return wrapper->get_future();
-		}
+							if (my_Stopping) { break; }                                          // Leave if current thread is stopped
 
-	private:
-		std::vector<std::thread> my_Threads;
-		
-		std::condition_variable my_Event_Var;
-
-		std::mutex my_Event_Mutex;
-
-		bool my_Stopping = false;
-
-		std::queue<Task> my_Tasks;
-
-		void start(std::size_t num_Threads) {
-
-			for (int i = 0; i < num_Threads; i++) {
-				
-				my_Threads.emplace_back(
-					[=]() {
-						while (true) {
-							
-							Task task;
-
-							{
-								std::unique_lock<std::mutex> lock(my_Event_Mutex);
-
-								my_Event_Var.wait(lock, [=]() {return my_Stopping || !my_Tasks.empty(); });
-
-								if(my_Stopping && my_Tasks.empty()) { break; }
-
-								task = std::move(my_Tasks.front());
-								my_Tasks.pop();
-							}
-
-							task();
+							task = std::move(my_Tasks.front());                                  // Set this Task as the first element
+							my_Tasks.pop();                                                      // Remove first element
 						}
-					});
-			}
+
+						render(task);                                                            // Execute current Task
+						int value = counter.fetch_sub(1) - 1;                                    // Downgrade Task index
+
+						if (value == 0) {
+							done = true;
+							my_Release_Master.notify_one();
+						}
+					}
+				});
 		}
+	}
 
-		void stop() noexcept {
-			{
-				std::unique_lock<std::mutex> lock(my_Event_Mutex);
-				my_Stopping = true;
-			}
+	void stop() noexcept {
 
-			my_Event_Var.notify_all();
+		my_Stopping = true;                          // Set to stopped
 
-			for(std::thread &thread : my_Threads) {
-				thread.join();
-			}
+		my_Event_Var.notify_all();                   // Wakeup all threads so they can stop
+
+		for (std::thread &my_thread : my_Threads) {
+			my_thread.join();                        // Join all threads
 		}
+	}
 };
