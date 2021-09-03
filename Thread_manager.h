@@ -76,18 +76,17 @@ private:
 
 						Bucket task;
 						{
-							std::unique_lock<std::mutex> lock(my_Event_Mutex);                   // Lock to make it single threaded
-							my_Event_Var.wait(lock, [=]()
-											  { return my_Stopping || !my_Tasks.empty(); });     // Wait until there is no break condition
+							std::unique_lock<std::mutex> lock(my_Event_Mutex);                              // Lock to make it single threaded
+							my_Event_Var.wait(lock, [=]() { return my_Stopping || !my_Tasks.empty(); });    // Wait until there is no break condition
 
-							if (my_Stopping) { break; }                                          // Leave if current thread is stopped
+							if (my_Stopping) { break; }                                                     // Leave if current thread is stopped
 
-							task = std::move(my_Tasks.front());                                  // Set this Task as the first element
-							my_Tasks.pop();                                                      // Remove first element
+							task = std::move(my_Tasks.front());                                             // Set this Task as the first element
+							my_Tasks.pop();                                                                 // Remove first element
 						}
 
-						render(task);                                                            // Execute current Task
-						int value = counter.fetch_sub(1) - 1;                                    // Downgrade Task index
+						render(task);                                                                       // Execute current Task
+						int value = counter.fetch_sub(1) - 1;                                               // Downgrade Task index
 
 						if (value == 0) {
 							done = true;
