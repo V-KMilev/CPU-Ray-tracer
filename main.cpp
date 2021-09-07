@@ -27,13 +27,15 @@ Color ray_color(const Ray &ray, const Hittable &world, int depth) {
 	Vec unit_direction = unit_vector(ray.getDirection());
 	float distance = 0.5 * (unit_direction.getY() + 1.0);
 
-	return (1.0 - distance) * Color(1.0, 0.0, 0.0) + distance * Color(0.5, 0.7, 1.0);   // Blend Value
+	return (1.0 - distance) * Color(0.5, 0.0, 1.0) + distance * Color(0.5, 0.7, 1.0);   // Blend Value
 }
 
-void render(const Bucket &bucket) {
+void render(const Bucket &my_bucket) {
 
-	for (int y = bucket.start_y; y < bucket.end_y; y++) {
-		for (int x = bucket.start_x; x < bucket.end_x; x++) {
+	std::cerr << "\nStart Bucket: " << my_bucket.bucket_id;
+
+	for (int y = my_bucket.start_y; y < my_bucket.end_y; y++) {
+		for (int x = my_bucket.start_x; x < my_bucket.end_x; x++) {
 
 			Color pixel_color(0, 0, 0);
 
@@ -49,7 +51,7 @@ void render(const Bucket &bucket) {
 			pixels[image_width * y + x] = color_gama(pixel_color, samples_per_pixel);
 		}
 	}
-	std::cerr << "Rendering...\n";
+	std::cerr << "\nEnd Bucket: " << my_bucket.bucket_id;
 }
 
 void file_write(std::ofstream &out, std::vector<Color> pixels, const int image_width, const int image_height) {
@@ -81,9 +83,11 @@ int main(int argc, char **argv) {
 	// RENDER:
 	ThreadPool pool(MAX_NUMBER_OF_THREADS);
 
-	for(Bucket &bucket : bucket_segmentation(image_width, image_height)) {
+	std::vector<Bucket> my_buckets = bucket_segmentation(image_width, image_height);
 
-		pool.enter_queue(bucket);
+	for(Bucket &my_bucket : my_buckets) {
+		
+		pool.enter_queue(my_bucket);
 	}
 	pool.master_wait();
 

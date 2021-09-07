@@ -12,7 +12,7 @@
 
 #include "Bucket.h"
 
-void render(const Bucket &bucket);
+void render(const Bucket &my_bucket_task);
 
 const int MAX_NUMBER_OF_THREADS = std::thread::hardware_concurrency();
 
@@ -28,12 +28,12 @@ public:
 		stop();
 	}
 
-	void enter_queue(const Bucket &b) {                           // Promise to get in future
+	void enter_queue(const Bucket &my_bucket_task) {              // Promise to get in future
 
 		{
 			std::unique_lock<std::mutex> lock(my_Event_Mutex);    // Lock to make it single threaded
 			// Add new Task at the end of the queue
-			my_Tasks.emplace(std::move(b));
+			my_Tasks.emplace(std::move(my_bucket_task));
 			counter++;
 		}
 
@@ -41,25 +41,25 @@ public:
 	}
 
 	void master_wait() {
-		std::unique_lock<std::mutex> lock(my_Master_Mutex);                         // Lock to make it single threaded
+		std::unique_lock<std::mutex> lock(my_Master_Mutex);                            // Lock to make it single threaded
 		
-		while (!done) {
-			my_Release_Master.wait(lock, [=]() { return my_Stopping || done; });    // Wait until there is no break condition
+		while (!my_done) {
+			my_Release_Master.wait(lock, [=]() { return my_Stopping || my_done; });    // Wait until there is no break condition
 		}
-		done = false;
+		my_done = false;
 	}
 
 private:
 	std::vector<std::thread> my_Threads;          // Vector to hold all the threads
 
 	std::condition_variable my_Event_Var;         // Variable for current thread condition
-	std::condition_variable my_Release_Master;    // Variable for master thread condition
-
-	std::mutex my_Master_Mutex;                   // Master mutex
 	std::mutex my_Event_Mutex;                    // Current event mutex
 
+	std::condition_variable my_Release_Master;    // Variable for master thread condition
+	std::mutex my_Master_Mutex;                   // Master mutex
+
 	bool my_Stopping = false;                     // Boolen for stopped thread
-	bool done = false;                            // Boolen for all Task are done
+	bool my_done = false;                            // Boolen for all Task are done
 
 	std::queue<Bucket> my_Tasks;                  // Queue with the Tasks
 
@@ -69,7 +69,7 @@ private:
 
 		for (int i = 0; i < num_Threads; i++) {
 
-			// Add new thread at the end of the vector
+			// Add new thread with a task at the end of the vector
 			my_Threads.emplace_back(
 				[=]() {
 					while (true) {
@@ -89,7 +89,7 @@ private:
 						int value = counter.fetch_sub(1) - 1;                                               // Downgrade Task index
 
 						if (value == 0) {
-							done = true;
+							my_done = true;
 							my_Release_Master.notify_one();
 						}
 					}

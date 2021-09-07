@@ -10,6 +10,8 @@ struct Bucket {
 	int start_y;                                                                                // Start index y
 	int end_x;                                                                                  // End index x
 	int end_y;                                                                                  // End index y
+
+	int bucket_id;                                                                              // Bucket id
 };
 
 std::vector<Bucket> bucket_segmentation(const int image_width, const int image_height) {
@@ -22,9 +24,7 @@ std::vector<Bucket> bucket_segmentation(const int image_width, const int image_h
 
 	const int numb_of_buckets = { rows * columns };
 
-	std::vector<Bucket> buckets(numb_of_buckets);
-
-	Bucket bucket;
+	std::vector<Bucket> my_buckets(numb_of_buckets);
 
 	int bucket_idx = { 0 };
 	int row_idx = { 0 };
@@ -32,23 +32,25 @@ std::vector<Bucket> bucket_segmentation(const int image_width, const int image_h
 	for (int y = 0; y < image_height - bucket_size; y+=bucket_size, row_idx++) {
 		for (int x = 0; x < image_width - bucket_size; x+=bucket_size) {
 
-			bucket.start_x = x;
-			bucket.start_y = y;
+			my_buckets[bucket_idx].bucket_id = bucket_idx;
+			
+			my_buckets[bucket_idx].start_x = x;
+			my_buckets[bucket_idx].start_y = y;
 
 			if (bucket_idx == row_idx * columns + (columns - 1)) {
-				bucket.end_x = x + bucket_size + leftover_column;
+				my_buckets[bucket_idx].end_x = x + bucket_size + leftover_column;
 			}
 			else {
-				bucket.end_x = x + bucket_size;
+				my_buckets[bucket_idx].end_x = x + bucket_size;
 			}
 
 			if(bucket_idx > numb_of_buckets - columns - 1) {
-				bucket.end_y = y + bucket_size + leftover_row;
+				my_buckets[bucket_idx].end_y = y + bucket_size + leftover_row;
 			} else {
-				bucket.end_y = y + bucket_size;
+				my_buckets[bucket_idx].end_y = y + bucket_size;
 			}
-			buckets[bucket_idx++] = bucket;
+			bucket_idx++;
 		}
 	}
-	return buckets;
+	return my_buckets;
 }
