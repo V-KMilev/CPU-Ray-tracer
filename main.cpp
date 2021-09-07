@@ -51,7 +51,7 @@ void render(const Bucket &my_bucket) {
 			pixels[image_width * y + x] = color_gama(pixel_color, samples_per_pixel);
 		}
 	}
-	std::cerr << "\nEnd Bucket: " << my_bucket.bucket_id;
+	std::cerr << "\nEnd   Bucket: " << my_bucket.bucket_id;
 }
 
 void file_write(std::ofstream &out, std::vector<Color> pixels, const int image_width, const int image_height) {
@@ -86,7 +86,7 @@ int main(int argc, char **argv) {
 	std::vector<Bucket> my_buckets = bucket_segmentation(image_width, image_height);
 
 	for(Bucket &my_bucket : my_buckets) {
-		
+
 		pool.enter_queue(my_bucket);
 	}
 	pool.master_wait();

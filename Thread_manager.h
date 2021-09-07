@@ -52,6 +52,8 @@ public:
 private:
 	std::vector<std::thread> my_Threads;          // Vector to hold all the threads
 
+	std::queue<Bucket> my_Tasks;                  // Queue with the Tasks
+
 	std::condition_variable my_Event_Var;         // Variable for current thread condition
 	std::mutex my_Event_Mutex;                    // Current event mutex
 
@@ -59,9 +61,7 @@ private:
 	std::mutex my_Master_Mutex;                   // Master mutex
 
 	bool my_Stopping = false;                     // Boolen for stopped thread
-	bool my_done = false;                            // Boolen for all Task are done
-
-	std::queue<Bucket> my_Tasks;                  // Queue with the Tasks
+	bool my_done = false;                         // Boolen for all Task are done
 
 	std::atomic<int> counter = {0};               // Task index
 

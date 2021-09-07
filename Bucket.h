@@ -29,9 +29,8 @@ std::vector<Bucket> bucket_segmentation(const int image_width, const int image_h
 	int bucket_idx = { 0 };
 	int row_idx = { 0 };
 
-	for (int y = 0; y < image_height - bucket_size; y+=bucket_size, row_idx++) {
-		for (int x = 0; x < image_width - bucket_size; x+=bucket_size) {
-
+	for (int y = 0; y <= image_height - (bucket_size + leftover_row); y+=bucket_size, row_idx++) {
+		for (int x = 0; x <= image_width - (bucket_size + leftover_column); x+=bucket_size) {
 			my_buckets[bucket_idx].bucket_id = bucket_idx;
 			
 			my_buckets[bucket_idx].start_x = x;
