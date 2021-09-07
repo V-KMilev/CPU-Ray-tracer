@@ -1,9 +1,9 @@
 #pragma once
 
-#include "Hittable.h"
-
 #include <memory>
 #include <vector>
+
+#include "Hittable.h"
 
 using std::shared_ptr;
 using std::make_shared;

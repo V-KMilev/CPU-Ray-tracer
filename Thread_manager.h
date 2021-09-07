@@ -4,10 +4,13 @@
 
 #include <condition_variable>
 #include <functional>
-#include <future>
+
 #include <vector>
+
+#include <future>
 #include <thread>
 #include <atomic>
+
 #include <queue>
 
 #include "Bucket.h"
@@ -21,6 +24,8 @@ public:
 	// using Task = std::function<Bucket()>;             // Task is used as void funtion(void)
 
 	explicit ThreadPool(std::size_t num_Threads) {    // explicit so size_t to size_t only
+
+		std::cerr << "\rStart Thread Pool: " << num_Threads << "\n";
 		start(num_Threads);
 	}
 
@@ -99,12 +104,12 @@ private:
 
 	void stop() noexcept {
 
-		my_Stopping = true;                          // Set to stopped
+		my_Stopping = true;                            // Set to stopped
 
-		my_Event_Var.notify_all();                   // Wakeup all threads so they can stop
+		my_Event_Var.notify_all();                     // Wakeup all threads so they can stop
 
 		for (std::thread &my_thread : my_Threads) {
-			my_thread.join();                        // Join all threads
+			my_thread.join();                          // Join all threads
 		}
 	}
 };

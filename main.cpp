@@ -32,7 +32,7 @@ Color ray_color(const Ray &ray, const Hittable &world, int depth) {
 
 void render(const Bucket &my_bucket) {
 
-	std::cerr << "\nStart Bucket: " << my_bucket.bucket_id;
+	std::cerr << "\n\rStart Bucket: " << my_bucket.bucket_id;
 
 	for (int y = my_bucket.start_y; y < my_bucket.end_y; y++) {
 		for (int x = my_bucket.start_x; x < my_bucket.end_x; x++) {
@@ -51,7 +51,7 @@ void render(const Bucket &my_bucket) {
 			pixels[image_width * y + x] = color_gama(pixel_color, samples_per_pixel);
 		}
 	}
-	std::cerr << "\nEnd   Bucket: " << my_bucket.bucket_id;
+	std::cerr << "\n\rEnd   Bucket: " << my_bucket.bucket_id;
 }
 
 void file_write(std::ofstream &out, std::vector<Color> pixels, const int image_width, const int image_height) {
@@ -69,13 +69,8 @@ void file_write(std::ofstream &out, std::vector<Color> pixels, const int image_w
 
 int main(int argc, char **argv) {
 
-	{
-		time_t now_s = time(0);
-		// convert now to string form
-		char *dt = ctime(&now_s);
-
-		std::cerr << "\rStart time: " << dt;
-	}
+	// START TIME:
+	time_t now_s = time(0);
 
 	// OUT STREAM:
 	std::ofstream out("RTout.ppm");
@@ -94,13 +89,14 @@ int main(int argc, char **argv) {
 	// FILE WRITE:
 	file_write(out, pixels, image_width, image_height);
 
-	{
-		time_t now_e = time(0);
-		// convert now to string form
-		char *dt = ctime(&now_e);
+	// TIME:
+	std::cerr << "\n\n\rStart Time: " << ctime(&now_s);
+	
+	time_t now_e = time(0);
+	std::cerr << "\rEnd   Time: " << ctime(&now_e);
 
-		std::cerr << "\n\rEnd time: " << dt;
-	}
+	double my_time = std::difftime(now_e, now_s);
+	std::cerr << "\rIn    Time: " << my_time / 60.0 << " min.\n";
 
 	return 0;
 }
