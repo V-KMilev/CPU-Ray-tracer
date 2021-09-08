@@ -12,7 +12,8 @@ Color ray_color(const Ray &ray, const Hittable &world, int depth) {
 		return Color(0, 0, 0);                                                          // Set current pixel value to black
 	}
 
-	if (world.hit(ray, 0.001, infinity, record)) {                                      // 0.001 to fix shadow problem
+	// Object hit math
+	if (world.hit(ray, 0.001, infinity, record)) {                                      // 0.001 to fix the shadow problem
 
 		Ray scattered;
 		Color attenuation;
@@ -24,6 +25,7 @@ Color ray_color(const Ray &ray, const Hittable &world, int depth) {
 		return Color(0, 0, 0);
 	}
 
+	// Blend value math
 	Vec unit_direction = unit_vector(ray.getDirection());
 	float distance = 0.5 * (unit_direction.getY() + 1.0);
 
@@ -44,7 +46,7 @@ void render(const Bucket &my_bucket) {
 				float u = (x + random_float()) / (image_width - 1);
 				float v = (y + random_float()) / (image_height - 1);
 
-				Ray ray = camera.get_Ray(u, v);
+				Ray ray = camera.get_ray(u, v);
 
 				pixel_color += ray_color(ray, world, max_depth);
 			}
@@ -71,7 +73,7 @@ int main(int argc, char **argv) {
 
 	// START TIME:
 	time_t now_s = time(0);
-
+ 
 	// OUT STREAM:
 	std::ofstream out("RTout.ppm");
 
@@ -90,13 +92,15 @@ int main(int argc, char **argv) {
 	file_write(out, pixels, image_width, image_height);
 
 	// TIME:
-	std::cerr << "\n\n\rStart Time: " << ctime(&now_s);
-	
-	time_t now_e = time(0);
-	std::cerr << "\rEnd   Time: " << ctime(&now_e);
+	{
+		std::cerr << "\n\n\rStart Time: " << ctime(&now_s);
+		
+		time_t now_e = time(0);
+		std::cerr << "\rEnd   Time: " << ctime(&now_e);
 
-	double my_time = std::difftime(now_e, now_s);
-	std::cerr << "\rIn    Time: " << my_time / 60.0 << " min.\n";
+		double my_time = std::difftime(now_e, now_s);
+		std::cerr << "\rIn    Time: " << my_time / 60.0 << " min.\n";
+	}
 
 	return 0;
 }

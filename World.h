@@ -20,13 +20,13 @@
 // Image: 1.5 in full image width
 // Image: 1 is full image heigth
 const float aspect_ratio = {16.0 / 9.0};                                    // Image: Aspect ratio: resolution
-const int image_width = {1920};                                             // Image: Width
+const int image_width = {300};                                             // Image: Width
 const int image_height = {static_cast<int>(image_width / aspect_ratio)};    // Image: Height
 
 const int samples_per_pixel = {100};                                        // Rays per pixel
 const int max_depth = {10};                                                 // Ray bounce limit per pixel
 
-std::vector<Color> pixels(image_height *image_width);
+std::vector<Color> pixels(image_height * image_width);                      // Image: ready pixels
 
 Hittable_list random_scene() {
 	// World set: +x goes right from the camera
@@ -36,8 +36,8 @@ Hittable_list random_scene() {
 	Hittable_list world;
 
 	shared_ptr<Material> material_sphere_g = make_shared<Lambertian>(Color(0.1, 0.1, 0.1));
-	shared_ptr<Material> material_sphere_c = make_shared<Glass>(Color(0.8, 0.8, 0.8));
 	shared_ptr<Material> material_sphere_m = make_shared<Metal>(Color(0.8, 0.8, 0.8), 0.3);
+	shared_ptr<Material> material_sphere_c = make_shared<Glass>(Color(0.8, 0.8, 0.8));
 	shared_ptr<Material> material_sphere_d = make_shared<dielectric>(1.5);
 
 	for (int i = -5; i < 5; i++) {
@@ -47,11 +47,11 @@ Hittable_list random_scene() {
 
 			Point position(j * 10 * random_float(), 0.0, i * 10 * random_float());
 
-			if (i % 3 == 0 || i % 7 == 0) {
+			if (i % 7 == 0) {
 				world.add(make_shared<Sphere>(
 					position,
 					random_float(0.5, 1.0),
-					material_sphere_l));
+					material_sphere_c));
 			}
 			else if (i % 4 == 0) {
 				world.add(make_shared<Sphere>(
@@ -69,7 +69,7 @@ Hittable_list random_scene() {
 				world.add(make_shared<Sphere>(
 					position,
 					random_float(0.5, 1.0),
-					material_sphere_c));
+					material_sphere_l));
 			}
 		}
 	}
@@ -88,7 +88,7 @@ Camera get_camera(const float aspect_ratio) {
 	// CAMERA: World rules applied
 	Point lookfrom(+20.0, -5.0, +10.0);
 	Point lookat(-0.0, -4.5, -17.0);
-	Vec view_up(+0.0, +1.0, +0.0);                                                      // Its +1 because of the camera's coordinate not the world's
+	Vec view_up(+0.0, +1.0, +0.0);         // Its +1 because of the camera's coordinate not the world's
 
 	float dist_to_focus = lookat.getZ() < 0 ? lookat.getZ() * (-1) : lookat.getZ();
 	float aperture = 0.1;
