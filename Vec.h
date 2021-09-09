@@ -17,10 +17,12 @@ class Vec {
 		// Utility functions to set random Vec
 
 		inline static Vec random() {
+
 			return Vec(random_float(), random_float(), random_float());
 		}
 
 		inline static Vec random(float min, float max) {
+
 			return Vec(random_float(min, max), random_float(min, max), random_float(min, max));
 		}
 
@@ -53,6 +55,7 @@ class Vec {
 		}
 
 		Vec& operator /= (const float number) {
+
 			return *this *= 1 / number;
 		}
 

@@ -15,7 +15,7 @@ struct hit_record {
 
 	inline void set_face_normal(const Ray &r, const Vec &outward_normal) {
 		
-		front_face = dot(r.getDirection(), outward_normal) < 0;                                     // hit_record: if is in the sphere
+		front_face = dot(r.get_direction(), outward_normal) < 0;                                    // hit_record: if is in the sphere
 		normal = front_face ? outward_normal : -outward_normal;                                     // hit_record: sets it to go in the sphere
 	}
 };

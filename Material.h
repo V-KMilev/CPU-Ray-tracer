@@ -6,7 +6,7 @@
 
 struct hit_record;
 
-class Material {                                                                                // Abstract Class
+class Material {    // Abstract Class
 	public:
 		virtual bool scatter(
 			const Ray &ray_in, const hit_record &record, Color &attenuation, Ray &scattered
@@ -27,14 +27,14 @@ class Lambertian : public Material {
 				scatter_direction = record.normal;
 			}
 
-			scattered = Ray(record.point, scatter_direction);
+			scattered = Ray(record.point, scatter_direction, ray_in.get_time());
 			attenuation = albedo;
 			
 			return true;
 		}
 
 	public:
-		Color albedo;                                                                           // Characterizes the reflectivity of the surface of objects
+		Color albedo;    // Characterizes the reflectivity of the surface of objects
 
 };
 
@@ -45,17 +45,17 @@ class Metal : public Material {
 		virtual bool scatter(
 			const Ray &ray_in, const hit_record &record, Color &attenuation, Ray &scattered) const override {
 
-			Vec reflected = reflect(unit_vector(ray_in.getDirection()), record.normal);
-			
-			scattered = Ray(record.point, reflected + fuzz * random_in_unit_sphere());
+			Vec reflected = reflect(unit_vector(ray_in.get_direction()), record.normal);
+
+			scattered = Ray(record.point, reflected + fuzz * random_in_unit_sphere(), ray_in.get_time());
 			attenuation = albedo;
 			
-			return (dot(scattered.getDirection(), record.normal) > 0);
+			return (dot(scattered.get_direction(), record.normal) > 0);
 		}
 
 	public:
-		Color albedo;                                                                           // Characterizes the reflectivity of the surface of objects
-		float fuzz;                                                                             // Fuzz value
+		Color albedo;    // Characterizes the reflectivity of the surface of objects
+		float fuzz;      // Fuzz value
 };
 
 class Glass : public Material {
@@ -65,16 +65,16 @@ class Glass : public Material {
 		virtual bool scatter(
 			const Ray &ray_in, const hit_record &record, Color &attenuation, Ray &scattered) const override {
 
-			Vec reflected = reflect(unit_vector(ray_in.getDirection()), record.normal);
-			
-			scattered = Ray(record.point, reflected);
+			Vec reflected = reflect(unit_vector(ray_in.get_direction()), record.normal);
+
+			scattered = Ray(record.point, reflected, ray_in.get_time());
 			attenuation = albedo;
 			
-			return (dot(scattered.getDirection(), record.normal) > 0);
+			return (dot(scattered.get_direction(), record.normal) > 0);
 		}
 
 	public:
-		Color albedo;                                                                           // Characterizes the reflectivity of the surface of objects
+		Color albedo;    // Characterizes the reflectivity of the surface of objects
 };
 
 class dielectric : public Material {
@@ -87,8 +87,8 @@ class dielectric : public Material {
 			attenuation = Color(1.0, 1.0, 1.0);
 			float refraction_ratio = record.front_face ? (1.0 / refraction_idx) : refraction_idx;
 
-			Vec unit_direction = unit_vector(ray_in.getDirection());
-			
+			Vec unit_direction = unit_vector(ray_in.get_direction());
+
 			float cos_theta = fmin(dot(-unit_direction, record.normal), 1.0);
 			float sin_theta = sqrt(1.0 - cos_theta * cos_theta);
 
@@ -101,13 +101,13 @@ class dielectric : public Material {
 				direction = refract(unit_direction, record.normal, refraction_ratio);
 			}
 
-			scattered = Ray(record.point, direction);
+			scattered = Ray(record.point, direction, ray_in.get_time());
 			return true;
 		}
 
 	public:
-		float refraction_idx;                                                                   // Index of Refraction
-	
+		float refraction_idx;    // Index of Refraction
+
 	private:
 		static float reflectance(double cosine, double ref_idx) {
 			// Use Schlick's approximation for reflectance.

@@ -32,7 +32,6 @@ class ThreadPool {
 		}
 
 		void enter_queue(const Bucket &my_bucket_task) {              // enter task in the queue
-
 			{
 				std::unique_lock<std::mutex> lock(my_Event_Mutex);    // Lock to make it single threaded
 				// Add new Task at the end of the queue
@@ -45,12 +44,12 @@ class ThreadPool {
 
 		void master_wait() {
 			std::unique_lock<std::mutex> lock(my_Master_Mutex);                            // Lock to make it single threaded
-			
-			while (!my_done) {
 
-				my_Release_Master.wait(lock, [=]() { return my_Stopping || my_done; });    // Wait until there is no break condition
+			while (!my_Done) {
+
+				my_Release_Master.wait(lock, [=]() { return my_Stopping || my_Done; });    // Wait until there is no break condition
 			}
-			my_done = false;
+			my_Done = false;
 		}
 
 	private:
@@ -78,7 +77,7 @@ class ThreadPool {
 							int value = counter.fetch_sub(1) - 1;                                               // Downgrade Task index
 
 							if (value == 0) {
-								my_done = true;
+								my_Done = true;
 								my_Release_Master.notify_one();
 							}
 						}
@@ -114,7 +113,7 @@ class ThreadPool {
 		std::mutex my_Master_Mutex;                   // Master mutex
 
 		bool my_Stopping = false;                     // Boolen for stopped thread
-		bool my_done = false;                         // Boolen for all Task are done
+		bool my_Done = false;                         // Boolen for all Task are done
 
 		std::atomic<int> counter = {0};               // Task-in index
 };

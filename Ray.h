@@ -5,16 +5,19 @@
 class Ray {
 	public:
 		Ray() {}
-		Ray(const Point &origin, const Vec &directon) : origin(origin), directon(directon) {}
+		Ray(const Point &origin, const Vec &directon, float time) : origin(origin), directon(directon), time(time) {}
 
-		Point getOrigin() const { return origin; }
-		Vec getDirection() const { return directon; }
+		Point get_origin() const { return origin; }
+		Vec get_direction() const { return directon; }
+		float get_time() const { return time; }
 
 		Point at(float distance) const {
+
 			return origin + distance * directon;
 		}
 
 	public:
-		Point origin;                                                                                           // original start point
-		Vec directon;                                                                                           // directon
+		Point origin;    // Ray: original start point
+		Vec directon;    // Ray: directon
+		float time;      // Ray: time
 };

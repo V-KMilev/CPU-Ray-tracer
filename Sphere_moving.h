@@ -1,26 +1,40 @@
 #pragma once
 
-#include "Hittable.h"
-#include "Vec.h"
+#include "Utility_functions.h"
 
-class Sphere : public Hittable {
+#include "Hittable.h"
+
+class Sphere_moving : public Hittable {
 	public:
-		Sphere() {}
-		Sphere(Point center, float radius, shared_ptr<Material> material) : center(center), radius(radius), material_ptr(material) {};
+		Sphere_moving() {}
+		Sphere_moving(Point center_0, Point center_1, float s_time, float e_time, float radius, shared_ptr<Material> material)
+		: center_0(center_0), center_1(center_1), s_time(s_time), e_time(e_time), radius(radius), material_ptr(material) {};
 
 		virtual bool hit(
-			const Ray &ray, float distance_min, float distance_max, hit_record &record) const override;
+		const Ray &ray, float t_min, float t_max, hit_record &record) const override;
+
+		Point center(float time) const;
 
 	public:
-		Point center;                                                                                           // Sphere: center
-		float radius;                                                                                           // Sphere: radius
-		shared_ptr<Material> material_ptr;                                                                      // Sphere: material
+		Point center_0;                       // Sphere moving: center one
+		Point center_1;                       // Sphere moving: center two
+
+		float s_time;                         // Sphere moving: start time
+		float e_time;                         // Sphere moving: end time
+
+		float radius;                         // Sphere moving: radius
+
+		shared_ptr<Material> material_ptr;    // Sphere moving: material pointer
 };
 
-bool Sphere::hit(const Ray &ray, float distance_min, float distance_max, hit_record &record) const {
+Point Sphere_moving::center(float time) const {
+	return center_0 + ((time - s_time) / (e_time - s_time)) * (center_1 - center_0);
+}
 
-	Vec oc = ray.get_origin() - center;                                                                         // Vec OC: camera to center
-	
+bool Sphere_moving::hit(const Ray &ray, float distance_min, float distance_max, hit_record &record) const {
+
+	Vec oc = ray.get_origin() - center(ray.get_time());                                                         // Vec OC: camera to center
+
 	float a = ray.get_direction().length_squared();                                                             // Discriminant: a: ray.dir * sqrt(length)
 	float half_b = dot(oc, ray.get_direction());                                                                // Discriminant: half b:
 	float c = oc.length_squared() - radius * radius;                                                            // Discriminant: c: OC.sqrt(length) - sqrt(radius)
@@ -40,12 +54,12 @@ bool Sphere::hit(const Ray &ray, float distance_min, float distance_max, hit_rec
 		if (root < distance_min || distance_max < root) { return false; }                                       // Hit: fail: second hit point out of range
 	}
 
+	record.material_ptr = material_ptr;
+	
 	record.distance = root;
 	record.point = ray.at(record.distance);
-	record.normal = (record.point - center) / radius;
-	record.material_ptr = material_ptr;
+	Vec outward_normal = (record.point - center(ray.get_time())) / radius;
 
-	Vec outward_normal = record.normal;
 	record.set_face_normal(ray, outward_normal);
 
 	return true;

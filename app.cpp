@@ -4,21 +4,25 @@
 
 #include "World.h"
 
-Color ray_color(const Ray &ray, const Hittable &world, int depth) {
+Color ray_color(const Ray &ray, const Hittable &world, int depth)
+{
 
 	hit_record record;
 	// If we've exceeded the ray bounce limit, no more light is gathered.
-	if (depth <= 0) {
-		return Color(0, 0, 0);                                                          // Set current pixel value to black
+	if (depth <= 0)
+	{
+		return Color(0, 0, 0); // Set current pixel value to black
 	}
 
 	// Object hit math
-	if (world.hit(ray, 0.001, infinity, record)) {                                      // 0.001 to fix the shadow problem
+	if (world.hit(ray, 0.001, infinity, record))
+	{ // 0.001 to fix the shadow problem
 
 		Ray scattered;
 		Color attenuation;
 
-		if (record.material_ptr->scatter(ray, record, attenuation, scattered)) {
+		if (record.material_ptr->scatter(ray, record, attenuation, scattered))
+		{
 			return attenuation * ray_color(scattered, world, depth - 1);
 		}
 
@@ -26,22 +30,26 @@ Color ray_color(const Ray &ray, const Hittable &world, int depth) {
 	}
 
 	// Blend value math
-	Vec unit_direction = unit_vector(ray.getDirection());
+	Vec unit_direction = unit_vector(ray.get_direction());
 	float distance = 0.5 * (unit_direction.getY() + 1.0);
 
-	return (1.0 - distance) * Color(0.5, 0.0, 1.0) + distance * Color(0.5, 0.7, 1.0);   // Blend Value
+	return (1.0 - distance) * Color(0.5, 0.0, 1.0) + distance * Color(0.5, 0.7, 1.0); // Blend Value
 }
 
-void render(const Bucket &my_bucket) {
+void render(const Bucket &my_bucket)
+{
 
 	std::cerr << "\n\rStart Bucket: " << my_bucket.bucket_id;
 
-	for (int y = my_bucket.start_y; y < my_bucket.end_y; y++) {
-		for (int x = my_bucket.start_x; x < my_bucket.end_x; x++) {
+	for (int y = my_bucket.start_y; y < my_bucket.end_y; y++)
+	{
+		for (int x = my_bucket.start_x; x < my_bucket.end_x; x++)
+		{
 
 			Color pixel_color(0, 0, 0);
 
-			for (int s = 0; s < samples_per_pixel; s++) {
+			for (int s = 0; s < samples_per_pixel; s++)
+			{
 
 				float u = (x + random_float()) / (image_width - 1);
 				float v = (y + random_float()) / (image_height - 1);
@@ -56,11 +64,14 @@ void render(const Bucket &my_bucket) {
 	std::cerr << "\n\rEnd   Bucket: " << my_bucket.bucket_id;
 }
 
-void file_write(std::ofstream &out, std::vector<Color> pixels, const int image_width, const int image_height) {
+void file_write(std::ofstream &out, std::vector<Color> pixels, const int image_width, const int image_height)
+{
 
-	out << "P3\n" << image_width << " " << image_height << "\n255\n";
+	out << "P3\n"
+		<< image_width << " " << image_height << "\n255\n";
 
-	for (int idx = 0; idx < pixels.size(); idx++) {
+	for (int idx = 0; idx < pixels.size(); idx++)
+	{
 		out << static_cast<int>(256 * clamp(pixels[idx].getX(), 0.0, 0.999)) << ' '
 			<< static_cast<int>(256 * clamp(pixels[idx].getY(), 0.0, 0.999)) << ' '
 			<< static_cast<int>(256 * clamp(pixels[idx].getZ(), 0.0, 0.999)) << '\n';
@@ -69,24 +80,26 @@ void file_write(std::ofstream &out, std::vector<Color> pixels, const int image_w
 	out.close();
 }
 
-int main(int argc, char **argv) {
+int main(int argc, char **argv)
+{
 
 	// START TIME:
 	time_t now_s = time(0);
- 
-	// OUT STREAM:
-	std::ofstream out("RTout.ppm");
 
 	// RENDER:
 	ThreadPool pool(MAX_NUMBER_OF_THREADS);
 
 	std::vector<Bucket> my_buckets = bucket_segmentation(image_width, image_height);
 
-	for(Bucket &my_bucket : my_buckets) {
+	for (Bucket &my_bucket : my_buckets)
+	{
 
 		pool.enter_queue(my_bucket);
 	}
 	pool.master_wait();
+
+	// OUT STREAM:
+	std::ofstream out("RTout.ppm");
 
 	// FILE WRITE:
 	file_write(out, pixels, image_width, image_height);
@@ -94,7 +107,7 @@ int main(int argc, char **argv) {
 	// TIME:
 	{
 		std::cerr << "\n\n\rStart Time: " << ctime(&now_s);
-		
+
 		time_t now_e = time(0);
 		std::cerr << "\rEnd   Time: " << ctime(&now_e);
 

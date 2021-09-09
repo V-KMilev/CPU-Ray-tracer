@@ -8,6 +8,7 @@
 #include "Hittable.h"
 #include "Bucket.h"
 
+#include "Sphere_moving.h"
 #include "Material.h"
 #include "Sphere.h"
 
@@ -20,11 +21,11 @@
 // Image: 1.5 in full image width
 // Image: 1 is full image heigth
 const float aspect_ratio = {16.0 / 9.0};                                    // Image: Aspect ratio: resolution
-const int image_width = {300};                                             // Image: Width
+const int image_width = {800};                                              // Image: Width
 const int image_height = {static_cast<int>(image_width / aspect_ratio)};    // Image: Height
 
-const int samples_per_pixel = {100};                                        // Rays per pixel
-const int max_depth = {10};                                                 // Ray bounce limit per pixel
+const int samples_per_pixel = {20};                                         // Rays per pixel
+const int max_depth = {5};                                                  // Ray bounce limit per pixel
 
 std::vector<Color> pixels(image_height * image_width);                      // Image: ready pixels
 
@@ -40,6 +41,7 @@ Hittable_list random_scene() {
 	shared_ptr<Material> material_sphere_c = make_shared<Glass>(Color(0.8, 0.8, 0.8));
 	shared_ptr<Material> material_sphere_d = make_shared<dielectric>(1.5);
 
+
 	for (int i = -5; i < 5; i++) {
 		for (int j = -5; j < 5; j++) {
 
@@ -47,36 +49,45 @@ Hittable_list random_scene() {
 
 			Point position(j * 10 * random_float(), 0.0, i * 10 * random_float());
 
-			if (i % 7 == 0) {
-				world.add(make_shared<Sphere>(
+			if(i % 3 == 0) {
+				world.add(make_shared<Sphere_moving>(
+					position + Point(0, random_float(-0.5, -1.0), 0),
 					position,
-					random_float(0.5, 1.0),
-					material_sphere_c));
-			}
-			else if (i % 4 == 0) {
-				world.add(make_shared<Sphere>(
-					position,
-					random_float(0.5, 1.0),
-					material_sphere_m));
-			}
-			else if (i % 5 == 0) {
-				world.add(make_shared<Sphere>(
-					position,
-					random_float(0.5, 1.0),
-					material_sphere_d));
-			}
-			else {
-				world.add(make_shared<Sphere>(
-					position,
+					0.0,
+					1.0,
 					random_float(0.5, 1.0),
 					material_sphere_l));
 			}
+			// else if (i % 7 == 0) {
+			// 	world.add(make_shared<Sphere>(
+			// 		position,
+			// 		random_float(0.5, 1.0),
+			// 		material_sphere_c));
+			// }
+			// else if (i % 4 == 0) {
+			// 	world.add(make_shared<Sphere>(
+			// 		position,
+			// 		random_float(0.5, 1.0),
+			// 		material_sphere_m));
+			// }
+			// else if (i % 5 == 0) {
+			// 	world.add(make_shared<Sphere>(
+			// 		position,
+			// 		random_float(0.5, 1.0),
+			// 		material_sphere_d));
+			// }
+			// else {
+			// 	world.add(make_shared<Sphere>(
+			// 		position,
+			// 		random_float(0.5, 1.0),
+			// 		material_sphere_l));
+			// }
 		}
 	}
 
-	world.add(make_shared<Sphere>(Point(-10.0, -3.5, -17.0), 3.5, material_sphere_c));
-	world.add(make_shared<Sphere>(Point(-0.0,  -3.5, -20.0), 3.5, material_sphere_m));
-	world.add(make_shared<Sphere>(Point(+10.0, -3.5, -17.0), 3.5, material_sphere_d));
+	world.add(make_shared<Sphere>(Point(-10.0, -2.5, -17.0), 3.5, material_sphere_c));
+	world.add(make_shared<Sphere>(Point(-0.0,  -2.5, -20.0), 3.5, material_sphere_m));
+	world.add(make_shared<Sphere>(Point(+10.0, -2.5, -17.0), 3.5, material_sphere_d));
 
 	world.add(make_shared<Sphere>(Point(0.0, 1000.5, -1.0), 1000.0, material_sphere_g));
 
@@ -93,7 +104,7 @@ Camera get_camera(const float aspect_ratio) {
 	float dist_to_focus = lookat.getZ() < 0 ? lookat.getZ() * (-1) : lookat.getZ();
 	float aperture = 0.1;
 
-	return Camera(lookfrom, lookat, view_up, 37.0, aspect_ratio, aperture, dist_to_focus);
+	return Camera(lookfrom, lookat, view_up, 37.0, aspect_ratio, aperture, dist_to_focus, 0.0, 1.0);
 }
 
 // WORLD:
