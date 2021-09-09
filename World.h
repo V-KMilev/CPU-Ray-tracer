@@ -55,33 +55,33 @@ Hittable_list random_scene() {
 					position,
 					0.0,
 					1.0,
-					random_float(0.5, 1.0),
+					1.0,
 					material_sphere_l));
 			}
-			// else if (i % 7 == 0) {
-			// 	world.add(make_shared<Sphere>(
-			// 		position,
-			// 		random_float(0.5, 1.0),
-			// 		material_sphere_c));
-			// }
-			// else if (i % 4 == 0) {
-			// 	world.add(make_shared<Sphere>(
-			// 		position,
-			// 		random_float(0.5, 1.0),
-			// 		material_sphere_m));
-			// }
-			// else if (i % 5 == 0) {
-			// 	world.add(make_shared<Sphere>(
-			// 		position,
-			// 		random_float(0.5, 1.0),
-			// 		material_sphere_d));
-			// }
-			// else {
-			// 	world.add(make_shared<Sphere>(
-			// 		position,
-			// 		random_float(0.5, 1.0),
-			// 		material_sphere_l));
-			// }
+			else if (i % 7 == 0) {
+				world.add(make_shared<Sphere>(
+					position,
+					1.0,
+					material_sphere_c));
+			}
+			else if (i % 4 == 0) {
+				world.add(make_shared<Sphere>(
+					position,
+					1.0,
+					material_sphere_m));
+			}
+			else if (i % 5 == 0) {
+				world.add(make_shared<Sphere>(
+					position,
+					1.0,
+					material_sphere_d));
+			}
+			else {
+				world.add(make_shared<Sphere>(
+					position,
+					1.0,
+					material_sphere_l));
+			}
 		}
 	}
 

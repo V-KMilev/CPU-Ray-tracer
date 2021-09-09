@@ -16,14 +16,14 @@ class Camera {
 			float aperture,                                                                             // Camera: aperture
 			float focus_dist,                                                                           // Camera: focus dist : focal length
 
-			float s_time,                                                                               // Camera; start time
+			float s_time ,                                                                              // Camera; start time
 			float e_time                                                                                // Camera: end time
 		) {
 
 			float degrees = degrees_to_radians(fov);                                                    // Camera: fov degrees
-			float width = tan(degrees/2);                                                              // Camera: width from origin side01 side02
+			float width = tan(degrees/2);                                                               // Camera: width from origin side01 side02
 			
-			float viewport_height = 2.0 * width;                                                       // Camera: viewport height
+			float viewport_height = 2.0 * width;                                                        // Camera: viewport height
 			float viewport_width = aspect_ratio * viewport_height;                                      // Camera: viewport width
 			
 			// Camera plate
@@ -40,8 +40,8 @@ class Camera {
 
 			lens_radius = aperture / 2;                                                                 // Camera: light input set
 
-			s_time = this-> s_time;
-			e_time = this-> e_time;
+			this-> s_time = s_time;
+			this-> e_time = e_time;
 		}
 
 		Ray get_ray(float image_u, float image_v) const {
