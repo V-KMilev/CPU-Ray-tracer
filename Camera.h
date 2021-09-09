@@ -16,7 +16,7 @@ class Camera {
 			float aperture,                                                                             // Camera: aperture
 			float focus_dist,                                                                           // Camera: focus dist : focal length
 
-			float s_time ,                                                                              // Camera; start time
+			float s_time,                                                                               // Camera; start time
 			float e_time                                                                                // Camera: end time
 		) {
 
