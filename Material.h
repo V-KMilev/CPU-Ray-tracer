@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Utility_functions.h"
+#include "Texture.h"
 #include "Ray.h"
 #include "Vec.h"
 
@@ -15,7 +16,8 @@ class Material {    // Abstract Class
 
 class Lambertian : public Material {
 	public:
-		Lambertian(const Color &albedo) : albedo(albedo) {}
+		Lambertian(const Color &albedo) : albedo(make_shared<solid_color>(albedo)) {}
+		Lambertian(shared_ptr<Texture> albedo) : albedo(albedo) {}
 
 		virtual bool scatter(
 			const Ray &ray_in, const hit_record &record, Color &attenuation, Ray &scattered) const override {
@@ -28,13 +30,13 @@ class Lambertian : public Material {
 			}
 
 			scattered = Ray(record.point, scatter_direction, ray_in.get_time());
-			attenuation = albedo;
+			attenuation = albedo->value(record.u, record.v, record.point);
 			
 			return true;
 		}
 
 	public:
-		Color albedo;    // Characterizes the reflectivity of the surface of objects
+		shared_ptr<Texture> albedo;    // Characterizes the reflectivity of the surface of objects
 
 };
 

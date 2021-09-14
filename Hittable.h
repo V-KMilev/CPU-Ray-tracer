@@ -1,26 +1,31 @@
 #pragma once
 
+#include "AABB.h"
 #include "Ray.h"
 
 class Material;
 
 struct hit_record {
-	float distance;                                                                                 // hit_record: distance
-	Point point;                                                                                    // hit_record: hit point
-	Vec normal;                                                                                     // hit_record: parale
+	float distance;                                                 // hit_record: distance
+	float u;
+	float v;
+	Point point;                                                    // hit_record: hit point
+	Vec normal;                                                     // hit_record: parale
 	
-	shared_ptr<Material> material_ptr;                                                              // hit_record: material hitted
+	shared_ptr<Material> material_ptr;                              // hit_record: material hitted
 
-	bool front_face;                                                                                // hit_record: parallel to the tangent
+	bool front_face;                                                // hit_record: parallel to the tangent
 
 	inline void set_face_normal(const Ray &r, const Vec &outward_normal) {
 		
-		front_face = dot(r.get_direction(), outward_normal) < 0;                                    // hit_record: if is in the sphere
-		normal = front_face ? outward_normal : -outward_normal;                                     // hit_record: sets it to go in the sphere
+		front_face = dot(r.get_direction(), outward_normal) < 0;    // hit_record: if is in the sphere
+		normal = front_face ? outward_normal : -outward_normal;     // hit_record: sets it to go in the sphere
 	}
 };
 
-class Hittable {                                                                                    // Interface
+class Hittable {    // Interface
 	public:
 		virtual bool hit(const Ray &ray, float distance_min, float distance_max, hit_record &record) const = 0;
+
+		virtual bool bounding_box(float s_time, float e_time, AABB &output_box) const = 0;
 };

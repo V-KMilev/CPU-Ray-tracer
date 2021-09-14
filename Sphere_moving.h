@@ -13,6 +13,8 @@ class Sphere_moving : public Hittable {
 		virtual bool hit(
 		const Ray &ray, float t_min, float t_max, hit_record &record) const override;
 
+		virtual bool bounding_box(float s_time, float e_time, AABB &output_box) const override;
+
 		Point center(float time) const;
 
 	public:
@@ -62,5 +64,20 @@ bool Sphere_moving::hit(const Ray &ray, float distance_min, float distance_max, 
 
 	record.set_face_normal(ray, outward_normal);
 
+	return true;
+}
+
+bool Sphere_moving::bounding_box(float s_time, float e_time, AABB& output_box) const {
+	
+	AABB box_0(
+		center(s_time) - Vec(radius, radius, radius),
+		center(s_time) + Vec(radius, radius, radius));
+	
+	AABB box_1(
+		center(e_time) - Vec(radius, radius, radius),
+		center(e_time) + Vec(radius, radius, radius));
+
+	output_box = surrounding_box(box_0, box_1);
+	
 	return true;
 }

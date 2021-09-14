@@ -46,7 +46,6 @@ class ThreadPool {
 			std::unique_lock<std::mutex> lock(my_Master_Mutex);                            // Lock to make it single threaded
 
 			while (!my_Done) {
-
 				my_Release_Master.wait(lock, [=]() { return my_Stopping || my_Done; });    // Wait until there is no break condition
 			}
 			my_Done = false;
@@ -60,7 +59,7 @@ class ThreadPool {
 				// Add new thread with a task at the end of the vector
 				my_Threads.emplace_back(
 					[=]() {
-						while (true) {
+						for(;;) {
 
 							Bucket task;
 							{
@@ -93,7 +92,6 @@ class ThreadPool {
 			my_Event_Var.notify_all();                     // Wakeup all threads so they can stop
 
 			for (std::thread &my_thread : my_Threads) {
-
 				my_thread.join();                          // Join all threads
 			}
 		}
@@ -107,9 +105,9 @@ class ThreadPool {
 		std::queue<Bucket> my_Tasks;                  // Queue with the Tasks
 
 		std::condition_variable my_Event_Var;         // Variable for current thread condition
-		std::mutex my_Event_Mutex;                    // Current event mutex
-
 		std::condition_variable my_Release_Master;    // Variable for master thread condition
+
+		std::mutex my_Event_Mutex;                    // Current event mutex
 		std::mutex my_Master_Mutex;                   // Master mutex
 
 		bool my_Stopping = false;                     // Boolen for stopped thread

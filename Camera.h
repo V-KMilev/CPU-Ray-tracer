@@ -58,14 +58,14 @@ class Camera {
 		}
 
 	private:
-		Vec u, v, w;                                                                                        // Camera: x, y, z;
-		Vec vertical;                                                                                       // Camera: vertical
-		Vec horizontal;                                                                                     // Camera: horizontal
+		Vec u, v, w;                // Camera: x, y, z;
+		Vec vertical;               // Camera: vertical
+		Vec horizontal;             // Camera: horizontal
 		
-		Point origin;                                                                                       // Camera: original point
-		Point lower_left_corner;                                                                            // Camera: lower left corner
+		Point origin;               // Camera: original point
+		Point lower_left_corner;    // Camera: lower left corner
 
-		float lens_radius;                                                                                  // Camera: lens radius
-		float s_time;                                                                                       // Camera: open time
-		float e_time;                                                                                       // Camera: close time
+		float lens_radius;          // Camera: lens radius
+		float s_time;               // Camera: open time
+		float e_time;               // Camera: close time
 };
