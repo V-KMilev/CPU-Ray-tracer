@@ -25,7 +25,7 @@ class Sphere : public Hittable {
 			float theta = acos(-point.getY());
 			float phi = atan2(-point.getZ(), point.getX()) + pi;
 
-			u = phi / (2*pi);
+			u = phi / (2 * pi);
 			v = theta / pi;
 		}
 

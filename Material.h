@@ -16,7 +16,7 @@ class Material {    // Abstract Class
 
 class Lambertian : public Material {
 	public:
-		Lambertian(const Color &albedo) : albedo(make_shared<solid_color>(albedo)) {}
+		Lambertian(const Color &albedo) : albedo(make_shared<Solid_Color>(albedo)) {}
 		Lambertian(shared_ptr<Texture> albedo) : albedo(albedo) {}
 
 		virtual bool scatter(
