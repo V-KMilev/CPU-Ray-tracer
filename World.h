@@ -51,7 +51,17 @@ Hittable_list random_scene() {
 	shared_ptr<Material> material_sphere_c = make_shared<Glass>(Color(0.8, 0.8, 0.8));
 	shared_ptr<Material> material_sphere_d = make_shared<dielectric>(1.5);
 
+	world.add(make_shared<Sphere>(Point(0.0, 1000.5, -1.0), 1000.0, material_sphere_g));
 
+	world.add(make_shared<Sphere>(Point(-10.0, -2.5, -17.0), 3.5, material_sphere_c));
+	world.add(make_shared<Sphere>(Point(-0.0,  -2.5, -20.0), 3.5, material_sphere_m));
+	world.add(make_shared<Sphere_moving>(
+		Point(+10.0, -2.5, -17.0) + Point(0, random_float(-0.5, -4.0), 0),
+		Point(+10.0, -2.5, -17.0),
+		0.0, 1.0,
+		3.5,
+		material_sphere_d)
+	);
 
 	for (int i = -5; i < 5; i++) {
 		for (int j = -5; j < 5; j++) {
@@ -96,17 +106,6 @@ Hittable_list random_scene() {
 		}
 	}
 
-	world.add(make_shared<Sphere>(Point(-10.0, -2.5, -17.0), 3.5, material_sphere_c));
-	world.add(make_shared<Sphere>(Point(-0.0,  -2.5, -20.0), 3.5, material_sphere_m));
-	world.add(make_shared<Sphere_moving>(
-		Point(+10.0, -2.5, -17.0) + Point(0, random_float(-0.5, -4.0), 0),
-		Point(+10.0, -2.5, -17.0),
-		0.0, 1.0,
-		3.5,
-		material_sphere_d));
-
-	world.add(make_shared<Sphere>(Point(0.0, 1000.5, -1.0), 1000.0, material_sphere_g));
-
 	return world;
 }
 
@@ -115,7 +114,7 @@ Camera get_camera(const float aspect_ratio) {
 	// CAMERA: World rules applied
 	Point lookfrom(+20.0, -5.0, +10.0);
 	Point lookat(-0.0, -4.5, -17.0);
-	Vec view_up(+0.0, +1.0, +0.0);         // Its +1 because of the camera's coordinate not the world's
+	Vec view_up(+0.0, +1.0, +0.0);    // Its +1 because of the camera's coordinate not the world's
 
 	float dist_to_focus = lookat.getZ() < 0 ? lookat.getZ() * (-1) : lookat.getZ();
 	float aperture = 0.1;

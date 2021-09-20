@@ -1,14 +1,13 @@
 #pragma once
 
-#include "AABB.h"
 #include "Ray.h"
 
 class Material;
 
 struct hit_record {
 	float distance;                                                 // hit_record: distance
-	float u;
-	float v;
+	float u;                                                        // hit_record: unwrapping u
+	float v;                                                        // hit_record: uvwrapping v
 	Point point;                                                    // hit_record: hit point
 	Vec normal;                                                     // hit_record: parale
 	
@@ -26,6 +25,4 @@ struct hit_record {
 class Hittable {    // Interface
 	public:
 		virtual bool hit(const Ray &ray, float distance_min, float distance_max, hit_record &record) const = 0;
-
-		virtual bool bounding_box(float s_time, float e_time, AABB &output_box) const = 0;
 };

@@ -11,8 +11,6 @@ class Sphere : public Hittable {
 		virtual bool hit(
 			const Ray &ray, float distance_min, float distance_max, hit_record &record) const override;
 		
-		virtual bool bounding_box(float s_time, float e_time, AABB& output_box) const override;
-
 	private: 
 		static void get_sphere_uv(const Point &point, float &u, float &v) {
 			// point: a given point on the sphere of radius one, centered at the origin.
@@ -58,23 +56,14 @@ bool Sphere::hit(const Ray &ray, float distance_min, float distance_max, hit_rec
 		if (root < distance_min || distance_max < root) { return false; }                                       // Hit: fail: second hit point out of range
 	}
 
-	record.distance = root;
-	record.point = ray.at(record.distance);
-	record.normal = (record.point - center) / radius;
-	record.material_ptr = material_ptr;
+	record.distance = root;                              // set -> override of the distance
+	record.point = ray.at(record.distance);              // set -> override of the point
+	record.normal = (record.point - center) / radius;    // set -> override of the normal
+	record.material_ptr = material_ptr;                  // set -> override of the material
 
-	Vec outward_normal = record.normal;
-	record.set_face_normal(ray, outward_normal);
-	get_sphere_uv(outward_normal, record.u, record.v);
+	Vec outward_normal = record.normal;                  // set -> override of the OWN
+	record.set_face_normal(ray, outward_normal);         // set -> override of the SFN
+	get_sphere_uv(outward_normal, record.u, record.v);   // set -> override of the UV
 
-	return true;
-}
-
-bool Sphere::bounding_box(float s_time, float e_time, AABB &output_box) const {
-	
-	output_box = AABB(
-		center - Vec(radius, radius, radius),
-		center + Vec(radius, radius, radius));
-	
 	return true;
 }

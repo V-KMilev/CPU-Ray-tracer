@@ -13,8 +13,6 @@ class Sphere_moving : public Hittable {
 		virtual bool hit(
 		const Ray &ray, float t_min, float t_max, hit_record &record) const override;
 
-		virtual bool bounding_box(float s_time, float e_time, AABB &output_box) const override;
-
 		Point center(float time) const;
 
 	public:
@@ -56,28 +54,12 @@ bool Sphere_moving::hit(const Ray &ray, float distance_min, float distance_max, 
 		if (root < distance_min || distance_max < root) { return false; }                                       // Hit: fail: second hit point out of range
 	}
 
-	record.material_ptr = material_ptr;
-	
-	record.distance = root;
-	record.point = ray.at(record.distance);
-	Vec outward_normal = (record.point - center(ray.get_time())) / radius;
+	record.distance = root;                                                   // set -> override of the distance
+	record.point = ray.at(record.distance);                                   // set -> override of the point
+	record.material_ptr = material_ptr;                                       // set -> override of the material
 
-	record.set_face_normal(ray, outward_normal);
+	Vec outward_normal = (record.point - center(ray.get_time())) / radius;    // set -> override of the OWN
+	record.set_face_normal(ray, outward_normal);                              // set -> override of the SFN
 
-	return true;
-}
-
-bool Sphere_moving::bounding_box(float s_time, float e_time, AABB& output_box) const {
-	
-	AABB box_0(
-		center(s_time) - Vec(radius, radius, radius),
-		center(s_time) + Vec(radius, radius, radius));
-	
-	AABB box_1(
-		center(e_time) - Vec(radius, radius, radius),
-		center(e_time) + Vec(radius, radius, radius));
-
-	output_box = surrounding_box(box_0, box_1);
-	
 	return true;
 }

@@ -19,8 +19,6 @@ class Hittable_list : public Hittable {
 		virtual bool hit(
 			const Ray &ray, float distance_min, float distance_max, hit_record &record) const override;
 
-		virtual bool bounding_box(float s_time, float e_time, AABB &output_box) const override;
-
 	public:
 		std::vector<shared_ptr<Hittable>> objects;                                                                  // vector of hitted objects
 };
@@ -42,21 +40,4 @@ bool Hittable_list::hit(const Ray &ray, float distance_min, float distance_max, 
 	}
 
 	return hit_anything;
-}
-
-bool Hittable_list::bounding_box(float s_time, float e_time, AABB &output_box) const {
-	if (objects.empty()) return false;
-
-	AABB temp_box;
-	bool first_box = true;
-
-	for (const shared_ptr<Hittable> &object : objects) {
-		
-		if (!object->bounding_box(s_time, e_time, temp_box)) { return false; }
-		
-		output_box = first_box ? temp_box : surrounding_box(output_box, temp_box);
-		first_box = false;
-	}
-
-	return true;
 }

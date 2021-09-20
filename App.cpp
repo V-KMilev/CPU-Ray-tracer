@@ -9,11 +9,11 @@ Color ray_color(const Ray &ray, const Hittable &world, int depth) {
 	hit_record record;
 	// If we've exceeded the ray bounce limit, no more light is gathered.
 	if (depth <= 0) {
-		return Color(0, 0, 0); // Set current pixel value to black
+		return Color(0, 0, 0);    // Set current pixel value to black
 	}
 
 	// Object hit math
-	if (world.hit(ray, 0.001, infinity, record)) { // 0.001 to fix the shadow problem
+	if (world.hit(ray, 0.001, infinity, record)) {    // 0.001 to fix the shadow problem
 
 		Ray scattered;
 		Color attenuation;
@@ -29,7 +29,7 @@ Color ray_color(const Ray &ray, const Hittable &world, int depth) {
 	Vec unit_direction = unit_vector(ray.get_direction());
 	float distance = 0.5 * (unit_direction.getY() + 1.0);
 
-	return (1.0 - distance) * Color(0.5, 0.0, 1.0) + distance * Color(0.5, 0.7, 1.0); // Blend Value
+	return (1.0 - distance) * Color(0.5, 0.0, 1.0) + distance * Color(0.5, 0.7, 1.0);    // Blend Value
 }
 
 void render(const Bucket &my_bucket) {

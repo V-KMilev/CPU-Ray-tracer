@@ -31,13 +31,12 @@ class Lambertian : public Material {
 
 			scattered = Ray(record.point, scatter_direction, ray_in.get_time());
 			attenuation = albedo->value(record.u, record.v, record.point);
-			
+
 			return true;
 		}
 
 	public:
 		shared_ptr<Texture> albedo;    // Characterizes the reflectivity of the surface of objects
-
 };
 
 class Metal : public Material {
