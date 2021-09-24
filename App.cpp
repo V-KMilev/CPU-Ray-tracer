@@ -29,7 +29,8 @@ Color ray_color(const Ray &ray, const Hittable &world, int depth) {
 	Vec unit_direction = unit_vector(ray.get_direction());
 	float distance = 0.5 * (unit_direction.getY() + 1.0);
 
-	return (1.0 - distance) * Color(0.5, 0.0, 1.0) + distance * Color(0.5, 0.7, 1.0);    // Blend Value
+	// return (1.0 - distance) * Color(0.5, 0.0, 1.0) + distance * Color(0.5, 0.7, 1.0);    // Blend Value
+	return (1.0 - distance) * Color(1.0, 1.0, 1.0) + distance * Color(0.5, 0.7, 1.0);   // Blend Value
 }
 
 void render(const Bucket &my_bucket) {
