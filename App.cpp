@@ -4,7 +4,7 @@
 
 #include "World.h"
 
-Color ray_color(const Ray &ray, const Hittable &world, int depth) {
+Color ray_color(const Ray &ray, const Color &background, const Hittable &world, int depth) {
 
 	hit_record record;
 	// If we've exceeded the ray bounce limit, no more light is gathered.
@@ -12,25 +12,20 @@ Color ray_color(const Ray &ray, const Hittable &world, int depth) {
 		return Color(0, 0, 0);    // Set current pixel value to black
 	}
 
-	// Object hit math
-	if (world.hit(ray, 0.001, infinity, record)) {    // 0.001 to fix the shadow problem
-
-		Ray scattered;
-		Color attenuation;
-
-		if (record.material_ptr->scatter(ray, record, attenuation, scattered)) {
-			return attenuation * ray_color(scattered, world, depth - 1);
-		}
-
-		return Color(0, 0, 0);
+ // If the ray hits nothing, return the background color.
+	if (!world.hit(ray, 0.001, infinity, record)) {    // 0.001 to fix the shadow problem
+		return background;
 	}
 
-	// Blend value math
-	Vec unit_direction = unit_vector(ray.get_direction());
-	float distance = 0.5 * (unit_direction.getY() + 1.0);
+	Ray scattered;
+	Color attenuation;
+	Color emitted = record.material_ptr->emitted(record.u, record.v, record.point);
 
-	// return (1.0 - distance) * Color(0.5, 0.0, 1.0) + distance * Color(0.5, 0.7, 1.0);    // Blend Value
-	return (1.0 - distance) * Color(1.0, 1.0, 1.0) + distance * Color(0.5, 0.7, 1.0);   // Blend Value
+	if (!record.material_ptr->scatter(ray, record, attenuation, scattered)) {
+		return emitted;
+	}
+
+	return emitted + attenuation * ray_color(scattered, background, world, depth-1);
 }
 
 void render(const Bucket &my_bucket) {
@@ -49,7 +44,7 @@ void render(const Bucket &my_bucket) {
 
 				Ray ray = camera.get_ray(u, v);
 
-				pixel_color += ray_color(ray, world, max_depth);
+				pixel_color += ray_color(ray, background, world, max_depth);
 			}
 			pixels[image_width * y + x] = color_gama(pixel_color, samples_per_pixel);
 		}

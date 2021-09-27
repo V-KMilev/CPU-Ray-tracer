@@ -1,7 +1,9 @@
 #pragma once
 
 #include "Utility_functions.h"
+
 #include "Texture.h"
+
 #include "Ray.h"
 #include "Vec.h"
 
@@ -12,6 +14,10 @@ class Material {    // Abstract Class
 		virtual bool scatter(
 			const Ray &ray_in, const hit_record &record, Color &attenuation, Ray &scattered
 		) const = 0;
+
+		virtual Color emitted(float u, float v, const Point &point) const {
+			return Color(0,0,0);
+		}
 };
 
 class Lambertian : public Material {
@@ -78,9 +84,9 @@ class Glass : public Material {
 		Color albedo;    // Characterizes the reflectivity of the surface of objects
 };
 
-class dielectric : public Material {
+class Dielectric : public Material {
 	public:
-		dielectric(float index_of_refraction) : refraction_idx(index_of_refraction) {}
+		Dielectric(float index_of_refraction) : refraction_idx(index_of_refraction) {}
 
 		virtual bool scatter(
 			const Ray &ray_in, const hit_record &record, Color &attenuation, Ray &scattered) const override {
@@ -116,4 +122,22 @@ class dielectric : public Material {
 			r0 = r0 * r0;
 			return r0 + (1 - r0) * pow((1 - cosine),5);
 		}
+};
+
+class Diffuse_light : public Material  {
+	public:
+		Diffuse_light(shared_ptr<Texture> texture) : emit(texture) {}
+		Diffuse_light(Color color) : emit(make_shared<Solid_Color>(color)) {}
+
+		virtual bool scatter(
+			const Ray &ray_in, const hit_record &record, Color &attenuation, Ray &scattered) const override {
+			return false;
+		}
+
+		virtual Color emitted(float u, float v, const Point &point) const override {    //emitted
+			return emit->value(u, v, point);
+		}
+
+	public:
+		shared_ptr<Texture> emit;
 };

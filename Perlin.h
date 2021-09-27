@@ -35,8 +35,9 @@ class Perlin {
 		static int* perlin_generate_perm() {
 			int* perm = new int[point_count];
 
-			for (int i = 0; i < Perlin::point_count; i++)
+			for (int i = 0; i < Perlin::point_count; i++) {
 				perm[i] = i;
+			}
 
 			permute(perm, point_count);
 
