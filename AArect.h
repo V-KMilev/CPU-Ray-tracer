@@ -45,3 +45,4 @@ bool xy_rect::hit(const Ray &ray, float distance_min, float distance_max, hit_re
 
 	return true;
 }
+	

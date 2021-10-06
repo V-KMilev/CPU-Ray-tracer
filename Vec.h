@@ -142,20 +142,6 @@ Vec random_unit_vector() {
 	return unit_vector(random_in_unit_sphere());
 }
 
-// Utility functions for materials
-Vec reflect(const Vec &v, const Vec &n) {
-	return v - 2 * dot(v,n) * n;
-}
-
-Vec refract(const Vec &uv, const Vec &n, float etai_over_etat) {
-	
-	float cos_theta = fmin(dot(-uv, n), 1.0);
-	Vec r_out_perp =  etai_over_etat * (uv + cos_theta * n);
-	Vec r_out_parallel = -sqrt(fabs(1.0 - r_out_perp.length_squared())) * n;
-	
-	return r_out_perp + r_out_parallel;
-}
-
 // Camera disk offset math
 Vec random_in_unit_disk() {
 	

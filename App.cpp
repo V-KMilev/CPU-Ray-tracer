@@ -12,7 +12,7 @@ Color ray_color(const Ray &ray, const Color &background, const Hittable &world, 
 		return Color(0, 0, 0);    // Set current pixel value to black
 	}
 
- // If the ray hits nothing, return the background color.
+	// If the ray hits nothing, return the background color.
 	if (!world.hit(ray, 0.001, infinity, record)) {    // 0.001 to fix the shadow problem
 		return background;
 	}
@@ -30,7 +30,7 @@ Color ray_color(const Ray &ray, const Color &background, const Hittable &world, 
 
 void render(const Bucket &my_bucket) {
 
-	std::cerr << "\n\rStart Bucket: " << std::this_thread::get_id() << " -> " << my_bucket.bucket_id;
+	std::cerr << "\n\rStart Bucket: " << std::this_thread::get_id() << " -> + " << my_bucket.bucket_id;
 
 	for (int y = my_bucket.start_y; y < my_bucket.end_y; y++) {
 		for (int x = my_bucket.start_x; x < my_bucket.end_x; x++) {
@@ -49,7 +49,8 @@ void render(const Bucket &my_bucket) {
 			pixels[image_width * y + x] = color_gama(pixel_color, samples_per_pixel);
 		}
 	}
-	std::cerr << "\n\rEnd   Bucket: " << std::this_thread::get_id() << " -> " << my_bucket.bucket_id;
+
+	std::cerr << "\n\rEnd   Bucket: " << std::this_thread::get_id() << " -> - " << my_bucket.bucket_id;
 }
 
 void file_write(std::ofstream &out, std::vector<Color> pixels, const int image_width, const int image_height) {
@@ -94,7 +95,7 @@ int main(int argc, char **argv) {
 		time_t now_e = time(0);
 		std::cerr << "\rEnd   Time: " << ctime(&now_e);
 
-		double my_time = std::difftime(now_e, now_s);
+		float my_time = std::difftime(now_e, now_s);
 		std::cerr << "\rIn    Time: " << my_time / 60.0 << " min.\n";
 	}
 

@@ -45,6 +45,7 @@ class Checker_Texture : public Texture {
 			: even(make_shared<Solid_Color>(color_0)), odd(make_shared<Solid_Color>(color_1)) {}
 
 		virtual Color value(float u, float v, const Point &point) const override {
+			
 			float sines = 
 				sin(10 * point.getX()) *
 				sin(10 * point.getY()) *
@@ -75,8 +76,7 @@ class Image_Texture : public Texture {
 	public:
 		const static int bytes_per_pixel = 3;
 
-		Image_Texture()
-		  : data(nullptr), width(0), height(0), bytes_per_scanline(0) {}
+		Image_Texture() : data(nullptr), width(0), height(0), bytes_per_scanline(0) {}
 
 		Image_Texture(const char* filename) {
 			int components_per_pixel = bytes_per_pixel;

@@ -18,6 +18,4 @@ Color color_gama(Color pixel_color, int samples_per_pixel) {
 	blue  = sqrt(scale * blue);
 
 	return Color(red, green, blue);
-
 }
-
