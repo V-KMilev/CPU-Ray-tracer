@@ -65,7 +65,7 @@ bool xy_rect::hit(const Ray &ray, float distance_min, float distance_max, hit_re
 	record.u = (x - x_start) / (x_end - x_start);
 	record.v = (y - y_start) / (y_end - y_start);
 
-	Vec outward_normal = Vec(0, 0, 1);
+	Vec outward_normal = Vec(0, 0, 1);    // Ray: Z
 
 	record.set_face_normal(ray, outward_normal);
 	record.material_ptr = material;
@@ -93,7 +93,7 @@ bool xz_rect::hit(const Ray &ray, float distance_min, float distance_max, hit_re
 	record.u = (x - x_start) / (x_end - x_start);
 	record.v = (z - z_start) / (z_end - z_start);
 
-	Vec outward_normal = Vec(0, 1, 0);
+	Vec outward_normal = Vec(0, 1, 0);    // Ray: Y
 
 	record.set_face_normal(ray, outward_normal);
 	record.material_ptr = material;
@@ -121,7 +121,7 @@ bool yz_rect::hit(const Ray &ray, float distance_min, float distance_max, hit_re
 	record.u = (y - y_start) / (y_end - y_start);
 	record.v = (z - z_start) / (z_end - z_start);
 
-	Vec outward_normal = Vec(1, 0, 0);
+	Vec outward_normal = Vec(1, 0, 0);    // Ray: X
 
 	record.set_face_normal(ray, outward_normal);
 	record.material_ptr = material;

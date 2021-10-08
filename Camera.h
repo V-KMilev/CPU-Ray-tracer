@@ -31,9 +31,9 @@ class Camera {
 			right = unit_vector(cross(view_up, front));                                     // Camera: horizontal (right) of the camera
 			real_up = cross(right, front);                                                  // Camera: vertical (up) of the camera
 
-			origin  = lookfrom;
+			origin = lookfrom;
 			
-			// Low left corner math
+			// Lower left corner math
 			horizontal = focus_dist * viewport_width * right;
 			vertical = focus_dist * viewport_height * real_up;
 			lower_left_corner = origin - horizontal/2 - vertical/2 + focus_dist * front;
@@ -45,9 +45,9 @@ class Camera {
 		}
 
 		Ray get_ray(float image_u, float image_v) const {
-			
-			Vec rd = lens_radius * random_in_unit_disk();            // Ray: get offset postion
-			Vec offset = right * rd.getX() + real_up * rd.getY();    // Ray: get cordinates of the offseted positon on the camera lens
+
+			Vec rd = lens_radius * random_in_unit_disk();            // Ray: offset postion
+			Vec offset = right * rd.getX() + real_up * rd.getY();    // Ray: cordinates of the offseted positon on the camera lens
 
 			return Ray
 			(
@@ -61,7 +61,7 @@ class Camera {
 		Vec right, real_up, front;    // Camera: x, y, z;
 		Vec vertical;                 // Camera: vertical
 		Vec horizontal;               // Camera: horizontal
-		
+
 		Point origin;                 // Camera: original point
 		Point lower_left_corner;      // Camera: lower left corner
 

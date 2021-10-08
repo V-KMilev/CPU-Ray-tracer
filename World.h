@@ -28,11 +28,11 @@
 #define RES_4K 3840
 
 const float aspect_ratio = {16.0 / 9.0};                                    // Image: Aspect ratio: resolution
-const int image_width = {RES_FULL_HD};                                      // Image: Width
+const int image_width = {RES_TEST};                                         // Image: Width
 const int image_height = {static_cast<int>(image_width / aspect_ratio)};    // Image: Height
 
-const int samples_per_pixel = {1000};                                       // Rays per pixel
-const int max_depth = {250};                                                // Ray bounce limit per pixel
+const int samples_per_pixel = {50};                                         // Rays per pixel
+const int max_depth = {5};                                                  // Ray bounce limit per pixel
 
 std::vector<Color> pixels(image_height * image_width);                      // Image: output pixels
 
@@ -67,7 +67,7 @@ Hittable_list random_scene() {
 	shared_ptr<Material> difflight_purple = make_shared<Diffuse_light>(Color(3,0,3));
 
 	//Objects
-	world.add(make_shared<xz_rect>(-1000, 1000, -1000, 1000, 0, material_sphere_c));
+	world.add(make_shared<xz_rect>(-1000, 1000, -1000, 1000, 0, material_sphere_n));
 	world.add(make_shared<xz_rect>(-250, 250, -250, 250, 2000, difflight));
 
 	world.add(make_shared<Sphere>(Point(0, 2, 0), 2, material_sphere_c));
@@ -88,7 +88,7 @@ Camera get_camera(const float aspect_ratio) {
 	Point lookat(0.0, 2.0, 0.0);
 	Vec view_up(0.0, 1.0, 0.0);
 
-	float dist_to_focus = 10.0;
+	float dist_to_focus = 1.0;
 	float aperture = 0.0;
 
 	return Camera(lookfrom, lookat, view_up, 37.0, aspect_ratio, aperture, dist_to_focus, 0.0, 1.0);
