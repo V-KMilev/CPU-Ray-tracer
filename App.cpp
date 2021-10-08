@@ -83,7 +83,7 @@ int main(int argc, char **argv) {
 	pool.master_wait();
 
 	// OUT STREAM:
-	std::ofstream out("RTout.ppm");
+	std::ofstream out("RTout0.ppm");
 
 	// FILE WRITE:
 	file_write(out, pixels, image_width, image_height);

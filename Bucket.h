@@ -53,5 +53,6 @@ std::vector<Bucket> bucket_segmentation(const int image_width, const int image_h
 		}
 	}
 	
+	std::cerr << "\rBuckets, Size: " << my_buckets.size() << " | " << bucket_size << "\n";
 	return my_buckets;
 }

@@ -85,8 +85,9 @@ class Image_Texture : public Texture {
 
 			if (!data) {
 				fprintf(stderr, "ERROR: Could not load texture image file \"%s\"\nSTB Reason: %s\n", filename, stbi_failure_reason());
-				width = height = 0;
-			}
+				width  = 0;
+				height = 0;
+			} 
 
 			bytes_per_scanline = bytes_per_pixel * width;
 		}
@@ -97,19 +98,24 @@ class Image_Texture : public Texture {
 
 		virtual Color value(float u, float v, const Point &point)  const override {
 			// If we have no texture data, then return solid cyan as a debugging aid.
-			if (data == nullptr)
-				return Color(0,1,1);
+			if (data == nullptr) {
+				return Color(1,0,0);
+			}
 
 			// Clamp input texture coordinates to [0,1] x [1,0]
 			u = clamp(u, 0.0, 1.0);
-			v = clamp(v, 0.0, 1.0);
+			v = 1.0 - clamp(v, 0.0, 1.0); // Flip V to image coordinates
 
 			int i = static_cast<int>(u * width);
 			int j = static_cast<int>(v * height);
 
 			// Clamp integer mapping, since actual coordinates should be less than 1.0
-			if (i >= width) i = width - 1;
-			if (j >= height) j = height - 1;
+			if (i >= width) {
+				i = width - 1;
+			}
+			if (j >= height) {
+				j = height - 1;
+			}
 
 			const float color_scale = 1.0 / 255.0;
 			unsigned char *pixel = data + j * bytes_per_scanline + i * bytes_per_pixel;

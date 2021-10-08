@@ -21,7 +21,7 @@ const int MAX_NUMBER_OF_THREADS = std::thread::hardware_concurrency();
 
 class ThreadPool {
 	public:
-		explicit ThreadPool(std::size_t num_Threads) {    // explicit: size_t to size_t only
+		explicit ThreadPool(std::size_t num_Threads) {    // Explicit: size_t to size_t only
 
 			std::cerr << "\rStart Thread Pool: " << num_Threads << "\n";
 			start(num_Threads);
@@ -31,7 +31,7 @@ class ThreadPool {
 			stop();
 		}
 
-		void enter_queue(const Bucket &my_bucket_task) {              // enter task in the queue
+		void enter_queue(const Bucket &my_bucket_task) {              // Enter task in the queue
 			{
 				std::unique_lock<std::mutex> lock(my_Event_Mutex);    // Lock to make it single threaded
 				// Add new Task at the end of the queue
