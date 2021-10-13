@@ -55,13 +55,13 @@ void render(const Bucket &my_bucket) {
 
 void file_write(std::ofstream &out, std::vector<Color> pixels, const int image_width, const int image_height) {
 
-	out << "P3\n"
-		<< image_width << " " << image_height << "\n255\n";
+	out << "P3\n" << image_width << " " << image_height << "\n255\n";
 
 	for (int idx = 0; idx < pixels.size(); idx++) {
-		out << static_cast<int>(256 * clamp(pixels[idx].getX(), 0.0, 0.999)) << ' '
-			<< static_cast<int>(256 * clamp(pixels[idx].getY(), 0.0, 0.999)) << ' '
-			<< static_cast<int>(256 * clamp(pixels[idx].getZ(), 0.0, 0.999)) << '\n';
+		out << static_cast<int>(256 * clamp(pixels[idx].getX(), 0.0f, 1.0f - epsilon)) << ' '
+			<< static_cast<int>(256 * clamp(pixels[idx].getY(), 0.0f, 1.0f - epsilon)) << ' '
+			<< static_cast<int>(256 * clamp(pixels[idx].getZ(), 0.0f, 1.0f - epsilon)) << '\n';
+
 	}
 
 	out.close();
@@ -83,7 +83,7 @@ int main(int argc, char **argv) {
 	pool.master_wait();
 
 	// OUT STREAM:
-	std::ofstream out("RTout1.ppm");
+	std::ofstream out("RTout.ppm");
 
 	// FILE WRITE:
 	file_write(out, pixels, image_width, image_height);

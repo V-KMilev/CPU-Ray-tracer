@@ -14,6 +14,7 @@ using std::sqrt;
 
 const double infinity = std::numeric_limits<float>::infinity();
 const double pi = 3.1415926535897932385;
+const float epsilon = 1e-3f;
 
 // Utility Functions:
 
