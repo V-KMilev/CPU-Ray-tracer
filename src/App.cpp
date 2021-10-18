@@ -3,6 +3,7 @@
 #include <ctime>
 
 #include "World.h"
+#include "GLFW_window_set.h"
 
 Color ray_color(const Ray &ray, const Color &background, const Hittable &world, int depth) {
 

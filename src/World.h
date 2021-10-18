@@ -129,10 +129,10 @@ Camera get_camera(const float aspect_ratio) {
 	Point lookat(-5.0, 6.0, 5.0);
 	Vec view_up(0.0, 1.0, 0.0);
 
-	float dist_to_focus = 1.0;
-	float aperture = 0.0;
+	float dist_to_focus = 4.5;
+	float aperture = 0.1;
 
-	return Camera(lookfrom, lookat, view_up, 70.0, aspect_ratio, aperture, dist_to_focus, 0.0, 1.0);
+	return Camera(lookfrom, lookat, view_up, 53.7, aspect_ratio, aperture, dist_to_focus, 0.0, 1.0);
 }
 
 // WORLD:

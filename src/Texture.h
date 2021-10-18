@@ -5,7 +5,7 @@
 #include "Utility_functions.h"
 #include "Vec.h"
 
-#include "CN_stb_image.h"
+#include "r_stb_image.h"
 #include "Perlin.h"
 
 class Texture {    // Interface
