@@ -22,12 +22,14 @@ target_link_directories(${PROJECT_NAME} PUBLIC
 )
 
 target_include_directories(${PROJECT_NAME} PUBLIC
-	./thirdparty/GLFW/include
 	./thirdparty/STB/include
+	./thirdparty/GLFW/include
 )
 
-target_link_libraries(${PROJECT_NAME}
+target_link_libraries(${PROJECT_NAME} PUBLIC # Don't change the postions of the libraries!!!
 	glfw3
+	${CMAKE_DL_LIBS}
 	OpenGL::GL
+	X11
 	pthread
 )
