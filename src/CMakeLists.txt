@@ -17,17 +17,17 @@ add_definitions(-D_CRT_SECURE_NO_WARNINGS)
 # add the executable
 add_executable(Tutorial ${SOURCES})
 
-target_link_directories(${PROJECT_NAME} PUBLIC
-	./thirdparty/GLFW/lib
+add_subdirectory( 
+	"${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/glfw"
 )
 
 target_include_directories(${PROJECT_NAME} PUBLIC
 	./thirdparty/STB/include
-	./thirdparty/GLFW/include
+	./thirdparty/glfw/include
 )
 
 target_link_libraries(${PROJECT_NAME} PUBLIC # Don't change the postions of the libraries!!!
-	glfw3
+	glfw
 	${CMAKE_DL_LIBS}
 	OpenGL::GL
 	X11
