@@ -1,7 +1,7 @@
 // "#version 330 core" - using GLS (GL Shaders) version 330;
 // "core" - blocking deprecated functions;
 // "layout(location = n)" - Attribute is located at index n;
-// #var - return the char* var;
+// #var - return var into char* (string);
 // MY_GL_CHECK - macro;
 
 #pragma once
@@ -23,7 +23,7 @@ static void printGLErrors(const char* file, int line, const char* fun) {
 }
 
 /* do-while so we can execute MY_GL_CHECK, and we don't have to remove the ';' at the end of the function to which we my_gl_check MY_GL_CHECK*/
-#define MY_GL_CHECK(MyFunction)                               \
+#define MY_GL_CHECK(MyFunction)                        \
 do {                                                   \
 	MyFunction;                                        \
 	printGLErrors(__FILE__, __LINE__, #MyFunction);    \
