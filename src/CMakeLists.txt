@@ -8,8 +8,8 @@ set(OpenGL_GL_PREFERENCE GLVND)
 find_package(OpenGL REQUIRED)
 
 set(SOURCES
-	App.cpp
-	# test.cpp
+	# App.cpp
+	test.cpp
 )
 
 add_definitions(-D_CRT_SECURE_NO_WARNINGS)
