@@ -8,8 +8,8 @@ set(OpenGL_GL_PREFERENCE GLVND)
 find_package(OpenGL REQUIRED)
 
 set(SOURCES
-	# App.cpp
-	test.cpp
+	App.cpp
+	# test.cpp
 )
 
 add_definitions(-D_CRT_SECURE_NO_WARNINGS)
@@ -30,6 +30,4 @@ target_link_libraries(${PROJECT_NAME} PUBLIC # Don't change the postions of the 
 	glfw
 	${CMAKE_DL_LIBS}
 	OpenGL::GL
-	X11
-	pthread
 )
