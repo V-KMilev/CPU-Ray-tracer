@@ -12,13 +12,16 @@
 #include <GLFW/glfw3.h>
 #include <iostream>
 
+#include "Utility_functions.h"
+#include "File_read.h"
+
 /* Printing funtion fail*/
 static void printGLErrors(const char* file, int line, const char* fun) {
 
 	GLenum err;
 
 	while ((err = glGetError()) != GL_NO_ERROR) {
-		printf("[%s:%d][ERROR %d] my_gl_checking %s\n", file, line, err, fun);
+		std::cerr << "[" << file << ":" << line << "][ERROR: " << err << "] my_gl_checking " << fun << "\n";
 	}
 }
 
@@ -43,35 +46,36 @@ static unsigned int CompileShader(unsigned int type, const std::string &source) 
 	int result;
 	MY_GL_CHECK(glGetShaderiv(id, GL_COMPILE_STATUS, &result));    // wants int vector
 
+	// GL_FALSE = 0
 	if(result == GL_FALSE) {
-		// GL_FALSE = 0
+		
 		int length;
 		MY_GL_CHECK(glGetShaderiv(id, GL_INFO_LOG_LENGTH, &length));    // set length size
 
 		char* message = (char*) alloca(length * sizeof(char));
 		MY_GL_CHECK(glGetShaderInfoLog(id, length, &length, message));
 
-		std::cerr << "[FAIL] Failed to complie " << (type == GL_VERTEX_SHADER ? "VERTEX" : "FRAGMENT") << "shader.\n"; 
+		std::cerr << "[FAIL] Failed to complie " << (type == GL_VERTEX_SHADER ? "VERTEX" : "FRAGMENT") << " shader\n";
 		std::cerr << message << "\n";
 		
 		MY_GL_CHECK(glDeleteShader(id));
 
 		return 0;
-	}	
+	}
 
 	return id;
 }
 
 static unsigned int CreateShader(const std::string &vertexShader, const std::string &fragmentShader) {
-	
+
 	unsigned int program = glCreateProgram();    // create progam
-	
+
 	unsigned int vert_shad = CompileShader(GL_VERTEX_SHADER, vertexShader);        // compile vertex shader
 	unsigned int frag_shad = CompileShader(GL_FRAGMENT_SHADER, fragmentShader);    // compile fragment shader
 
 	MY_GL_CHECK(glAttachShader(program, vert_shad));    // add vertex shader
 	MY_GL_CHECK(glAttachShader(program, frag_shad));    // add fragment shader
-	
+
 	MY_GL_CHECK(glLinkProgram(program));        // link program
 	MY_GL_CHECK(glValidateProgram(program));    // validate program
 
@@ -79,7 +83,7 @@ static unsigned int CreateShader(const std::string &vertexShader, const std::str
 	MY_GL_CHECK(glDeleteShader(frag_shad));    // delete fragment shader
 
 	return program;
-} 
+}
 
 int window_setup() {
 	GLFWwindow* window;
@@ -112,25 +116,9 @@ int window_setup() {
 	MY_GL_CHECK(glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), 0));
 	MY_GL_CHECK(glEnableVertexAttribArray(0));
 
-	// TODO: CREATE VERTEX & FRAGMENT SHADER FILES
+	std::string vertexShader = file_to_string("../src/Shaders/vertexShader.txt");
 
-	std::string vertexShader = 
-		"#version 330 core\n"
-		"\n"
-		"layout(location = 0) in vec4 position;\n"
-		"\n"
-		"void main() {\n"
-		"	gl_Position = position;\n"
-		"}\n";
-
-	std::string fragmentShader = 
-		"#version 330 core\n"
-		"\n"
-		"layout(location = 0) out vec4 color;\n"
-		"\n"
-		"void main() {\n"
-		"	color = vec4(1.0, 0.0, 0.0, 1.0);\n"
-		"}\n";
+	std::string fragmentShader = file_to_string("../src/Shaders/fragmentShader.txt");
 
 	unsigned int shader = CreateShader(vertexShader, fragmentShader);
 	MY_GL_CHECK(glUseProgram(shader));
@@ -145,7 +133,7 @@ int window_setup() {
 
 		MY_GL_CHECK(glDrawArrays(GL_TRIANGLES, 0, 3));
 
-		/* Swap front and back buffers */ 
+		/* Swap front and back buffers */
 		glfwSwapBuffers(window);
 
 		/* Poll for and process events */

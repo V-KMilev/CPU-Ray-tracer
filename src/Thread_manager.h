@@ -56,7 +56,7 @@ class ThreadPool {
 
 			for (int i = 0; i < num_Threads; i++) {
 
-				// Add new thread with a task at the end of the vector
+				/* Add new thread with a task at the end of the vector */
 				my_Threads.emplace_back(
 					[=]() {
 						for(;;) {

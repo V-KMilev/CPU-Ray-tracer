@@ -8,12 +8,12 @@
 Color ray_color(const Ray &ray, const Color &background, const Hittable &world, int depth) {
 
 	hit_record record;
-	// If we've exceeded the ray bounce limit, no more light is gathered.
+	/* If we've exceeded the ray bounce limit, no more light is gathered. */
 	if (depth <= 0) {
 		return Color(0, 0, 0);    // Set current pixel value to black
 	}
 
-	// If the ray hits nothing, return the background color.
+	/* If the ray hits nothing, return the background color. */
 	if (!world.hit(ray, 0.001, infinity, record)) {    // 0.001 to fix the shadow problem
 		return background;
 	}
@@ -70,10 +70,10 @@ void file_write(std::ofstream &out, std::vector<Color> pixels, const int image_w
 
 int main(int argc, char **argv) {
 
-	// START TIME:
+	/* START TIME: */
 	time_t now_s = time(0);
 
-	// RENDER:
+	/* RENDER: */
 	ThreadPool pool(MAX_NUMBER_OF_THREADS);
 
 	std::vector<Bucket> my_buckets = bucket_segmentation(image_width, image_height);
@@ -83,13 +83,13 @@ int main(int argc, char **argv) {
 	}
 	pool.master_wait();
 
-	// OUT STREAM:
+	/* OUT STREAM: */
 	std::ofstream out("RTout.ppm");
 
-	// FILE WRITE:
+	/* FILE WRITE: */
 	file_write(out, pixels, image_width, image_height);
 
-	// TIME:
+	/* TIME: */
 	{
 		std::cerr << "\n\n\rStart Time: " << ctime(&now_s);
 

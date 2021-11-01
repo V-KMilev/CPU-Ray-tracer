@@ -14,7 +14,7 @@ class Vec {
 		float getY() const { return e[1]; }
 		float getZ() const { return e[2]; }
 
-		// Utility functions to set random Vec
+		/* Utility functions to set random Vec */
 
 		inline static Vec random() {
 
@@ -73,10 +73,10 @@ class Vec {
 		float e[3];
 };
 
-using Point = Vec;                                                                  // 3D point
-using Color = Vec;                                                                  // RGB color
+using Point = Vec;    // 3D point
+using Color = Vec;    // RGB color
 
-// Vec Utility Functions:
+/* Vec Utility Functions: */
 
 inline std::ostream& operator << (std::ostream &out, const Vec &v) {
 	return out << v.e[0] << ' ' << v.e[1] << ' ' << v.e[2];
@@ -125,7 +125,7 @@ inline Vec unit_vector(Vec v) {
 	return v / v.length();
 }
 
-// Utility function to set random point in sphere
+/* Utility function to set random point in sphere */
 
 Vec random_in_unit_sphere() {
 	
@@ -142,7 +142,7 @@ Vec random_unit_vector() {
 	return unit_vector(random_in_unit_sphere());
 }
 
-// Camera disk offset math
+/* Camera disk offset math */
 Vec random_in_unit_disk() {
 	
 	for(;;) {

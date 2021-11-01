@@ -33,25 +33,25 @@ Point Sphere_moving::center(float time) const {
 
 bool Sphere_moving::hit(const Ray &ray, float distance_min, float distance_max, hit_record &record) const {
 
-	Vec oc = ray.get_origin() - center(ray.get_time());                                                         // Vec OC: camera to center
+	Vec oc = ray.get_origin() - center(ray.get_time());                      // Vec OC: camera to center
 
-	float a = ray.get_direction().length_squared();                                                             // Discriminant: a: ray.dir * sqrt(length)
-	float half_b = dot(oc, ray.get_direction());                                                                // Discriminant: half b:
-	float c = oc.length_squared() - radius * radius;                                                            // Discriminant: c: OC.sqrt(length) - sqrt(radius)
+	float a = ray.get_direction().length_squared();                          // Discriminant: a: ray.dir * sqrt(length)
+	float half_b = dot(oc, ray.get_direction());                             // Discriminant: half b:
+	float c = oc.length_squared() - radius * radius;                         // Discriminant: c: OC.sqrt(length) - sqrt(radius)
 
-	float discriminant = half_b * half_b - a * c;                                                               // Discriminant: with half b
+	float discriminant = half_b * half_b - a * c;                            // Discriminant: with half b
 	
-	if (discriminant < 0) { return false; }                                                                     // Hit: fail: The sphere was not hit
+	if (discriminant < 0) { return false; }                                  // Hit: fail: The sphere was not hit
 
 	float sqrt_discriminant = sqrt(discriminant);
 
-	// Find the nearest root that lies in the acceptable range.
-	float root = (-half_b - sqrt_discriminant) / a;                                                             // Quadratic equation: - version: first hit point
+	/* Find the nearest root that lies in the acceptable range. */
+	float root = (-half_b - sqrt_discriminant) / a;                          // Quadratic equation: - version: first hit point
 	
-	if (root < distance_min || distance_max < root) {                                                           // Hit: if fist point out of range
-		root = (-half_b + sqrt_discriminant) / a;                                                               // Quadratic equation: + version: second hit point
+	if (root < distance_min || distance_max < root) {                        // Hit: if fist point out of range
+		root = (-half_b + sqrt_discriminant) / a;                            // Quadratic equation: + version: second hit point
 
-		if (root < distance_min || distance_max < root) { return false; }                                       // Hit: fail: second hit point out of range
+		if (root < distance_min || distance_max < root) { return false; }    // Hit: fail: second hit point out of range
 	}
 
 	record.distance = root;                                                   // set -> override of the distance

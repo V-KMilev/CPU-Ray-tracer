@@ -30,7 +30,7 @@ class Lambertian : public Material {
 			
 			Vec scatter_direction = record.normal + random_unit_vector();
 
-			// Catch degenerate scatter direction
+			/* Catch degenerate scatter direction */
 			if (scatter_direction.near_zero()) {
 				scatter_direction = record.normal;
 			}

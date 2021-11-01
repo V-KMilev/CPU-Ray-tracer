@@ -135,13 +135,13 @@ Camera get_camera(const float aspect_ratio) {
 	return Camera(lookfrom, lookat, view_up, 53.7, aspect_ratio, aperture, dist_to_focus, 0.0, 1.0);
 }
 
-// WORLD:
+/* WORLD: */
 const Hittable_list world = get_scene();
 
-// CAMERA:
+/* CAMERA: */
 const Camera camera = get_camera(aspect_ratio);
 
-// BACKGROUND: (0.5, 0.0, 0.5)
+/* BACKGROUND: (0.5, 0.0, 0.5) */
 const Color background(0.0, 0.0, 0.0);
 
 // 7680
