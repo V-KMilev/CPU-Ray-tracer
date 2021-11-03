@@ -5,7 +5,7 @@
 class VertexBuffer {
 	public:
 		VertexBuffer(const void* data, unsigned int size) {
-			
+
 			MY_GL_CHECK(glGenBuffers(1, &my_ID));
 			MY_GL_CHECK(glBindBuffer(GL_ARRAY_BUFFER, my_ID));
 			MY_GL_CHECK(glBufferData(GL_ARRAY_BUFFER, size, data, GL_STATIC_DRAW));

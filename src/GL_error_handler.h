@@ -1,5 +1,9 @@
 #pragma once
 
+#ifdef _WIN32
+	#include <windows.h>
+#endif
+
 #include <glad/gl.h>
 #define GLFW_INCLUDE_NONE
 #include <GLFW/glfw3.h>
@@ -14,7 +18,7 @@ void printGLErrors(const char* file, int line, const char* fun) {
 	}
 }
 
-/* do-while so we can execute MY_GL_CHECK, and we don't have to remove the ';' at the end of the function to which we my_gl_check MY_GL_CHECK*/
+/* do-while so we can execute MY_GL_CHECK, and we don't have to remove the ';' at the end of the function to which we call MY_GL_CHECK*/
 #define MY_GL_CHECK(MyFunction)                        \
 do {                                                   \
 	MyFunction;                                        \
