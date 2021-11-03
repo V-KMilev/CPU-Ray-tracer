@@ -8,8 +8,9 @@
 
 #include <iostream>
 
-#include "GL_error_handler.h"
 #include "File_read.h"
+
+#include "GL_error_handler.h"
 
 #include "GL_vertex_buffer_layout.h"
 #include "GL_vertex_buffer.h"
@@ -87,18 +88,15 @@ static unsigned int CreateShader(const std::string &vertex_shader, const std::st
 }
 
 int window_setup() {
-	
-	
-	GLFWwindow* window;
 
-	glEnable(GL_DEPTH_TEST);
+	GLFWwindow* window;
 
 	/* Initialize the library */
 	if (!glfwInit()) {
 		return -1;
 	}
 
-	/* Using OpenGL version 3.3.0 (major 3, minor 3)*/
+	/* Using OpenGL version 3.3.0 (major 3, minor 3) */
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
@@ -123,19 +121,22 @@ int window_setup() {
 		-0.5f,  0.5f     // 3
 	};
 
-	unsigned int indices[] {
+	unsigned int indices[]  = {
 		0, 1, 2,
 		2, 3, 0
 	};
 
+	MY_GL_CHECK(glEnable(GL_DEPTH_TEST));
 
-	VertexArray vertexArray;
+	VertexArray vertex_array;
 	VertexBufferLayout layout;
-	VertexBuffer vertex_buffer(positions, 4 * 2 * sizeof(float));
+
+	VertexBuffer vertex_buffer(positions, 2 * 4 * sizeof(float));
 	layout.push<float>(2);
+	
+	vertex_array.addBuffer(vertex_buffer, layout);
 
 	IndexBuffer index_buffer(indices, 6);
-
 
 	ProgramShaders shaders = getShaders();
 	unsigned int shader = CreateShader(shaders.vertex_shader, shaders.fragment_shader);
@@ -160,7 +161,6 @@ int window_setup() {
 		MY_GL_CHECK(glUseProgram(shader));
 		MY_GL_CHECK(glUniform4f(location, r, 0.0f, 0.7f, 1.0f));
 
-		MY_GL_CHECK(glBindVertexArray(vao));
 		index_buffer.bind();
 
 		MY_GL_CHECK(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr));

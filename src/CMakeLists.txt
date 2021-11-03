@@ -7,6 +7,15 @@ set(OpenGL_GL_PREFERENCE GLVND)
 
 find_package(OpenGL REQUIRED)
 
+add_subdirectory(
+	"${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/glfw"
+)
+	
+set(GLAD_GL
+	"${GLFW_SOURCE_DIR}/deps/glad/gl.h"
+	"${GLFW_SOURCE_DIR}/deps/glad_gl.c"
+)
+
 set(SOURCES
 	# App.cpp
 	test.cpp
@@ -15,19 +24,16 @@ set(SOURCES
 add_definitions(-D_CRT_SECURE_NO_WARNINGS)
 
 # add the executable
-add_executable(Tutorial ${SOURCES})
-
-add_subdirectory( 
-	"${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/glfw"
-)
+add_executable(Tutorial ${SOURCES} ${GLAD_GL})
 
 target_include_directories(${PROJECT_NAME} PUBLIC
-	./thirdparty/STB/include
-	./thirdparty/glfw/include
+	"${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/STB/include"
+	"${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/glfw/include"
+	"${GLFW_SOURCE_DIR}/deps"
 )
 
-target_link_libraries(${PROJECT_NAME} PUBLIC # Don't change the postions of the libraries!!!
+target_link_libraries(${PROJECT_NAME} PUBLIC # Don't change the postions of the libraries!
 	glfw
-	${CMAKE_DL_LIBS}
 	OpenGL::GL
+	${CMAKE_DL_LIBS}
 )

@@ -1,12 +1,11 @@
 #pragma once
 
-/* Future linking for glGenBuffers, glBindBuffer e.t. */
-#define GL_GLEXT_PROTOTYPES
-
+#include <glad/gl.h>
+#define GLFW_INCLUDE_NONE
 #include <GLFW/glfw3.h>
 
 /* Printing funtion fail*/
-static void printGLErrors(const char* file, int line, const char* fun) {
+void printGLErrors(const char* file, int line, const char* fun) {
 
 	GLenum err;
 

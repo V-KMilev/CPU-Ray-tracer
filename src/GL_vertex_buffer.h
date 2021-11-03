@@ -1,6 +1,6 @@
 #pragma once
 
-#include "GLFW_window_set.h"
+#include "GL_error_handler.h"
 
 class VertexBuffer {
 	public:

@@ -1,7 +1,6 @@
 #pragma once
 
 #include "GL_vertex_buffer.h"
-
 #include "GL_vertex_buffer_layout.h"
 
 class VertexArray {
@@ -11,7 +10,7 @@ class VertexArray {
 		}
 
 		~VertexArray() {
-			MY_GL_CHECK(glDeleteVertexArray(1, &my_ID));
+			MY_GL_CHECK(glDeleteVertexArrays(1, &my_ID));
 		}
 
 		void bind() const {
@@ -22,22 +21,21 @@ class VertexArray {
 			MY_GL_CHECK(glBindVertexArray(0));
 		}
 
-		void AddBuffer(const VertexBuffer &vertex_buffer, const VertexBufferLayout& layout) {
-			
-			bind();
+		void addBuffer(const VertexBuffer &vertex_buffer, const VertexBufferLayout& layout) {
 
+			bind();
 			vertex_buffer.bind();
+
+			const std::vector<VectexBufferElement> &elements = layout.GetElements();
 
 			unsigned int offset = 0;
 
-			const VectexBufferElement elements = layout.GetElements();
-
 			for (unsigned int position = 0; position < elements.size(); position++) {
 
-				const VectexBufferElement element = elements[position];
+				const VectexBufferElement &element = elements[position];
 
 				MY_GL_CHECK(glEnableVertexAttribArray(position));
-				MY_GL_CHECK(glVertexAttribPointer(position, element.count, element.normalized, layout.GetStride(), (const void*) offset));
+				MY_GL_CHECK(glVertexAttribPointer(position, element.count, element.type, element.normalized, layout.getStride(), (const void*) offset));
 
 				offset += element.count * sizeof(element.type);
 			}
@@ -46,5 +44,4 @@ class VertexArray {
 
 	private:
 		unsigned int my_ID;
-
 };
