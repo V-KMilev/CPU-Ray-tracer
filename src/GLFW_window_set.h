@@ -6,33 +6,33 @@
 
 #pragma once
 
-/* Future linking for glGenBuffers, glBindBuffer e.t. */
-#define GL_GLEXT_PROTOTYPES
-
-#include <GLFW/glfw3.h>
 #include <iostream>
 
-#include "Utility_functions.h"
+#include "GL_error_handler.h"
 #include "File_read.h"
 
-/* Printing funtion fail*/
-static void printGLErrors(const char* file, int line, const char* fun) {
+#include "GL_vertex_buffer_layout.h"
+#include "GL_vertex_buffer.h"
+#include "GL_index_buffer.h"
+#include "GL_vertex_array.h"
 
-	GLenum err;
+struct ProgramShaders {
+	std::string vertex_shader;
+	std::string fragment_shader;
 
-	while ((err = glGetError()) != GL_NO_ERROR) {
-		std::cerr << "[" << file << ":" << line << "][ERROR: " << err << "] my_gl_checking " << fun << "\n";
-	}
+};
+
+static ProgramShaders getShaders() {
+	ProgramShaders shaders;
+	std::string vertex_shader = fileToString("../src/Shaders/vertexShader.shader");
+
+	std::string fragment_shader = fileToString("../src/Shaders/fragmentShader.shader");
+
+	shaders.vertex_shader = vertex_shader;
+	shaders.fragment_shader = fragment_shader;\
+
+	return shaders;
 }
-
-/* do-while so we can execute MY_GL_CHECK, and we don't have to remove the ';' at the end of the function to which we my_gl_check MY_GL_CHECK*/
-#define MY_GL_CHECK(MyFunction)                        \
-do {                                                   \
-	MyFunction;                                        \
-	printGLErrors(__FILE__, __LINE__, #MyFunction);    \
-} while(0)
-
-
 
 static unsigned int CompileShader(unsigned int type, const std::string &source) {
 
@@ -47,7 +47,7 @@ static unsigned int CompileShader(unsigned int type, const std::string &source) 
 	MY_GL_CHECK(glGetShaderiv(id, GL_COMPILE_STATUS, &result));    // wants int vector
 
 	// GL_FALSE = 0
-	if(result == GL_FALSE) {
+	if(result != GL_TRUE) {
 		
 		int length;
 		MY_GL_CHECK(glGetShaderiv(id, GL_INFO_LOG_LENGTH, &length));    // set length size
@@ -66,12 +66,13 @@ static unsigned int CompileShader(unsigned int type, const std::string &source) 
 	return id;
 }
 
-static unsigned int CreateShader(const std::string &vertexShader, const std::string &fragmentShader) {
+static unsigned int CreateShader(const std::string &vertex_shader, const std::string &fragment_shader) {
 
 	unsigned int program = glCreateProgram();    // create progam
 
-	unsigned int vert_shad = CompileShader(GL_VERTEX_SHADER, vertexShader);        // compile vertex shader
-	unsigned int frag_shad = CompileShader(GL_FRAGMENT_SHADER, fragmentShader);    // compile fragment shader
+	unsigned int vert_shad = CompileShader(GL_VERTEX_SHADER, vertex_shader);        // compile vertex shader
+	unsigned int frag_shad = CompileShader(GL_FRAGMENT_SHADER, fragment_shader);    // compile fragment shader
+	
 
 	MY_GL_CHECK(glAttachShader(program, vert_shad));    // add vertex shader
 	MY_GL_CHECK(glAttachShader(program, frag_shad));    // add fragment shader
@@ -86,12 +87,21 @@ static unsigned int CreateShader(const std::string &vertexShader, const std::str
 }
 
 int window_setup() {
+	
+	
 	GLFWwindow* window;
+
+	glEnable(GL_DEPTH_TEST);
 
 	/* Initialize the library */
 	if (!glfwInit()) {
 		return -1;
 	}
+
+	/* Using OpenGL version 3.3.0 (major 3, minor 3)*/
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
 	/* Create a windowed mode window and its OpenGL context */
 	window = glfwCreateWindow(640, 480, "dont open", NULL, NULL);
@@ -101,37 +111,67 @@ int window_setup() {
 		return -1;
 	}
 
-	unsigned int buffer;
-
-	float positions[6] = {
-		-0.5f, -0.5f,
-		 0.0f,  0.5f,
-		 0.5f, -0.5f
-	};
-
-	MY_GL_CHECK(glGenBuffers(1, &buffer));
-	MY_GL_CHECK(glBindBuffer(GL_ARRAY_BUFFER, buffer));
-	MY_GL_CHECK(glBufferData(GL_ARRAY_BUFFER, 6 * sizeof(float), positions, GL_STATIC_DRAW));
-
-	MY_GL_CHECK(glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), 0));
-	MY_GL_CHECK(glEnableVertexAttribArray(0));
-
-	std::string vertexShader = file_to_string("../src/Shaders/vertexShader.txt");
-
-	std::string fragmentShader = file_to_string("../src/Shaders/fragmentShader.txt");
-
-	unsigned int shader = CreateShader(vertexShader, fragmentShader);
-	MY_GL_CHECK(glUseProgram(shader));
-
 	/* Make the window's context current */
 	glfwMakeContextCurrent(window);
+	
+	glfwSwapInterval(1);
+
+	float positions[] = {
+		-0.5f, -0.5f,    // 0
+		 0.5f, -0.5f,    // 1
+		 0.5f,  0.5f,    // 2
+		-0.5f,  0.5f     // 3
+	};
+
+	unsigned int indices[] {
+		0, 1, 2,
+		2, 3, 0
+	};
+
+
+	VertexArray vertexArray;
+	VertexBufferLayout layout;
+	VertexBuffer vertex_buffer(positions, 4 * 2 * sizeof(float));
+	layout.push<float>(2);
+
+	IndexBuffer index_buffer(indices, 6);
+
+
+	ProgramShaders shaders = getShaders();
+	unsigned int shader = CreateShader(shaders.vertex_shader, shaders.fragment_shader);
+	MY_GL_CHECK(glUseProgram(shader));
+
+	int location = glGetUniformLocation(shader, "u_color");
+
+	MY_GL_CHECK(glBindVertexArray(0));
+	MY_GL_CHECK(glUseProgram(0));
+	MY_GL_CHECK(glBindBuffer(GL_ARRAY_BUFFER, 0));
+	MY_GL_CHECK(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0));
+
+	float r = 0.0f;
+	float increment = 0.5f;
 
 	/* Loop until the user closes the window */
 	while (!glfwWindowShouldClose(window)) {
-		/* Render here */
-		glClear(GL_COLOR_BUFFER_BIT);
 
-		MY_GL_CHECK(glDrawArrays(GL_TRIANGLES, 0, 3));
+		/* Render here */
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+		MY_GL_CHECK(glUseProgram(shader));
+		MY_GL_CHECK(glUniform4f(location, r, 0.0f, 0.7f, 1.0f));
+
+		MY_GL_CHECK(glBindVertexArray(vao));
+		index_buffer.bind();
+
+		MY_GL_CHECK(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr));
+		
+		if(r > 1.0f) {
+			increment = -0.05f;
+		} else if( r < 0.0f) {
+			increment = 0.05f;
+		}
+
+		r += increment;
 
 		/* Swap front and back buffers */
 		glfwSwapBuffers(window);

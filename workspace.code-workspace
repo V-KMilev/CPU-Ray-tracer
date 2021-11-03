@@ -81,7 +81,9 @@
 			"memory_resource": "cpp",
 			"string_view": "cpp",
 			"cinttypes": "cpp",
-			"random": "cpp"
+			"random": "cpp",
+			"thread": "cpp",
+			"functional": "cpp"
 		}
 	}
 }
