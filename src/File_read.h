@@ -2,20 +2,21 @@
 
 #include <fstream>
 
-std::string fileToString(const char* file_name) {
+const std::string fileToString(const std::string &file_name) {
 
-	std::ifstream file(file_name);
+	FILE *file = fopen(&file_name[0], "r");
 
-	file.seekg(0, file.end);
-
-	size_t file_size = file.tellg();
+	fseek(file, 0, SEEK_END);
+	
+	size_t file_size = ftell(file);
+	
+	fseek(file, 0, SEEK_SET);
 
 	std::string buffer;    // you can also buffer(file_size, ' ')
 	buffer.resize(file_size);
 
-	file.seekg(0, file.beg);
-
-	file.read(&buffer[0], file_size);
+	fread(&buffer[0], 1, file_size, file);
+	fclose(file);
 
 	return buffer;
 }

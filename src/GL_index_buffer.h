@@ -4,7 +4,8 @@
 
 class IndexBuffer {
 	public:
-		IndexBuffer(const unsigned int* data, unsigned int count) : my_count(count) {
+		// unsigned int - supporting 32-bit
+		IndexBuffer(const unsigned int* data, unsigned int count) : my_Count(count) {
 
 			MY_GL_CHECK(glGenBuffers(1, &my_ID));
 			MY_GL_CHECK(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, my_ID));
@@ -23,9 +24,9 @@ class IndexBuffer {
 			MY_GL_CHECK(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0));
 		}
 
-		inline unsigned int GetCount() { return my_count; }
+		inline unsigned int getCount() { return my_Count; }
 
 	private:
 		unsigned int my_ID;
-		unsigned int my_count;
+		unsigned int my_Count;
 };

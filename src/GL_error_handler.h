@@ -14,7 +14,7 @@ void printGLErrors(const char* file, int line, const char* fun) {
 	GLenum err;
 
 	while ((err = glGetError()) != GL_NO_ERROR) {
-		std::cerr << "[" << file << ":" << line << "][ERROR: " << err << "] my_gl_checking " << fun << "\n";
+		std::cerr << "[" << file << ":" << line << "][ERROR:" << err << "] my_gl_checking - " << fun << "\n";
 	}
 }
 

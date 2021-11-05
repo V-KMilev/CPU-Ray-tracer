@@ -83,7 +83,11 @@
 			"cinttypes": "cpp",
 			"random": "cpp",
 			"thread": "cpp",
-			"functional": "cpp"
+			"functional": "cpp",
+			"condition_variable": "cpp",
+			"numeric": "cpp",
+			"future": "cpp",
+			"mutex": "cpp"
 		}
 	}
 }

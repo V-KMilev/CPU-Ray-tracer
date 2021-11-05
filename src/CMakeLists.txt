@@ -3,6 +3,9 @@ cmake_minimum_required(VERSION 3.21.3)
 # set the project name
 project(Tutorial)
 
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
 set(OpenGL_GL_PREFERENCE GLVND)
 
 find_package(OpenGL REQUIRED)
@@ -15,6 +18,8 @@ set(GLAD_GL
 	"${GLFW_SOURCE_DIR}/deps/glad/gl.h"
 	"${GLFW_SOURCE_DIR}/deps/glad_gl.c"
 )
+
+message(INFO "========================================= ${GLAD_GL}")
 
 set(SOURCES
 	# App.cpp

@@ -1,13 +1,14 @@
 #pragma once
 
 #include <vector>
+#include <assert.h>
 
 #include "GL_error_handler.h"
 
 struct VectexBufferElement {
 
-	unsigned int count;          // GLuint
 	unsigned int type;           // GLenum
+	unsigned int count;          // GLuint
 	unsigned char normalized;    // GLboolean
 };
 
@@ -20,14 +21,7 @@ class VertexBufferLayout {
 		template<typename T>
 		void push(unsigned int count) {
 
-			static_assert(false);
-		}
-
-		template<>
-		void push<float>(unsigned int count) {
-
-			my_Elements.push_back( {GL_FLOAT, count, GL_FALSE} );
-			my_Stride += count * sizeof(GLfloat);
+			assert(false);    // needs to be static_assert
 		}
 
 		inline const std::vector<VectexBufferElement>& GetElements() const { return my_Elements; }
@@ -39,3 +33,17 @@ class VertexBufferLayout {
 
 		unsigned int my_Stride;
 };
+
+template<>
+void VertexBufferLayout::push<float>(unsigned int count) {
+
+	VectexBufferElement element;
+	element.type = GL_FLOAT;
+	element.count = count;
+	element.normalized = GL_FALSE;
+
+	my_Elements.push_back(element);
+
+	// Custom for every template : float => GLfloat
+	my_Stride += count * sizeof(GLfloat);
+}
