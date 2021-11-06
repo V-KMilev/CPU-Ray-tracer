@@ -7,7 +7,8 @@
 #include "File_read.h"
 
 struct ProgramShaders {
-	ProgramShaders(const std::string &vs, const std::string &fs) : vertex_shader(vs), fragment_shader(fs) {}
+	ProgramShaders(const std::string &vertex_shader, const std::string &fragment_shader) 
+	: vertex_shader(vertex_shader), fragment_shader(fragment_shader) {}
 
 	const std::string vertex_shader;
 	const std::string fragment_shader;
@@ -40,6 +41,13 @@ class Shader {
 			int location = getUniformLocation(uniform_name);
 
 			MY_GL_CHECK(glUniform4f(location, f0, f1, f2, f3));
+		}
+
+		void setUniform1i(const std::string &uniform_name, int i0) {
+
+			int location = getUniformLocation(uniform_name);
+
+			MY_GL_CHECK(glUniform1i(location, i0));
 		}
 
 	private:

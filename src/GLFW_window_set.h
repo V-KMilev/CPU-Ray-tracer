@@ -21,6 +21,13 @@
 #include "GL_vertex_array.h"
 #include "GL_shader.h"
 
+#include "GL_texture.h"
+
+#include "GL_renderer.h"
+
+#include "Utility_functions.h"
+
+
 int window_setup() {
 
 	GLFWwindow* window;
@@ -47,73 +54,96 @@ int window_setup() {
 	glfwMakeContextCurrent(window);
 	gladLoadGL(glfwGetProcAddress);
 	glfwSwapInterval(1);
-
-	float positions[] = {
-		-0.5f, -0.5f,    // 0
-		 0.5f, -0.5f,    // 1
-		 0.5f,  0.5f,    // 2
-		-0.5f,  0.5f     // 3
-	};
-
-	unsigned int indices[]  = {
-		0, 1, 2,
-		2, 3, 0
-	};
-
-	MY_GL_CHECK(glEnable(GL_DEPTH_TEST));
-
-	VertexArray vertex_array;
-	VertexBufferLayout layout;
-
-	VertexBuffer vertex_buffer(positions, 2 * 4 * sizeof(float));
-
-	layout.push<float>(2);
 	
-	vertex_array.addBuffer(vertex_buffer, layout);
-	
-	IndexBuffer index_buffer(indices, 6);
+	// We have this scope so we don't have to make everything pointers or new and then delete
+	{
+		float positions[] = {
+			-0.5f, -0.5f, 0.0f, 0.0f,    // 0
+			 0.5f, -0.5f, 1.0f, 0.0f,    // 1
+			 0.5f,  0.5f, 1.0f, 1.0f,    // 2
+			-0.5f,  0.5f, 0.0f, 1.0f     // 3
+		};
 
-	Shader shader("../src/Shaders/vertexShader.shader", "../src/Shaders/fragmentShader.shader");
-	shader.bind();
-	shader.setUniform4f("u_color", 0.7f, 0.0f, 0.7f, 1.0f);
+		unsigned int indices[]  = {
+			0, 1, 2,
+			2, 3, 0
+		};
 
-	vertex_array.unbind();
-	vertex_buffer.unbind();
-	index_buffer.unbind();
-	shader.unbind();
+		MY_GL_CHECK(glEnable(GL_DEPTH_TEST));
+		MY_GL_CHECK(glEnable(GL_BLEND));
+		MY_GL_CHECK(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
 
-	float r = 0.0f;
-	float increment = 0.5f;
+		VertexArray vertex_array;
+		VertexBufferLayout layout;
 
-	/* Loop until the user closes the window */
-	while (!glfwWindowShouldClose(window)) {
+		VertexBuffer vertex_buffer(positions, 4 * 4 * sizeof(float));
 
-		/* Render here */
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		layout.push<float>(2);
+		layout.push<float>(2);
+		
+		vertex_array.addBuffer(vertex_buffer, layout);
+		
+		IndexBuffer index_buffer(indices, 6);
+
+
+	#ifdef _WIN32
+		Shader shader("../../src/Shaders/vertexShader.shader", "../../src/Shaders/fragmentShader.shader");
+	#endif
+
+	#ifdef __linux__
+		Shader shader("../src/Shaders/vertexShader.shader", "../src/Shaders/fragmentShader.shader");
+	#endif
 
 		shader.bind();
-		shader.setUniform4f("u_color", r, 0.0f, 0.7f, 1.0f);
+		shader.setUniform4f("u_color", 0.7f, 0.0f, 0.7f, 1.0f);
 
-		vertex_array.bind();
-		index_buffer.bind();
+	#ifdef _WIN32
+		Texture texture("../../src/Textures/maxresdefault.jpg");
+	#endif
 
-		MY_GL_CHECK(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr));
+	#ifdef __linux__
+		Texture texture("../../src/Textures/maxresdefault.jpg");
+	#endif
 
-		if(r > 1.0f) {
-			increment = -0.05f;
-		} else if( r < 0.0f) {
-			increment = 0.05f;
+		texture.bind();
+		shader.setUniform1i("u_Texture", 0);
+
+		vertex_array.unbind();
+		vertex_buffer.unbind();
+		index_buffer.unbind();
+		shader.unbind();
+
+		float r = 0.0f;
+		float increment = 0.5f;
+
+		/* Loop until the user closes the window */
+		while (!glfwWindowShouldClose(window)) {
+
+			/* Render here */
+			Renderer renderer;
+
+			renderer.clear();
+
+			shader.bind();
+			shader.setUniform4f("u_color", r, 1.0f, 0.7f, 1.0f);
+
+			renderer.draw(vertex_array, index_buffer, shader);
+
+			if(r > 1.0f) {
+				increment = -0.01f;
+			} else if( r < 0.0f) {
+				increment = 0.01f;
+			}
+
+			r += increment;
+
+			/* Swap front and back buffers */
+			glfwSwapBuffers(window);
+
+			/* Poll for and process events */
+			glfwPollEvents();
 		}
-
-		r += increment;
-
-		/* Swap front and back buffers */
-		glfwSwapBuffers(window);
-
-		/* Poll for and process events */
-		glfwPollEvents();
 	}
-
 	glfwTerminate();
 
 	return 0;
