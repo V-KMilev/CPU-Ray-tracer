@@ -12,6 +12,7 @@ find_package(OpenGL REQUIRED)
 
 add_subdirectory(
 	"${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/glfw"
+	# "${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/imgui"
 )
 	
 set(GLAD_GL
@@ -19,7 +20,7 @@ set(GLAD_GL
 	"${GLFW_SOURCE_DIR}/deps/glad_gl.c"
 )
 
-message(INFO "========================================= ${GLAD_GL}")
+message(INFO " ========================================= ${GLAD_GL}")
 
 set(SOURCES
 	# App.cpp

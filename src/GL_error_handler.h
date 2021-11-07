@@ -8,13 +8,16 @@
 #define GLFW_INCLUDE_NONE
 #include <GLFW/glfw3.h>
 
+// #include <imgui/imgui.h>
+// #include <imgui/imgui_impl_glfw_gl3.h>
+
 /* Printing funtion fail*/
 void printGLErrors(const char* file, int line, const char* fun) {
 
 	GLenum err;
 
 	while ((err = glGetError()) != GL_NO_ERROR) {
-		std::cerr << "[" << file << ":" << line << "][ERROR:" << err << "] my_gl_checking - " << fun << "\n";
+		fprintf(stderr, "[%s:%d][ERROR:%d] MY_GL_CHECK - %s\n", &file[0], line, err, &fun[0]);
 	}
 }
 

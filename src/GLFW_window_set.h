@@ -40,10 +40,10 @@ int window_setup() {
 	/* Using OpenGL version 3.3.0 (major 3, minor 3) */
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-	// glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
 	/* Create a windowed mode window and its OpenGL context */
-	window = glfwCreateWindow(640, 480, "dont open", NULL, NULL);
+	window = glfwCreateWindow(640, 420, "dont open", NULL, NULL);
 
 	if (!window) {
 		glfwTerminate();
@@ -54,7 +54,7 @@ int window_setup() {
 	glfwMakeContextCurrent(window);
 	gladLoadGL(glfwGetProcAddress);
 	glfwSwapInterval(1);
-	
+
 	// We have this scope so we don't have to make everything pointers or new and then delete
 	{
 		float positions[] = {
@@ -98,11 +98,11 @@ int window_setup() {
 		shader.setUniform4f("u_color", 0.7f, 0.0f, 0.7f, 1.0f);
 
 	#ifdef _WIN32
-		Texture texture("../../src/Textures/maxresdefault.jpg");
+		Texture texture("../../src/Textures/tester.jpg");
 	#endif
 
 	#ifdef __linux__
-		Texture texture("../../src/Textures/maxresdefault.jpg");
+		Texture texture("../src/Textures/tester.jpg");
 	#endif
 
 		texture.bind();
