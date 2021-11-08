@@ -17,9 +17,6 @@
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
 
-#include "glm.hpp"
-#include "gtc/matrix_transform.hpp"
-
 #include "GL_error_handler.h"
 #include "GL_shader.h"
 #include "GL_texture.h"
@@ -35,6 +32,9 @@ const char* gl_version = "#version 330";
 
 int window_setup() {
 
+	const int width = {770};
+	const int hight = {420};
+
 	GLFWwindow* window;
 
 	/* Initialize the library */
@@ -48,7 +48,7 @@ int window_setup() {
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
 	/* Create a windowed mode window and its OpenGL context */
-	window = glfwCreateWindow(690, 420, "dont open", NULL, NULL);
+	window = glfwCreateWindow(width, hight, "dont open", NULL, NULL);
 
 	if (!window) {
 		glfwTerminate();
@@ -63,10 +63,10 @@ int window_setup() {
 	// We have this scope so we don't have to make everything pointers or new and then delete
 	{
 		float positions[] = {
-			-0.5f, -0.5f, 0.0f, 0.0f,    // 0
-			 0.5f, -0.5f, 1.0f, 0.0f,    // 1
-			 0.5f,  0.5f, 1.0f, 1.0f,    // 2
-			-0.5f,  0.5f, 0.0f, 1.0f     // 3
+			100.0f, 100.0f, 0.0f, 0.0f,    // 0
+			200.0f, 100.0f, 1.0f, 0.0f,    // 1
+			200.0f, 200.0f, 1.0f, 1.0f,    // 2
+			100.0f, 200.0f, 0.0f, 1.0f     // 3
 		};
 
 		unsigned int indices[]  = {
@@ -89,8 +89,6 @@ int window_setup() {
 		vertex_array.addBuffer(vertex_buffer, layout);
 		
 		IndexBuffer index_buffer(indices, 6);
-
-		glm::mat4 prj = glm::ortho(-2.0f, 2.0f, -1.5f, 1.5f, -1.0f, 1.0f);
 
 	#ifdef _WIN32
 		Shader shader("../../src/Shaders/vertexShader.shader", "../../src/Shaders/fragmentShader.shader");
@@ -121,6 +119,12 @@ int window_setup() {
 
 		Renderer renderer;
 
+		// Sets: (left, right, bottom, top, -, -)
+		glm::mat4 projection = glm::ortho(0.0f, (float) width, 0.0f, (float) hight, -1.0f, 1.0f);
+		glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(-100, 0, 0));
+
+		glm::vec3 translation(200,200,0);
+
 		float r = 0.0f;
 		float inc = 0.0f;
 
@@ -144,8 +148,12 @@ int window_setup() {
 			ImGui_ImplGlfw_NewFrame();
 			ImGui::NewFrame();
 
+			glm::mat4 model = glm::translate(glm::mat4(1.0f),translation);
+			glm::mat4 mvp = projection * view * model;
+
 			shader.bind();
 			shader.setUniform4f("u_color", r, 1.0f, 0.7f, 1.0f);
+			shader.setUniformMat4f("u_MVP", mvp);
 
 			renderer.draw(vertex_array, index_buffer, shader);
 
@@ -154,7 +162,7 @@ int window_setup() {
 			r += inc;
 
 			ImGui::Begin("imy");
-			ImGui::SliderFloat("float", &r, 0.0f, 0.0f);    // Edit 1 float using a slider from 0.0f to 1.0f
+			ImGui::SliderFloat3("Translation", &translation.x, 0.0f, 0.0f);    // Edit 1 float using a slider from 0.0f to 1.0f
 
 			ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 			ImGui::End();

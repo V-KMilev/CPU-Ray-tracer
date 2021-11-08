@@ -50,6 +50,13 @@ class Shader {
 			MY_GL_CHECK(glUniform1i(location, i0));
 		}
 
+		void setUniformMat4f(const std::string &uniform_name, const glm::mat4 &matrix) {
+
+			int location = getUniformLocation(uniform_name);
+
+			MY_GL_CHECK(glUniformMatrix4fv(location, 1, GL_FALSE, &matrix[0][0]));
+		}
+
 	private:
 		int getUniformLocation(const std::string &name) {
 			// If location already exist we just reuse it
