@@ -12,7 +12,6 @@ find_package(OpenGL REQUIRED)
 
 add_subdirectory(
 	"${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/glfw"
-	# "${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/imgui"
 )
 	
 set(GLAD_GL
