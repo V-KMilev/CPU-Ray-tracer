@@ -13,20 +13,25 @@
 
 #include <iostream>
 
+#include "imgui.h"
+#include "imgui_impl_glfw.h"
+#include "imgui_impl_opengl3.h"
+
+#include "glm.hpp"
+#include "gtc/matrix_transform.hpp"
+
 #include "GL_error_handler.h"
-
-#include "GL_vertex_buffer_layout.h"
-#include "GL_vertex_buffer.h"
-#include "GL_index_buffer.h"
-#include "GL_vertex_array.h"
 #include "GL_shader.h"
-
 #include "GL_texture.h"
-
 #include "GL_renderer.h"
+#include "GL_vertex_array.h"
+#include "GL_index_buffer.h"
+#include "GL_vertex_buffer.h"
+#include "GL_vertex_buffer_layout.h"
 
 #include "Utility_functions.h"
 
+const char* gl_version = "#version 330";
 
 int window_setup() {
 
@@ -43,7 +48,7 @@ int window_setup() {
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
 	/* Create a windowed mode window and its OpenGL context */
-	window = glfwCreateWindow(640, 420, "dont open", NULL, NULL);
+	window = glfwCreateWindow(690, 420, "dont open", NULL, NULL);
 
 	if (!window) {
 		glfwTerminate();
@@ -69,7 +74,7 @@ int window_setup() {
 			2, 3, 0
 		};
 
-		MY_GL_CHECK(glEnable(GL_DEPTH_TEST));
+		// MY_GL_CHECK(glEnable(GL_DEPTH_TEST));
 		MY_GL_CHECK(glEnable(GL_BLEND));
 		MY_GL_CHECK(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
 
@@ -85,6 +90,7 @@ int window_setup() {
 		
 		IndexBuffer index_buffer(indices, 6);
 
+		glm::mat4 prj = glm::ortho(-2.0f, 2.0f, -1.5f, 1.5f, -1.0f, 1.0f);
 
 	#ifdef _WIN32
 		Shader shader("../../src/Shaders/vertexShader.shader", "../../src/Shaders/fragmentShader.shader");
@@ -113,29 +119,49 @@ int window_setup() {
 		index_buffer.unbind();
 		shader.unbind();
 
+		Renderer renderer;
+
 		float r = 0.0f;
-		float increment = 0.5f;
+		float inc = 0.0f;
+
+		/* ImGui Setup */
+		IMGUI_CHECKVERSION();
+		ImGui::CreateContext();
+		ImGuiIO& io = ImGui::GetIO(); (void)io;
+		ImGui::StyleColorsDark();
+
+		ImGui_ImplGlfw_InitForOpenGL(window, true);
+		ImGui_ImplOpenGL3_Init(gl_version);
 
 		/* Loop until the user closes the window */
 		while (!glfwWindowShouldClose(window)) {
 
 			/* Render here */
-			Renderer renderer;
-
 			renderer.clear();
+
+			/* ImGui New Frame */
+			ImGui_ImplOpenGL3_NewFrame();
+			ImGui_ImplGlfw_NewFrame();
+			ImGui::NewFrame();
 
 			shader.bind();
 			shader.setUniform4f("u_color", r, 1.0f, 0.7f, 1.0f);
 
 			renderer.draw(vertex_array, index_buffer, shader);
 
-			if(r > 1.0f) {
-				increment = -0.01f;
-			} else if( r < 0.0f) {
-				increment = 0.01f;
-			}
+			if(r > 1.0f) { inc += -0.01f; }
+			else if( r < 0.01f) { inc += 0.01f; }
+			r += inc;
 
-			r += increment;
+			ImGui::Begin("imy");
+			ImGui::SliderFloat("float", &r, 0.0f, 0.0f);    // Edit 1 float using a slider from 0.0f to 1.0f
+
+			ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+			ImGui::End();
+
+			/* ImGui Render */
+			ImGui::Render();
+			ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
 			/* Swap front and back buffers */
 			glfwSwapBuffers(window);
@@ -144,6 +170,12 @@ int window_setup() {
 			glfwPollEvents();
 		}
 	}
+
+	/* ImGui Shutdown */
+	ImGui_ImplOpenGL3_Shutdown();
+	ImGui_ImplGlfw_Shutdown();
+	ImGui::DestroyContext();
+
 	glfwTerminate();
 
 	return 0;

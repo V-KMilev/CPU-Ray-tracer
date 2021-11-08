@@ -13,7 +13,8 @@ class Renderer {
 		~Renderer() {}
 
 		void clear() const {
-			MY_GL_CHECK(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
+			// MY_GL_CHECK(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
+			MY_GL_CHECK(glClear(GL_COLOR_BUFFER_BIT));
 		}
 
 		void draw(VertexArray &vertex_array, IndexBuffer &index_buffer, Shader &shader) const {

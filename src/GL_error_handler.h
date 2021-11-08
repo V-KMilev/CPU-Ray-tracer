@@ -8,7 +8,6 @@
 #define GLFW_INCLUDE_NONE
 #include <GLFW/glfw3.h>
 
-
 /* Printing funtion fail*/
 void printGLErrors(const char* file, int line, const char* fun) {
 
