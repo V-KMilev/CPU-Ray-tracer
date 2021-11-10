@@ -43,6 +43,26 @@ set(GLM
 	"${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/glm/glm"
 )
 
+set(MY_BACKEND_DIR
+	"${CMAKE_CURRENT_SOURCE_DIR}/backend"
+)
+
+set(MY_GL_DIR
+	"${CMAKE_CURRENT_SOURCE_DIR}/myGL"
+)
+
+set(MY_TESTS_DIR
+	"${CMAKE_CURRENT_SOURCE_DIR}/tests"
+)
+
+set(MY_SHADERS_DIR
+	"${CMAKE_CURRENT_SOURCE_DIR}/Shaders"
+)
+
+set(MY_TEXTURES_DIR
+	"${CMAKE_CURRENT_SOURCE_DIR}/Textures"
+)
+
 message(INFO " ========================================= ${GLAD_GL}")
 
 set(SOURCES
@@ -60,12 +80,21 @@ add_definitions(-D_CRT_SECURE_NO_WARNINGS)
 add_executable(Tutorial ${SOURCES})
 
 target_include_directories(${PROJECT_NAME} PUBLIC
-	"${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/STB/include"
 	"${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/glfw/include"
 	"${GLFW_SOURCE_DIR}/deps"
+
+	"${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/glm/glm"
+
 	"${IMGUI_DIR}"
 	"${IMGUI_DIR}/backends"
-	"${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/glm/glm"
+
+	"${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/STB/include"
+
+	"${MY_BACKEND_DIR}"
+	"${MY_GL_DIR}"
+	"${MY_TESTS_DIR}"
+	"${MY_SHADERS_DIR}"
+	"${MY_TEXTURES_DIR}"
 )
 
 target_link_libraries(${PROJECT_NAME} PUBLIC # Don't change the postions of the libraries!

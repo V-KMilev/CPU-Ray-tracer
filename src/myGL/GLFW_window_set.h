@@ -13,10 +13,6 @@
 
 #include <iostream>
 
-#include "imgui.h"
-#include "imgui_impl_glfw.h"
-#include "imgui_impl_opengl3.h"
-
 #include "GL_error_handler.h"
 #include "GL_shader.h"
 #include "GL_texture.h"
@@ -26,7 +22,8 @@
 #include "GL_vertex_buffer.h"
 #include "GL_vertex_buffer_layout.h"
 
-#include "Utility_functions.h"
+#include "TestClearColor.h"
+#include "TestTexture2D.h"
 
 const char* gl_version = "#version 330";
 
@@ -62,71 +59,10 @@ int window_setup() {
 
 	// We have this scope so we don't have to make everything pointers or new and then delete
 	{
-		float positions[] = {
-			100.0f, 100.0f, 0.0f, 0.0f,    // 0
-			200.0f, 100.0f, 1.0f, 0.0f,    // 1
-			200.0f, 200.0f, 1.0f, 1.0f,    // 2
-			100.0f, 200.0f, 0.0f, 1.0f     // 3
-		};
-
-		unsigned int indices[]  = {
-			0, 1, 2,
-			2, 3, 0
-		};
-
-		// MY_GL_CHECK(glEnable(GL_DEPTH_TEST));
+		/* GL basic funtions sets*/
+		MY_GL_CHECK(glEnable(GL_DEPTH_TEST));
 		MY_GL_CHECK(glEnable(GL_BLEND));
 		MY_GL_CHECK(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
-
-		VertexArray vertex_array;
-		VertexBufferLayout layout;
-
-		VertexBuffer vertex_buffer(positions, 4 * 4 * sizeof(float));
-
-		layout.push<float>(2);
-		layout.push<float>(2);
-		
-		vertex_array.addBuffer(vertex_buffer, layout);
-		
-		IndexBuffer index_buffer(indices, 6);
-
-	#ifdef _WIN32
-		Shader shader("../../src/Shaders/vertexShader.shader", "../../src/Shaders/fragmentShader.shader");
-	#endif
-
-	#ifdef __linux__
-		Shader shader("../src/Shaders/vertexShader.shader", "../src/Shaders/fragmentShader.shader");
-	#endif
-
-		shader.bind();
-		shader.setUniform4f("u_color", 0.7f, 0.0f, 0.7f, 1.0f);
-
-	#ifdef _WIN32
-		Texture texture("../../src/Textures/tester.jpg");
-	#endif
-
-	#ifdef __linux__
-		Texture texture("../src/Textures/tester.jpg");
-	#endif
-
-		texture.bind();
-		shader.setUniform1i("u_Texture", 0);
-
-		vertex_array.unbind();
-		vertex_buffer.unbind();
-		index_buffer.unbind();
-		shader.unbind();
-
-		Renderer renderer;
-
-		// Sets: (left, right, bottom, top, -, -)
-		glm::mat4 projection = glm::ortho(0.0f, (float) width, 0.0f, (float) hight, -1.0f, 1.0f);
-		glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(-100, 0, 0));
-
-		glm::vec3 translation(200,200,0);
-
-		float r = 0.0f;
-		float inc = 0.0f;
 
 		/* ImGui Setup */
 		IMGUI_CHECKVERSION();
@@ -137,35 +73,41 @@ int window_setup() {
 		ImGui_ImplGlfw_InitForOpenGL(window, true);
 		ImGui_ImplOpenGL3_Init(gl_version);
 
+		Renderer renderer;
+
+		test::Test* currentTest = nullptr;
+		test::TestManu* testMenu = new test::TestManu(currentTest);
+		currentTest = testMenu;
+
+		testMenu->registerTest<test::TestClearColor>("clear color");
+		testMenu->registerTest<test::TestTexture2D>("texture");
+
 		/* Loop until the user closes the window */
 		while (!glfwWindowShouldClose(window)) {
 
 			/* Render here */
 			renderer.clear();
+			renderer.clearColor();
 
 			/* ImGui New Frame */
 			ImGui_ImplOpenGL3_NewFrame();
 			ImGui_ImplGlfw_NewFrame();
 			ImGui::NewFrame();
 
-			glm::mat4 model = glm::translate(glm::mat4(1.0f),translation);
-			glm::mat4 mvp = projection * view * model;
+			if(currentTest) {
+				currentTest->onUpdate(0.0f);
+				currentTest->onRender();
 
-			shader.bind();
-			shader.setUniform4f("u_color", r, 1.0f, 0.7f, 1.0f);
-			shader.setUniformMat4f("u_MVP", mvp);
+				ImGui::Begin("Test");
+				if(currentTest != testMenu && ImGui::Button("<<")) {
+					
+					delete currentTest;
+					currentTest = testMenu;
+				}
 
-			renderer.draw(vertex_array, index_buffer, shader);
-
-			if(r > 1.0f) { inc += -0.01f; }
-			else if( r < 0.01f) { inc += 0.01f; }
-			r += inc;
-
-			ImGui::Begin("imy");
-			ImGui::SliderFloat3("Translation", &translation.x, 0.0f, 0.0f);    // Edit 1 float using a slider from 0.0f to 1.0f
-
-			ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-			ImGui::End();
+				currentTest->onImGuiRender();
+				ImGui::End();
+			}
 
 			/* ImGui Render */
 			ImGui::Render();
@@ -177,6 +119,8 @@ int window_setup() {
 			/* Poll for and process events */
 			glfwPollEvents();
 		}
+		delete currentTest;
+		if(currentTest != testMenu) { delete testMenu; }
 	}
 
 	/* ImGui Shutdown */

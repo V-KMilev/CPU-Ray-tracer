@@ -1,7 +1,7 @@
 #include <iostream>
 
-#include "Utility_functions.h"
 #include "GLFW_window_set.h"
+#include "Utility_functions.h"
 
 const float E = 1e-3f;
 
