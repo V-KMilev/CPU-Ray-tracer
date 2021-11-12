@@ -7,9 +7,11 @@
 
 #include "r_stb_image.h"
 
-class Texture {
+#define STBI_ONLY_PNM
+
+class MyGLTexture {
 	public:
-		Texture(const std::string &file_name) : my_ID(0), my_local_buffer(nullptr), width(0), height(0), components_per_pixel(0) {
+		MyGLTexture(const std::string &file_name) : my_ID(0), my_local_buffer(nullptr), width(0), height(0), components_per_pixel(0) {
 			// OGL starts its textures form the bottom so we need to flip out
 			stbi_set_flip_vertically_on_load(1);
 
@@ -39,7 +41,7 @@ class Texture {
 			}
 		}
 
-		~Texture() {
+		~MyGLTexture() {
 			MY_GL_CHECK(glDeleteTextures(1, &my_ID));
 		}
 

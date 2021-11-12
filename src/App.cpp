@@ -84,7 +84,13 @@ int main(int argc, char **argv) {
 	pool.master_wait();
 
 	/* OUT STREAM: */
-	std::ofstream out("RTout.ppm");
+	#ifdef _WIN32
+		std::ofstream out("../../src/Textures/RTout.ppm");
+	#endif
+
+	#ifdef __linux__
+		std::ofstream out("../src/Textures/RTout.ppm");
+	#endif
 
 	/* FILE WRITE: */
 	file_write(out, pixels, image_width, image_height);

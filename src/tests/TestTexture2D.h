@@ -51,12 +51,12 @@ namespace test {
 
 				#ifdef _WIN32
 					my_shader = std::make_unique<Shader>("../../src/Shaders/vertexShader.shader", "../../src/Shaders/fragmentShader.shader");
-					my_texture = std::make_unique<Texture>("../../src/Textures/tester.jpg");
+					my_texture = std::make_unique<MyGLTexture>("../../src/Textures/tester.jpg");
 				#endif
 
 				#ifdef __linux__
 					my_shader = std::make_unique<Shader>("../src/Shaders/vertexShader.shader", "../src/Shaders/fragmentShader.shader");
-					my_texture = std::make_unique<Texture>("../src/Textures/tester.jpg");
+					my_texture = std::make_unique<MyGLTexture>("../src/Textures/tester.jpg");
 				#endif
 
 				my_shader->setUniform1i("u_Texture", 0);
@@ -107,7 +107,7 @@ namespace test {
 			std::unique_ptr<VertexBuffer> my_vertex_buffer;
 			std::unique_ptr<IndexBuffer> my_index_buffer;
 			std::unique_ptr<Shader> my_shader;
-			std::unique_ptr<Texture> my_texture;
+			std::unique_ptr<MyGLTexture> my_texture;
 
 			glm::vec3 my_translation0;
 			glm::vec3 my_translation1;
