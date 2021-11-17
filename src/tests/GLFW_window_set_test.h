@@ -78,7 +78,7 @@ int window_setup() {
 		Renderer renderer;
 
 		test::Test* currentTest = nullptr;
-		test::TestManu* testMenu = new test::TestManu(currentTest);
+		test::TestMenu* testMenu = new test::TestMenu(currentTest);
 		currentTest = testMenu;
 
 		testMenu->registerTest<test::TestClearColor>("clear color");

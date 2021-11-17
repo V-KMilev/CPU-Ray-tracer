@@ -11,10 +11,6 @@
 #include "glm.hpp"
 #include "gtc/matrix_transform.hpp"
 
-#include "imgui.h"
-#include "imgui_impl_glfw.h"
-#include "imgui_impl_opengl3.h"
-
 /* Printing funtion fail */
 void printGLErrors(const char* file, int line, const char* fun) {
 

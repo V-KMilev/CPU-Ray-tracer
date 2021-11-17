@@ -25,6 +25,8 @@
 #include "TestClearColor.h"
 #include "TestTexture2D.h"
 
+#include "Imgui_controls.h"
+
 const char* gl_version = "#version 330";
 
 int window_setup(std::vector<Color> pixels) {
@@ -118,14 +120,7 @@ int window_setup(std::vector<Color> pixels) {
 
 		glm::vec3 translation(0,0,0);
 
-		/* ImGui Setup */
-		IMGUI_CHECKVERSION();
-		ImGui::CreateContext();
-		ImGuiIO& io = ImGui::GetIO(); (void)io;
-		ImGui::StyleColorsDark();
-
-		ImGui_ImplGlfw_InitForOpenGL(window, true);
-		ImGui_ImplOpenGL3_Init(gl_version);
+		imGuiSetup(window, gl_version);
 
 		/* Loop until the user closes the window */
 		while (!glfwWindowShouldClose(window)) {
@@ -135,10 +130,7 @@ int window_setup(std::vector<Color> pixels) {
 
 			MY_GL_CHECK(glClearColor(0.7f, 0.0f, 0.7f, 1.0f));
 
-			/* ImGui New Frame */
-			ImGui_ImplOpenGL3_NewFrame();
-			ImGui_ImplGlfw_NewFrame();
-			ImGui::NewFrame();
+			imGuiNewframe();
 
 			{
 				glm::mat4 model = glm::translate(glm::mat4(1.0f),translation);
@@ -149,10 +141,10 @@ int window_setup(std::vector<Color> pixels) {
 
 				renderer.draw(vertex_array, index_buffer, shader);
 
-				/* ImGui Render */
-				ImGui::Render();
-				ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+				imGuiContent();
 			}
+
+			imGuiRender();
 
 			/* Swap front and back buffers */
 			glfwSwapBuffers(window);
@@ -162,10 +154,7 @@ int window_setup(std::vector<Color> pixels) {
 		}
 	}
 
-	/* ImGui Shutdown */
-	ImGui_ImplOpenGL3_Shutdown();
-	ImGui_ImplGlfw_Shutdown();
-	ImGui::DestroyContext();
+	imGuiShutdown();
 
 	glfwTerminate();
 

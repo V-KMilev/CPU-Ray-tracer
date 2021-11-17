@@ -2,6 +2,10 @@
 
 #include "GL_error_handler.h"
 
+#include "imgui.h"
+#include "imgui_impl_glfw.h"
+#include "imgui_impl_opengl3.h"
+
 #include <vector>
 #include <functional>
 
@@ -21,10 +25,10 @@ namespace test {
 		private:
 	};
 
-	class TestManu : public Test {
+	class TestMenu : public Test {
 		public:
-			TestManu(Test* &current_test) : my_current_test(current_test){}
-			~TestManu() {}
+			TestMenu(Test* &current_test) : my_current_test(current_test){}
+			~TestMenu() {}
 
 			void onImGuiRender() override {
 				for (std::pair<std::string, std::function<Test*()>> &test : my_tests) {

@@ -27,14 +27,18 @@
 #define RES_2K 2048
 #define RES_4K 3840
 
-const float aspect_ratio = {16.0 / 9.0};                                    // Image: Aspect ratio: resolution
-const int image_width = {RES_TEST};                                         // Image: Width
-const int image_height = {static_cast<int>(image_width / aspect_ratio)};    // Image: Height
 
-const int samples_per_pixel = {10};                                        // Rays per pixel
-const int max_depth = {2};                                                 // Ray bounce limit per pixel
+/* Basic parameters */
+float aspect_ratio = {16.0 / 9.0};                                    // Image: Aspect ratio: resolution
+int image_width = {RES_TEST};                                         // Image: Width
+int image_height = {static_cast<int>(image_width / aspect_ratio)};    // Image: Height
 
-std::vector<Color> pixels(image_width * image_height);                      // Image: output pixels
+int samples_per_pixel = {77};                                         // Rays per pixel
+int max_depth = {3};                                                  // Ray bounce limit per pixel
+
+std::vector<Color> pixels(image_width * image_height);                // Image: output pixels
+
+
 
 shared_ptr<Material> image_material(const char *image_name) {
 	shared_ptr<Texture> image = make_shared<Image_Texture>(image_name);
@@ -139,10 +143,10 @@ Camera get_camera(const float aspect_ratio) {
 const Hittable_list world = get_scene();
 
 /* CAMERA: */
-const Camera camera = get_camera(aspect_ratio);
+Camera camera = get_camera(aspect_ratio);
 
 /* BACKGROUND: (0.5, 0.0, 0.5) */
-const Color background(0.0, 0.0, 0.0);
+Color background(0.0, 0.0, 0.0);
 
 // 7680
 // 1337
