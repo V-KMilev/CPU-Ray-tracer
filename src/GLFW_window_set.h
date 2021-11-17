@@ -27,8 +27,7 @@
 
 const char* gl_version = "#version 330";
 
-
-int window_setup() {
+int window_setup(std::vector<Color> pixels) {
 
 	GLFWwindow* window;
 
@@ -37,9 +36,6 @@ int window_setup() {
 		return -1;
 	}
 
-	int width = glfwGetVideoMode(glfwGetPrimaryMonitor())->width;
-	int height = glfwGetVideoMode(glfwGetPrimaryMonitor())->height;
-
 	/* Using OpenGL version 3.3.0 (major 3, minor 3) */
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
@@ -47,9 +43,9 @@ int window_setup() {
 
 	/* Create a windowed mode window and its OpenGL context */
 	window = glfwCreateWindow(
-		width, height,
+		image_width, image_height,
 		"dont open",
-		glfwGetPrimaryMonitor(),    // nullpyr is not fullsrean
+		nullptr,    // glfwGetPrimaryMonitor to set fullsrean
 		nullptr
 	);
 
@@ -69,10 +65,10 @@ int window_setup() {
 		MY_GL_CHECK(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
 
 		float positions[] = {
-			0.0f         , 0.0f          , 0.0f, 0.0f,    // 0
-			(float) width, 0.0f          , 1.0f, 0.0f,    // 1
-			(float) width, (float) height, 1.0f, 1.0f,    // 2
-			0.0f         , (float) height, 0.0f, 1.0f     // 3
+			0.0f               , 0.0f                , 0.0f, 0.0f,    // 0
+			(float) image_width, 0.0f                , 1.0f, 0.0f,    // 1
+			(float) image_width, (float) image_height, 1.0f, 1.0f,    // 2
+			0.0f               , (float) image_height, 0.0f, 1.0f     // 3
 		};
 
 		unsigned int indices[]  = {
@@ -93,14 +89,14 @@ int window_setup() {
 		IndexBuffer index_buffer(indices, 6);
 
 		#ifdef _WIN32
-			MyGLTexture texture("../../src/Textures/RTout.ppm");
 			Shader shader("../../src/Shaders/vertexShader.shader", "../../src/Shaders/fragmentShader.shader");
 		#endif
 
 		#ifdef __linux__
-			MyGLTexture texture("../src/Textures/RTout.ppm");
 			Shader shader("../src/Shaders/vertexShader.shader", "../src/Shaders/fragmentShader.shader");
 		#endif
+
+		MyGLTexture texture(GL_RGB32F, image_width, image_height, GL_RGB, GL_FLOAT, &pixels[0]);
 
 		texture.bind();
 		shader.bind();
@@ -115,8 +111,8 @@ int window_setup() {
 
 		// Sets: (left, right, bottom, top, -, -)
 		glm::mat4 projection = glm::ortho(
-			0.0f, (float) width,
-			0.0f, (float) height,
+			0.0f, (float) image_width,
+			0.0f, (float) image_height,
 			-1.0f, 1.0f);
 		glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(0, 0, 0));
 
@@ -137,7 +133,7 @@ int window_setup() {
 			/* Render here */
 			renderer.clear();
 
-			MY_GL_CHECK(glClearColor(1.0f, 0.0f, 0.0f, 1.0f));
+			MY_GL_CHECK(glClearColor(0.7f, 0.0f, 0.7f, 1.0f));
 
 			/* ImGui New Frame */
 			ImGui_ImplOpenGL3_NewFrame();

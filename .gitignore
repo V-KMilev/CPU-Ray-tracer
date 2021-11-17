@@ -1,5 +1,4 @@
 build/*
 .vscode/*
-workspace.code-workspace
 
-src/Textures/RTout.ppm
+workspace.code-workspace

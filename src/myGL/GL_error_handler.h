@@ -15,7 +15,7 @@
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
 
-/* Printing funtion fail*/
+/* Printing funtion fail */
 void printGLErrors(const char* file, int line, const char* fun) {
 
 	GLenum err;
@@ -25,7 +25,7 @@ void printGLErrors(const char* file, int line, const char* fun) {
 	}
 }
 
-/* do-while so we can execute MY_GL_CHECK, and we don't have to remove the ';' at the end of the function to which we call MY_GL_CHECK*/
+/* do-while so we can execute MY_GL_CHECK, and we don't have to remove the ';' at the end of the function to which we call MY_GL_CHECK */
 #define MY_GL_CHECK(MyFunction)                        \
 do {                                                   \
 	MyFunction;                                        \

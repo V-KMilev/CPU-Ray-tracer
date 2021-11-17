@@ -6,7 +6,7 @@ namespace test {
 
 	class TestClearColor : public Test {
 		public:
-			TestClearColor() : my_clear_color{ 1.0f, 0.0f, 0.0f, 1.0f} {}
+			TestClearColor() : my_clear_color{ 0.7f, 0.0f, 0.7f, 1.0f} {}
 			~TestClearColor() {}
 
 			void onUpdate(float delta_time) override {}

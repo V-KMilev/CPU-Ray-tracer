@@ -41,6 +41,32 @@ class MyGLTexture {
 			}
 		}
 
+		MyGLTexture(
+			unsigned int internalFormat,
+			unsigned int width,
+			unsigned int height,
+			unsigned int format,
+			unsigned int type,
+			void *data
+		) {
+			// OGL starts its textures form the bottom so we need to flip out
+			// Set to flip the data properly (vertically not horizontally)
+			stbi__vertical_flip(data, width, height, sizeof(float) * 3);
+
+			MY_GL_CHECK(glGenTextures(1, &my_ID));
+			MY_GL_CHECK(glBindTexture(GL_TEXTURE_2D, my_ID));
+
+			MY_GL_CHECK(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR));
+			MY_GL_CHECK(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR));
+			MY_GL_CHECK(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE));    // GL_TEXTURE_WRAP_S: horizontal
+			MY_GL_CHECK(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE));    // GL_TEXTURE_WRAP_T: vertical
+
+			// MY_GL_CHECK(glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, width, height, 0, type, GL_FLOAT, data));
+			MY_GL_CHECK(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_FLOAT, data));
+
+			MY_GL_CHECK(glBindTexture(GL_TEXTURE_2D, 0));
+		}
+
 		~MyGLTexture() {
 			MY_GL_CHECK(glDeleteTextures(1, &my_ID));
 		}

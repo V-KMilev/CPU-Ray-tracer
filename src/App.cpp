@@ -59,6 +59,7 @@ void file_write(std::ofstream &out, std::vector<Color> pixels, const int image_w
 	out << "P3\n" << image_width << " " << image_height << "\n255\n";
 
 	for (int idx = 0; idx < pixels.size(); idx++) {
+
 		out << static_cast<int>(256 * clamp(pixels[idx].getX(), 0.0f, 1.0f - epsilon)) << ' '
 			<< static_cast<int>(256 * clamp(pixels[idx].getY(), 0.0f, 1.0f - epsilon)) << ' '
 			<< static_cast<int>(256 * clamp(pixels[idx].getZ(), 0.0f, 1.0f - epsilon)) << '\n';
@@ -95,16 +96,18 @@ int main(int argc, char **argv) {
 	/* FILE WRITE: */
 	file_write(out, pixels, image_width, image_height);
 
+	window_setup(pixels);
+
 	/* TIME: */
-	{
-		std::cerr << "\n\n\rStart Time: " << ctime(&now_s);
+	// {
+	// 	std::cerr << "\n\n\rStart Time: " << ctime(&now_s);
 
-		time_t now_e = time(0);
-		std::cerr << "\rEnd   Time: " << ctime(&now_e);
+	// 	time_t now_e = time(0);
+	// 	std::cerr << "\rEnd   Time: " << ctime(&now_e);
 
-		float my_time = std::difftime(now_e, now_s);
-		std::cerr << "\rIn    Time: " << my_time / 60.0 << " min.\n";
-	}
+	// 	float my_time = std::difftime(now_e, now_s);
+	// 	std::cerr << "\rIn    Time: " << my_time / 60.0 << " min.\n";
+	// }
 
 	return 0;
 }

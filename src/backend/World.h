@@ -28,13 +28,13 @@
 #define RES_4K 3840
 
 const float aspect_ratio = {16.0 / 9.0};                                    // Image: Aspect ratio: resolution
-const int image_width = {RES_FULL_HD};                                         // Image: Width
+const int image_width = {RES_TEST};                                         // Image: Width
 const int image_height = {static_cast<int>(image_width / aspect_ratio)};    // Image: Height
 
 const int samples_per_pixel = {10};                                        // Rays per pixel
 const int max_depth = {2};                                                 // Ray bounce limit per pixel
 
-std::vector<Color> pixels(image_height * image_width);                      // Image: output pixels
+std::vector<Color> pixels(image_width * image_height);                      // Image: output pixels
 
 shared_ptr<Material> image_material(const char *image_name) {
 	shared_ptr<Texture> image = make_shared<Image_Texture>(image_name);

@@ -70,8 +70,8 @@ set(SOURCES
 	${IMGUI}
 	${GLM}
 
-	# App.cpp
-	Test.cpp
+	App.cpp
+	# Test.cpp
 )
 
 add_definitions(-D_CRT_SECURE_NO_WARNINGS)
