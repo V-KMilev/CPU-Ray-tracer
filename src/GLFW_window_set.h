@@ -85,7 +85,7 @@ int window_setup(std::vector<Color> pixels) {
 
 		layout.push<float>(2);
 		layout.push<float>(2);
-		
+
 		vertex_array.addBuffer(vertex_buffer, layout);
 		
 		IndexBuffer index_buffer(indices, 6);
@@ -115,12 +115,14 @@ int window_setup(std::vector<Color> pixels) {
 		glm::mat4 projection = glm::ortho(
 			0.0f, (float) image_width,
 			0.0f, (float) image_height,
-			-1.0f, 1.0f);
+			-1.0f, 1.0f
+		);
 		glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(0, 0, 0));
 
 		glm::vec3 translation(0,0,0);
 
-		imGuiSetup(window, gl_version);
+		myImGui myImGui;
+		myImGui.setup(window, gl_version);
 
 		/* Loop until the user closes the window */
 		while (!glfwWindowShouldClose(window)) {
@@ -128,9 +130,9 @@ int window_setup(std::vector<Color> pixels) {
 			/* Render here */
 			renderer.clear();
 
-			MY_GL_CHECK(glClearColor(0.7f, 0.0f, 0.7f, 1.0f));
+			MY_GL_CHECK(glClearColor(0.5f, 0.0f, 0.5f, 1.0f));
 
-			imGuiNewframe();
+			myImGui.newFrame();
 
 			{
 				glm::mat4 model = glm::translate(glm::mat4(1.0f),translation);
@@ -141,10 +143,10 @@ int window_setup(std::vector<Color> pixels) {
 
 				renderer.draw(vertex_array, index_buffer, shader);
 
-				imGuiContent();
+				myImGui.content();
 			}
 
-			imGuiRender();
+			myImGui.render();
 
 			/* Swap front and back buffers */
 			glfwSwapBuffers(window);
@@ -152,9 +154,8 @@ int window_setup(std::vector<Color> pixels) {
 			/* Poll for and process events */
 			glfwPollEvents();
 		}
+		myImGui.shutdown();
 	}
-
-	imGuiShutdown();
 
 	glfwTerminate();
 
