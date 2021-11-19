@@ -91,8 +91,8 @@ class myImGui {
 			colors[ImGuiCol_TitleBgActive]           = ImVec4(0.7f, 0.0f, 0.3f, 1.0f);
 			colors[ImGuiCol_TitleBg]                 = ImVec4(0.6f, 0.0f, 0.3f, 1.0f);
 
-			colors[ImGuiCol_Button]                  = ImVec4(0.8f, 0.0f, 0.3f, 1.0f);
-			colors[ImGuiCol_ButtonHovered]           = ImVec4(0.7f, 0.0f, 0.3f, 1.0f);
+			colors[ImGuiCol_Button]                  = ImVec4(0.7f, 0.0f, 0.3f, 1.0f);
+			colors[ImGuiCol_ButtonHovered]           = ImVec4(0.6f, 0.0f, 0.3f, 1.0f);
 			colors[ImGuiCol_ButtonActive]            = ImVec4(1.0f, 0.0f, 0.3f, 1.0f);
 
 			colors[ImGuiCol_SliderGrab]              = ImVec4(0.7f, 0.0f, 0.3f, 1.0f);
@@ -104,7 +104,7 @@ class myImGui {
 
 			colors[ImGuiCol_ScrollbarBg]             = ImVec4(0.2f, 0.0f, 0.1f, 1.0f);
 			colors[ImGuiCol_ScrollbarGrab]           = ImVec4(0.6f, 0.0f, 0.2f, 1.0f);
-			colors[ImGuiCol_ScrollbarGrabHovered]    = ImVec4(0.6f, 0.0f, 0.2f, 1.0f);
+			colors[ImGuiCol_ScrollbarGrabHovered]    = ImVec4(0.7f, 0.0f, 0.2f, 1.0f);
 			colors[ImGuiCol_ScrollbarGrabActive]     = ImVec4(0.7f, 0.0f, 0.3f, 1.0f);
 
 			colors[ImGuiCol_ResizeGrip]              = ImVec4(0.6f, 0.0f, 0.3f, 1.0f);
