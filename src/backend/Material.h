@@ -6,6 +6,7 @@
 
 #include "Ray.h"
 #include "Vec.h"
+#include "Color.h"
 
 struct hit_record;
 

@@ -27,9 +27,23 @@
 
 #include "Imgui_controls.h"
 
+#include "Render.h"
+#include "File_write.h"
+
 const char* gl_version = "#version 330";
 
-int window_setup(std::vector<Color> pixels) {
+// Sets: (left, right, bottom, top, -, -)
+glm::mat4 projection = glm::ortho(
+	0.0f, (float) image_width,
+	0.0f, (float) image_height,
+	-1.0f, 1.0f
+);
+// Set triangle positions scale
+glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(0, 0, 0));
+glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(0, 0, 0));
+glm::mat4 mvp = projection * view * model;
+
+int window_setup() {
 
 	GLFWwindow* window;
 
@@ -51,10 +65,7 @@ int window_setup(std::vector<Color> pixels) {
 		nullptr
 	);
 
-	if (!window) {
-		glfwTerminate();
-		return -1;
-	}
+	if (!window) { glfwTerminate(); return -1; }
 
 	/* Make the window's context current */
 	glfwMakeContextCurrent(window);
@@ -67,10 +78,10 @@ int window_setup(std::vector<Color> pixels) {
 		MY_GL_CHECK(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
 
 		float positions[] = {
-			0.0f               , 0.0f                , 0.0f, 0.0f,    // 0
-			(float) image_width, 0.0f                , 1.0f, 0.0f,    // 1
-			(float) image_width, (float) image_height, 1.0f, 1.0f,    // 2
-			0.0f               , (float) image_height, 0.0f, 1.0f     // 3
+			0.0f               , 0.0f                , 0.0f, 1.0f,    // 0
+			(float) image_width, 0.0f                , 1.0f, 1.0f,    // 1
+			(float) image_width, (float) image_height, 1.0f, 0.0f,    // 2
+			0.0f               , (float) image_height, 0.0f, 0.0f     // 3
 		};
 
 		unsigned int indices[]  = {
@@ -87,7 +98,7 @@ int window_setup(std::vector<Color> pixels) {
 		layout.push<float>(2);
 
 		vertex_array.addBuffer(vertex_buffer, layout);
-		
+
 		IndexBuffer index_buffer(indices, 6);
 
 		#ifdef _WIN32
@@ -98,11 +109,13 @@ int window_setup(std::vector<Color> pixels) {
 			Shader shader("../src/Shaders/vertexShader.shader", "../src/Shaders/fragmentShader.shader");
 		#endif
 
-		MyGLTexture texture(GL_RGB32F, image_width, image_height, GL_RGB, GL_FLOAT, &pixels[0]);
+		MyGLTexture texture("../src/Textures/tester.jpg");
+		// MyGLTexture texture(GL_RGB32F, image_width, image_height, GL_RGB, GL_FLOAT, &pixels[0]);
+		// texture.bind();
 
-		texture.bind();
 		shader.bind();
 		shader.setUniform1i("u_Texture", 0);
+		shader.setUniformMat4f("u_MVP", mvp);
 
 		vertex_array.unbind();
 		vertex_buffer.unbind();
@@ -111,35 +124,49 @@ int window_setup(std::vector<Color> pixels) {
 
 		Renderer renderer;
 
-		// Sets: (left, right, bottom, top, -, -)
-		glm::mat4 projection = glm::ortho(
-			0.0f, (float) image_width,
-			0.0f, (float) image_height,
-			-1.0f, 1.0f
-		);
-		glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(0, 0, 0));
-
-		glm::vec3 translation(0,0,0);
-
 		myImGui myImGui;
 		myImGui.setup(window, gl_version);
 
+		/* OUT STREAM: */
+		#ifdef _WIN32
+			std::ofstream out("../../src/Textures/RTout.ppm");
+		#endif
+
+		int frameNum = 0;
+
+		ThreadPool pool(MAX_NUMBER_OF_THREADS);
+		std::vector<Bucket> my_buckets = bucket_segmentation(image_width, image_height);
+
 		/* Loop until the user closes the window */
 		while (!glfwWindowShouldClose(window)) {
-
-			/* Render here */
+			/* OpenGL RENDER: */
 			renderer.clear();
 
 			MY_GL_CHECK(glClearColor(0.5f, 0.0f, 0.5f, 1.0f));
 
 			myImGui.newFrame();
 
+			/* RENDER: */
+			for (Bucket &my_bucket : my_buckets) {
+				pool.enter_queue(my_bucket);
+			}
+			pool.master_wait();
+
+			// char fileName[256] = {0};
+			// sprintf(fileName, "../src/Textures/RTout%d.ppm", frameNum);
+			// #ifdef __linux__
+			// 	std::ofstream out(fileName);
+			// #endif
+			// /* FILE WRITE: */
+			// file_write(out, pixels, image_width, image_height);
+			// frameNum++;
+
 			{
-				glm::mat4 model = glm::translate(glm::mat4(1.0f),translation);
-				glm::mat4 mvp = projection * view * model;
+				texture.update(GL_RGB32F, image_width, image_height, GL_RGB, GL_FLOAT, &pixels[0]);
+				texture.bind();
 
 				shader.bind();
-				shader.setUniformMat4f("u_MVP", mvp);
+				shader.setUniform1i("u_Texture", 0);
 
 				renderer.draw(vertex_array, index_buffer, shader);
 

@@ -61,7 +61,6 @@ class MyGLTexture {
 			MY_GL_CHECK(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE));    // GL_TEXTURE_WRAP_S: horizontal
 			MY_GL_CHECK(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE));    // GL_TEXTURE_WRAP_T: vertical
 
-			// MY_GL_CHECK(glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, width, height, 0, type, GL_FLOAT, data));
 			MY_GL_CHECK(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_FLOAT, data));
 
 			MY_GL_CHECK(glBindTexture(GL_TEXTURE_2D, 0));
@@ -69,6 +68,21 @@ class MyGLTexture {
 
 		~MyGLTexture() {
 			MY_GL_CHECK(glDeleteTextures(1, &my_ID));
+		}
+
+		void update(
+			unsigned int internalFormat,
+			unsigned int width,
+			unsigned int height,
+			unsigned int format,
+			unsigned int type,
+			void *data
+		) {
+			MY_GL_CHECK(glBindTexture(GL_TEXTURE_2D, my_ID));
+
+			MY_GL_CHECK(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_FLOAT, data));
+
+			MY_GL_CHECK(glBindTexture(GL_TEXTURE_2D, 0));
 		}
 
 		// If slot not specified = 0

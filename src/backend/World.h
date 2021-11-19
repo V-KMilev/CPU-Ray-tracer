@@ -20,25 +20,7 @@
 #include "Color.h"
 #include "Vec.h"
 #include "Ray.h"
-
-#define RES_TEST 800
-#define RES_HD 1080
-#define RES_FULL_HD 1920
-#define RES_2K 2048
-#define RES_4K 3840
-
-
-/* Basic parameters */
-float aspect_ratio = {16.0 / 9.0};                                    // Image: Aspect ratio: resolution
-int image_width = {RES_TEST};                                         // Image: Width
-int image_height = {static_cast<int>(image_width / aspect_ratio)};    // Image: Height
-
-int samples_per_pixel = {77};                                         // Rays per pixel
-int max_depth = {3};                                                  // Ray bounce limit per pixel
-
-std::vector<Color> pixels(image_width * image_height);                // Image: output pixels
-
-
+#include "Color.h"
 
 shared_ptr<Material> image_material(const char *image_name) {
 	shared_ptr<Texture> image = make_shared<Image_Texture>(image_name);
@@ -53,11 +35,11 @@ Hittable_list get_scene() {
 	// WOLRD right hand:
 	Hittable_list world;
 
-	// Textues
+	/* Textues */
 	shared_ptr<Texture> checker = make_shared<Checker_Texture>(Color(0.0, 0.0, 0.0), Color(1.0, 1.0, 1.0));
 	shared_ptr<Texture> noise = make_shared<Noise_Texture>();
 
-	// Materials
+	/* Materials */
 	shared_ptr<Material> material_sphere_i_0 = image_material("");
 
 	shared_ptr<Material> material_sphere_c = make_shared<Lambertian>(checker);
@@ -80,7 +62,7 @@ Hittable_list get_scene() {
 	shared_ptr<Material> difflight_purple_low = make_shared<Diffuse_light>(Color(0.3,0.0,0.3));
 	shared_ptr<Material> difflight_white_low = make_shared<Diffuse_light>(Color(2,2,2));
 
-	//Objects
+	/* Objects */
 	world.add(make_shared<xz_rect>(-1000, 1000, -1000, 1000, 0, material_sphere_n));
 	// world.add(make_shared<xz_rect>(-250, 250, -250, 250, 2000, difflight_w));
 	world.add(make_shared<Sphere>(Point(0, 2000, 200), 100, difflight_w));
@@ -121,32 +103,8 @@ Hittable_list get_scene() {
 
 	world.add(make_shared<xz_rect>(-10, 2, 2, 10, 0, difflight_purple_low));      // light-pool
 
-	// ????
-	// world.add(make_shared<xy_rect>(5, 10, 0, 7, -11, mertial_sphere_i_0));
-
 	return world;
 }
-
-Camera get_camera(const float aspect_ratio) {
-	// CAMERA: World rules applied
-	Point lookfrom(1.9, 7.0, -1.9);
-	Point lookat(-5.0, 6.0, 5.0);
-	Vec view_up(0.0, 1.0, 0.0);
-
-	float dist_to_focus = 4.5;
-	float aperture = 0.1;
-
-	return Camera(lookfrom, lookat, view_up, 53.7, aspect_ratio, aperture, dist_to_focus, 0.0, 1.0);
-}
-
-/* WORLD: */
-const Hittable_list world = get_scene();
-
-/* CAMERA: */
-Camera camera = get_camera(aspect_ratio);
-
-/* BACKGROUND: (0.5, 0.0, 0.5) */
-Color background(0.0, 0.0, 0.0);
 
 // 7680
 // 1337

@@ -57,10 +57,6 @@ class Camera {
 			);
 		}
 
-		Point& get_origin_addr() {
-			return origin;
-		}
-
 	private:
 		Vec right, real_up, front;    // Camera: x, y, z;
 		Vec vertical;                 // Camera: vertical

@@ -46,7 +46,6 @@ class Vec {
 		}
 
 		Vec& operator *= (const float number) {
-			
 			e[0] *= number;
 			e[1] *= number;
 			e[2] *= number;
@@ -74,7 +73,6 @@ class Vec {
 };
 
 using Point = Vec;    // 3D point
-using Color = Vec;    // RGB color
 
 /* Vec Utility Functions: */
 

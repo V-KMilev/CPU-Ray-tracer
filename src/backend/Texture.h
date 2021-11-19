@@ -4,6 +4,7 @@
 
 #include "Utility_functions.h"
 #include "Vec.h"
+#include "Color.h"
 
 #include "r_stb_image.h"
 #include "Perlin.h"

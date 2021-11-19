@@ -4,7 +4,7 @@
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
 
-#include "World.h"
+#include "Settings.h"
 
 class myImGui {
 	public:
@@ -55,7 +55,7 @@ class myImGui {
 			ImGui::SliderInt("Max depth", &max_depth, 0, 250);
 			ImGui::NewLine();
 			
-			ImGui::InputFloat3("Camera position", &camera.get_origin_addr()[0]);
+			ImGui::InputFloat3("Camera position", &lookfrom[0]);
 			ImGui::NewLine();
 
 			ImGui::ColorEdit3("Background color", (float*) &background);
