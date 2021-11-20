@@ -26,6 +26,7 @@
 #include "TestTexture2D.h"
 
 #include "Imgui_controls.h"
+#include "Glfw_controls.h"
 
 #include "Render.h"
 #include "File_write.h"
@@ -42,6 +43,8 @@ glm::mat4 projection = glm::ortho(
 glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(0, 0, 0));
 glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(0, 0, 0));
 glm::mat4 mvp = projection * view * model;
+
+int frameNum = 0;
 
 int window_setup() {
 
@@ -109,9 +112,8 @@ int window_setup() {
 			Shader shader("../src/Shaders/vertexShader.shader", "../src/Shaders/fragmentShader.shader");
 		#endif
 
-		MyGLTexture texture("../src/Textures/tester.jpg");
-		// MyGLTexture texture(GL_RGB32F, image_width, image_height, GL_RGB, GL_FLOAT, &pixels[0]);
-		// texture.bind();
+		MyGLTexture texture(GL_RGB32F, image_width, image_height, GL_RGB, GL_FLOAT, &pixels[0]);
+		texture.bind();
 
 		shader.bind();
 		shader.setUniform1i("u_Texture", 0);
@@ -124,15 +126,10 @@ int window_setup() {
 
 		Renderer renderer;
 
-		myImGui myImGui;
+		MyImGui myImGui;
 		myImGui.setup(window, gl_version);
 
-		/* OUT STREAM: */
-		#ifdef _WIN32
-			std::ofstream out("../../src/Textures/RTout.ppm");
-		#endif
-
-		int frameNum = 0;
+		MyGlfw myGlfw(window);
 
 		ThreadPool pool(MAX_NUMBER_OF_THREADS);
 		std::vector<Bucket> my_buckets = bucket_segmentation(image_width, image_height);
@@ -144,22 +141,37 @@ int window_setup() {
 
 			MY_GL_CHECK(glClearColor(0.5f, 0.0f, 0.5f, 1.0f));
 
+			// Reset of the texture
+			if(change_origin || change_view || change_bg) {
+				pixels = empty_pixels;
+			}
+
+			myGlfw.fullControlSet(0.37);
+
 			myImGui.newFrame();
 
 			/* RENDER: */
 			for (Bucket &my_bucket : my_buckets) {
 				pool.enter_queue(my_bucket);
 			}
-			pool.master_wait();
 
-			// char fileName[256] = {0};
-			// sprintf(fileName, "../src/Textures/RTout%d.ppm", frameNum);
-			// #ifdef __linux__
-			// 	std::ofstream out(fileName);
-			// #endif
-			// /* FILE WRITE: */
-			// file_write(out, pixels, image_width, image_height);
-			// frameNum++;
+			#ifdef DEBUG
+				char fileName[256] = {0};
+
+				#ifdef _WIN32
+					sprintf(fileName, "../../src/Textures/debug/RTout%d.ppm", frameNum);
+				#endif
+
+				#ifdef __linux__
+					sprintf(fileName, "../src/Textures/debug/RTout%d.ppm", frameNum);
+				#endif
+
+				std::ofstream out(fileName);
+
+				file_write(out, pixels, image_width, image_height);
+
+				frameNum++;
+			#endif
 
 			{
 				texture.update(GL_RGB32F, image_width, image_height, GL_RGB, GL_FLOAT, &pixels[0]);

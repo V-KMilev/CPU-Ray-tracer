@@ -26,14 +26,14 @@ class Camera {
 			float viewport_height = 2.0 * width;                                            // Camera: viewport height
 			float viewport_width = aspect_ratio * viewport_height;                          // Camera: viewport width
 			
-			// Camera plate
+			/* Camera plate */
 			front = unit_vector(lookat - lookfrom);                                         // Camera: depth (front) of the camera
 			right = unit_vector(cross(view_up, front));                                     // Camera: horizontal (right) of the camera
 			real_up = cross(right, front);                                                  // Camera: vertical (up) of the camera
 
 			origin = lookfrom;
-			
-			// Lower left corner math
+
+			/* Lower left corner math */
 			horizontal = focus_dist * viewport_width * right;
 			vertical = focus_dist * viewport_height * real_up;
 			lower_left_corner = origin - horizontal/2 - vertical/2 + focus_dist * front;

@@ -1,5 +1,7 @@
 #pragma once
 
+#include <fstream>
+
 #include "Color.h"
 
 void file_write(std::ofstream &out, std::vector<Color> pixels, const int image_width, const int image_height) {
@@ -11,7 +13,6 @@ void file_write(std::ofstream &out, std::vector<Color> pixels, const int image_w
 		out << static_cast<int>(256 * clamp(pixels[idx].getRed(), 0.0f, 1.0f - epsilon)) << ' '
 			<< static_cast<int>(256 * clamp(pixels[idx].getGreen(), 0.0f, 1.0f - epsilon)) << ' '
 			<< static_cast<int>(256 * clamp(pixels[idx].getBlue(), 0.0f, 1.0f - epsilon)) << '\n';
-
 	}
 
 	out.close();

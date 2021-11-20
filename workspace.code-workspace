@@ -87,7 +87,10 @@
 			"condition_variable": "cpp",
 			"numeric": "cpp",
 			"future": "cpp",
-			"mutex": "cpp"
+			"mutex": "cpp",
+			"queue": "cpp",
+			"stop_token": "cpp",
+			"xhash": "cpp"
 		}
 	}
 }

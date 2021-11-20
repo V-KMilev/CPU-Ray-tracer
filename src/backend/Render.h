@@ -6,9 +6,6 @@
 /* WORLD: */
 const Hittable_list world = get_scene();
 
-/* CAMERA: */
-Camera camera(lookfrom, lookat, view_up, 53.7, aspect_ratio, aperture, dist_to_focus, 0.0, 1.0);
-
 Color ray_color(const Ray &ray, const Color &background, const Hittable &world, int depth) {
 
 	hit_record record;
@@ -35,6 +32,9 @@ Color ray_color(const Ray &ray, const Color &background, const Hittable &world, 
 
 void render(const Bucket &my_bucket) {
 
+	/* CAMERA: */
+	Camera camera(lookfrom, lookat, view_up, 53.7, aspect_ratio, aperture, dist_to_focus, 0.0, 1.0);
+
 	std::cerr << "\n\rStart Bucket: " << std::this_thread::get_id() << " -> + " << my_bucket.bucket_id;
 
 	for (int y = my_bucket.start_y; y < my_bucket.end_y; y++) {
@@ -53,11 +53,11 @@ void render(const Bucket &my_bucket) {
 			}
 
 			const int idx = image_width * y + x;
-			Color &c = pixels[idx];
-			const int total = samples_per_pixel + spp[idx];
+			Color &current_pixel = pixels[idx];
+			const int total = samples_per_pixel + spp_pixels[idx];
 			
-			c = c * (spp[idx] / float(total)) +  pixel_color * (samples_per_pixel / float(total));
-			spp[idx] = total;
+			current_pixel = current_pixel * (spp_pixels[idx] / float(total)) +  pixel_color * (samples_per_pixel / float(total));
+			spp_pixels[idx] = total;
 		}
 	}
 

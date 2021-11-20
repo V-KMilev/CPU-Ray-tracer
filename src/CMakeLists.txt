@@ -47,6 +47,10 @@ set(MY_BACKEND_DIR
 	"${CMAKE_CURRENT_SOURCE_DIR}/backend"
 )
 
+set(MY_GLFW_DIR
+	"${CMAKE_CURRENT_SOURCE_DIR}/myGlfw"
+)
+
 set(MY_IMGUI_DIR
 	"${CMAKE_CURRENT_SOURCE_DIR}/myImGui"
 )
@@ -95,6 +99,7 @@ target_include_directories(${PROJECT_NAME} PUBLIC
 	"${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/STB/include"
 
 	"${MY_BACKEND_DIR}"
+	"${MY_GLFW_DIR}"
 	"${MY_IMGUI_DIR}"
 	"${MY_GL_DIR}"
 	"${MY_TESTS_DIR}"

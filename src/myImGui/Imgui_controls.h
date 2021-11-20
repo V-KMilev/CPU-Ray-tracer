@@ -6,10 +6,10 @@
 
 #include "Settings.h"
 
-class myImGui {
+class MyImGui {
 	public:
-		myImGui() {}
-		~myImGui() {}
+		MyImGui() {}
+		~MyImGui() {}
 
 		void setup(GLFWwindow* window, const char* gl_version) {
 			/* ImGui Setup */
@@ -46,19 +46,19 @@ class myImGui {
 			setStyle();
 
 			ImGui::Begin("Menu");
-			ImGui::InputFloat("Aspect ratio", &aspect_ratio);
-			ImGui::InputInt("Image width", &image_width);
-			ImGui::InputInt("Image height", &image_height);
-			ImGui::NewLine();
-
-			ImGui::SliderInt("Max samples per pixel", &samples_per_pixel, 0, 1337);
-			ImGui::SliderInt("Max depth", &max_depth, 0, 250);
+			ImGui::InputInt("Max samples per pixel", &samples_per_pixel, 0, 1337);
+			ImGui::InputInt("Max depth", &max_depth, 0, 250);
 			ImGui::NewLine();
 			
-			ImGui::InputFloat3("Camera position", &lookfrom[0]);
+			if(ImGui::SliderFloat3("Camera position", &lookfrom[0], -13.0f, 13.0f)) { change_origin = true; }
+			else { change_origin = false; }
+			
+			if(ImGui::SliderFloat3("Camera focus", &lookat[0], -13.0f, 13.0f)) { change_view = true; }
+			else { change_view = false; }
 			ImGui::NewLine();
 
-			ImGui::ColorEdit3("Background color", (float*) &background);
+			if(ImGui::ColorEdit3("Background color", (float*) &background)) { change_bg = true; }
+			else { change_bg = false; };
 			ImGui::NewLine();
 
 			ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);

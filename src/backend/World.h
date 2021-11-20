@@ -59,8 +59,8 @@ Hittable_list get_scene() {
 	shared_ptr<Material> difflight_purple = make_shared<Diffuse_light>(Color(3,0,3));
 
 	shared_ptr<Material> difflight_w = make_shared<Diffuse_light>(Color(7,7,7));
-	shared_ptr<Material> difflight_purple_low = make_shared<Diffuse_light>(Color(0.3,0.0,0.3));
-	shared_ptr<Material> difflight_white_low = make_shared<Diffuse_light>(Color(2,2,2));
+	shared_ptr<Material> difflight_purple_low = make_shared<Diffuse_light>(Color(0.07,0.0,0.07));
+	shared_ptr<Material> difflight_white_low = make_shared<Diffuse_light>(Color(0.7,0.7,0.7));
 
 	/* Objects */
 	world.add(make_shared<xz_rect>(-1000, 1000, -1000, 1000, 0, material_sphere_n));
@@ -79,7 +79,7 @@ Hittable_list get_scene() {
 	world.add(make_shared<xz_rect>(-14, -10, -2, 14, 5, material_white));         // f-f2
 	world.add(make_shared<xz_rect>(-14, 2, 10, 14, 5, material_white));           // r-f3
 
-	world.add(make_shared<xy_rect>(-10, 2, 0, 5, -2, material_gray));             // l-in-w1
+	world.add(make_shared<xy_rect>(-10, 2, 0, 5, 2, material_gray));              // l-in-w1
 	world.add(make_shared<yz_rect>(0, 5, -2, 10, -10, material_gray));            // f-in-w2
 	world.add(make_shared<xy_rect>(-10, 2, 0, 5, 10, material_gray));             // r-in-w3
 

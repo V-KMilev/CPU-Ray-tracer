@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Utility_functions.h"
-
 #include "Hittable.h"
 
 class Sphere_moving : public Hittable {

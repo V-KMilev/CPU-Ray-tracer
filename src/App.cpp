@@ -6,11 +6,8 @@
 
 int main(int argc, char **argv) {
 	
-	for (auto it = spp.begin(); it != spp.end(); it++) {
-		*it = 0;
-	}
-
 	window_setup();
 
 	return 0;
 }
+// Can get the full code from https://github.com/V-KMilev/Ray-tracer.git
