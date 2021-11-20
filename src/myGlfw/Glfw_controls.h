@@ -23,12 +23,22 @@ class MyGlfw {
 		}
 
 	private:
+		void setCtrl() {
+			int state = glfwGetKey(window, GLFW_KEY_LEFT_CONTROL);
+
+			if (state == GLFW_PRESS) {
+
+			}
+		}
+
 		void setW(float precision) {
 			int state = glfwGetKey(window, GLFW_KEY_W);
 
 			if (state == GLFW_PRESS) {
 				pixels = empty_pixels;
+
 				lookfrom[0] += precision;
+				glfwWaitEventsTimeout(0.1);
 			}
 		}
 
@@ -37,7 +47,9 @@ class MyGlfw {
 
 			if (state == GLFW_PRESS) {
 				pixels = empty_pixels;
+
 				lookfrom[0] += -precision;
+				glfwWaitEventsTimeout(0.1);
 			}
 		}
 
@@ -46,7 +58,9 @@ class MyGlfw {
 
 			if (state == GLFW_PRESS) {
 				pixels = empty_pixels;
+
 				lookfrom[1] += precision;
+				glfwWaitEventsTimeout(0.1);
 			}
 		}
 
@@ -55,7 +69,9 @@ class MyGlfw {
 
 			if (state == GLFW_PRESS) {
 				pixels = empty_pixels;
+
 				lookfrom[1] += -precision;
+				glfwWaitEventsTimeout(0.1);
 			}
 		}
 
@@ -64,7 +80,9 @@ class MyGlfw {
 
 			if (state == GLFW_PRESS) {
 				pixels = empty_pixels;
+
 				lookfrom[2] += -precision;
+				glfwWaitEventsTimeout(0.1);
 			}
 		}
 
@@ -73,9 +91,12 @@ class MyGlfw {
 
 			if (state == GLFW_PRESS) {
 				pixels = empty_pixels;
+
 				lookfrom[2] += precision;
+				glfwWaitEventsTimeout(0.1);
 			}
 		}
+
 	private:
 		GLFWwindow* window;
 };

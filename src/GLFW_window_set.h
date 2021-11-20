@@ -141,14 +141,12 @@ int window_setup() {
 
 			MY_GL_CHECK(glClearColor(0.5f, 0.0f, 0.5f, 1.0f));
 
-			// Reset of the texture
-			if(change_origin || change_view || change_bg) {
-				pixels = empty_pixels;
-			}
-
 			myGlfw.fullControlSet(0.37);
 
 			myImGui.newFrame();
+
+			// Reset of the texture
+			if(change_position || change_view || change_bg || change_default) { pixels = empty_pixels; }
 
 			/* RENDER: */
 			for (Bucket &my_bucket : my_buckets) {
@@ -187,8 +185,10 @@ int window_setup() {
 
 			myImGui.render();
 
-			/* Swap front and back buffers */
-			glfwSwapBuffers(window);
+			if(change_stop) {
+				/* Swap front and back buffers */
+				glfwSwapBuffers(window);
+			}
 
 			/* Poll for and process events */
 			glfwPollEvents();
