@@ -26,13 +26,13 @@ class VertexArray {
 			bind();
 			vertex_buffer.bind();
 
-			const std::vector<VectexBufferElement> &elements = layout.GetElements();
+			const std::vector<VertexBufferElement> &elements = layout.GetElements();
 
 			unsigned int offset = 0;
 
 			for (unsigned int position = 0; position < elements.size(); position++) {
 
-				const VectexBufferElement &element = elements[position];
+				const VertexBufferElement &element = elements[position];
 
 				MY_GL_CHECK(glEnableVertexAttribArray(position));
 				MY_GL_CHECK(glVertexAttribPointer(position, element.count, element.type, element.normalized, layout.getStride(), (const void*) offset));

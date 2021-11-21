@@ -5,7 +5,7 @@
 
 #include "GL_error_handler.h"
 
-struct VectexBufferElement {
+struct VertexBufferElement {
 
 	unsigned int type;           // GLenum
 	unsigned int count;          // GLuint
@@ -24,12 +24,12 @@ class VertexBufferLayout {
 			assert(false);    // needs to be static_assert
 		}
 
-		inline const std::vector<VectexBufferElement>& GetElements() const { return my_Elements; }
+		inline const std::vector<VertexBufferElement>& GetElements() const { return my_Elements; }
 
 		inline unsigned int getStride() const { return my_Stride; }
 
 	private:
-		std::vector<VectexBufferElement> my_Elements;
+		std::vector<VertexBufferElement> my_Elements;
 
 		unsigned int my_Stride;
 };
@@ -37,7 +37,7 @@ class VertexBufferLayout {
 template<>
 void VertexBufferLayout::push<float>(unsigned int count) {
 
-	VectexBufferElement element;
+	VertexBufferElement element;
 	element.type = GL_FLOAT;
 	element.count = count;
 	element.normalized = GL_FALSE;
