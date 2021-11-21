@@ -138,15 +138,17 @@ int window_setup() {
 		while (!glfwWindowShouldClose(window)) {
 			/* OpenGL RENDER: */
 			renderer.clear();
-
-			MY_GL_CHECK(glClearColor(0.5f, 0.0f, 0.5f, 1.0f));
+			renderer.clearColor();
 
 			myGlfw.fullControlSet(0.37);
 
 			myImGui.newFrame();
 
 			// Reset of the texture
-			if(change_position || change_view || change_bg || change_default) { pixels = empty_pixels; }
+			if(change_position || change_view || change_bg || change_default) {
+				samples_per_pixel = default_samples_per_pixel;
+				pixels = empty_pixels;
+			}
 
 			/* RENDER: */
 			for (Bucket &my_bucket : my_buckets) {

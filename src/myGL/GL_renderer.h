@@ -17,7 +17,7 @@ class Renderer {
 		}
 
 		void clearColor() const {
-			MY_GL_CHECK(glClearColor(0.0f, 0.0f, 0.0f, 1.0f));
+			MY_GL_CHECK(glClearColor(0.3f, 0.0f, 0.3f, 1.0f));
 		}
 
 		void draw(VertexArray &vertex_array, IndexBuffer &index_buffer, Shader &shader) const {
@@ -32,7 +32,4 @@ class Renderer {
 
 			// Can add unbindings but not necessary. Only for debuging
 		}
-
-	private:
-
 };

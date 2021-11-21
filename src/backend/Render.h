@@ -31,7 +31,6 @@ Color ray_color(const Ray &ray, const Color &background, const Hittable &world, 
 }
 
 void render(const Bucket &my_bucket) {
-
 	/* CAMERA: */
 	Camera camera(lookfrom, lookat, view_up, 53.7, aspect_ratio, aperture, dist_to_focus, 0.0, 1.0);
 
@@ -40,7 +39,11 @@ void render(const Bucket &my_bucket) {
 	for (int y = my_bucket.start_y; y < my_bucket.end_y; y++) {
 		for (int x = my_bucket.start_x; x < my_bucket.end_x; x++) {
 
-			Color pixel_color(0, 0, 0);
+			const int idx = image_width * y + x;
+			const int total = samples_per_pixel + samples_in_pixels[idx];
+
+			Color pixel_in_set(0, 0, 0);
+			Color &current_pixel = pixels[idx];
 
 			for (int s = 0; s < samples_per_pixel; s++) {
 
@@ -49,16 +52,16 @@ void render(const Bucket &my_bucket) {
 
 				Ray ray = camera.get_ray(u, v);
 
-				pixel_color += ray_color(ray, background, world, max_depth);
+				pixel_in_set += ray_color(ray, background, world, max_depth);
 			}
+			current_pixel = current_pixel * (samples_in_pixels[idx] / (float) total) +  pixel_in_set * (samples_per_pixel / (float) total);
 
-			const int idx = image_width * y + x;
-			Color &current_pixel = pixels[idx];
-			const int total = samples_per_pixel + spp_pixels[idx];
-			
-			current_pixel = current_pixel * (spp_pixels[idx] / float(total)) +  pixel_color * (samples_per_pixel / float(total));
-			spp_pixels[idx] = total;
+			samples_in_pixels[idx] = total;
 		}
+	}
+
+	if(my_bucket.bucket_id == total_buckets) {
+		samples_per_pixel += 1;
 	}
 
 	std::cerr << "\n\rEnd   Bucket: " << std::this_thread::get_id() << " -> - " << my_bucket.bucket_id;

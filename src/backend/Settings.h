@@ -22,12 +22,17 @@ int image_height = {static_cast<int>(image_width / aspect_ratio)};    // Image: 
 int samples_per_pixel = {20};                                         // Rays per pixel
 int max_depth = {2};                                                  // Ray bounce limit per pixel
 
+int total_buckets = {0};                                              // Bucket: Total amount of buckets
+
 /* Image pixels*/
 std::vector<Color> pixels(image_width * image_height);                // Image: output pixels
 
 std::vector<Color> empty_pixels(image_width * image_height);          // Image: (0.0 ,0.0 ,0.0) pixels
 
-std::vector<int> spp_pixels(image_width * image_height);              // Image: samples in pixel
+std::vector<int> samples_in_pixels(image_width * image_height);              // Image: samples in pixel
+
+/* Background parameters */
+Color background(0.0, 0.0, 0.0);
 
 /* Camera parameters */
 Point lookfrom(1.9, 7.0, -1.9);
@@ -36,9 +41,6 @@ Vec view_up(0.0, 1.0, 0.0);
 
 float dist_to_focus = 4.5;
 float aperture = 0.1;
-
-/* Background parameters */
-Color background(0.0, 0.0, 0.0);
 
 /* Change event bools */
 bool change_position = false;

@@ -39,7 +39,6 @@ class VertexArray {
 
 				offset += element.count * sizeof(element.type);
 			}
-
 		}
 
 	private:

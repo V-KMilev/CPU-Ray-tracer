@@ -111,6 +111,8 @@ class MyImGui {
 			colors[ImGuiCol_FrameBgHovered]          = ImVec4(0.3f, 0.0f, 0.1f, 1.0f);
 			colors[ImGuiCol_FrameBgActive]           = ImVec4(0.4f, 0.0f, 0.1f, 1.0f);
 
+			colors[ImGuiCol_CheckMark]               = ImVec4(0.7f, 0.0f, 0.3f, 1.0f);
+
 			colors[ImGuiCol_ScrollbarBg]             = ImVec4(0.2f, 0.0f, 0.1f, 1.0f);
 			colors[ImGuiCol_ScrollbarGrab]           = ImVec4(0.6f, 0.0f, 0.2f, 1.0f);
 			colors[ImGuiCol_ScrollbarGrabHovered]    = ImVec4(0.7f, 0.0f, 0.2f, 1.0f);
