@@ -21,10 +21,11 @@ const int MAX_NUMBER_OF_THREADS = std::thread::hardware_concurrency();
 
 class ThreadPool {
 	public:
-		explicit ThreadPool(std::size_t num_Threads) {    // Explicit: size_t to size_t only
+		explicit ThreadPool(std::size_t num_threads) {    // Explicit: size_t to size_t only
 
-			std::cerr << "\rStart Thread Pool: " << num_Threads << "\n";
-			start(num_Threads);
+			std::cerr << "\rStart Thread Pool: " << num_threads << "\n";
+
+			start(num_threads);
 		}
 
 		~ThreadPool() {
@@ -51,10 +52,15 @@ class ThreadPool {
 			my_Done = false;
 		}
 
-	private:
-		void start(std::size_t num_Threads) {
+		void clear() {
+			while(!my_Tasks.empty()) {
+				my_Tasks.pop();
+			}
+		}
 
-			for (int i = 0; i < num_Threads; i++) {
+	private:
+		void start(std::size_t num_threads) {
+			for (int i = 0; i < num_threads; i++) {
 
 				/* Add new thread with a task at the end of the vector */
 				my_Threads.emplace_back(
@@ -73,9 +79,8 @@ class ThreadPool {
 							}
 
 							render(task);                                                                       // Execute current Task
-							int value = counter.fetch_sub(1) - 1;                                               // Downgrade Task index
 
-							if (value == 0) {
+							if (--counter == 0) {
 								my_Done = true;
 								my_Release_Master.notify_one();
 							}
@@ -95,7 +100,7 @@ class ThreadPool {
 				my_thread.join();                          // Join all threads
 			}
 		}
-	
+
 	public:
 		// using Task = std::function<Bucket()>;         // Task is used as void funtion(Bucket)
 

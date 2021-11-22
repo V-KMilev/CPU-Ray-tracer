@@ -35,10 +35,7 @@ class MyGlfw {
 			int state = glfwGetKey(window, GLFW_KEY_W);
 
 			if (state == GLFW_PRESS) {
-				samples_per_pixel    = default_samples_per_pixel;
-
-				pixels               = empty_pixels;
-				samples_in_pixels    = empty_samples_in_pixels;
+				change_position = true;
 
 				lookfrom[0] += precision;
 				glfwWaitEventsTimeout(0.1);
@@ -49,10 +46,7 @@ class MyGlfw {
 			int state = glfwGetKey(window, GLFW_KEY_S);
 
 			if (state == GLFW_PRESS) {
-				samples_per_pixel    = default_samples_per_pixel;
-
-				pixels               = empty_pixels;
-				samples_in_pixels    = empty_samples_in_pixels;
+				change_position = true;
 
 				lookfrom[0] += -precision;
 				glfwWaitEventsTimeout(0.1);
@@ -63,10 +57,7 @@ class MyGlfw {
 			int state = glfwGetKey(window, GLFW_KEY_Q);
 
 			if (state == GLFW_PRESS) {
-				samples_per_pixel    = default_samples_per_pixel;
-
-				pixels               = empty_pixels;
-				samples_in_pixels    = empty_samples_in_pixels;
+				change_position = true;
 
 				lookfrom[1] += precision;
 				glfwWaitEventsTimeout(0.1);
@@ -77,10 +68,8 @@ class MyGlfw {
 			int state = glfwGetKey(window, GLFW_KEY_E);
 
 			if (state == GLFW_PRESS) {
-				samples_per_pixel    = default_samples_per_pixel;
+				change_position = true;
 
-				pixels               = empty_pixels;
-				samples_in_pixels    = empty_samples_in_pixels;
 				lookfrom[1] += -precision;
 				glfwWaitEventsTimeout(0.1);
 			}
@@ -90,10 +79,7 @@ class MyGlfw {
 			int state = glfwGetKey(window, GLFW_KEY_A);
 
 			if (state == GLFW_PRESS) {
-				samples_per_pixel    = default_samples_per_pixel;
-
-				pixels               = empty_pixels;
-				samples_in_pixels    = empty_samples_in_pixels;
+				change_position = true;
 
 				lookfrom[2] += -precision;
 				glfwWaitEventsTimeout(0.1);
@@ -104,10 +90,7 @@ class MyGlfw {
 			int state = glfwGetKey(window, GLFW_KEY_D);
 
 			if (state == GLFW_PRESS) {
-				samples_per_pixel    = default_samples_per_pixel;
-
-				pixels               = empty_pixels;
-				samples_in_pixels    = empty_samples_in_pixels;
+				change_position = true;
 
 				lookfrom[2] += precision;
 				glfwWaitEventsTimeout(0.1);

@@ -46,43 +46,31 @@ class MyImGui {
 			setStyle();
 
 			ImGui::Begin("Menu");
-			ImGui::InputInt("Max samples per pixel", &samples_per_pixel, 0, 1337);
+			ImGui::InputInt("Samples per pixel", &samples_per_pixel, 0, 1337);
 			ImGui::InputInt("Max depth", &max_depth, 0, 250);
 			ImGui::NewLine();
 			
 			if(ImGui::SliderFloat3("Camera position", &lookfrom[0], -13.0f, 13.0f)) {
 				change_position = true;
-
-				samples_per_pixel = default_samples_per_pixel;
-
-				pixels            = empty_pixels;
-				samples_in_pixels = empty_samples_in_pixels;
 			}
 			else { change_position = false; }
 			
 			if(ImGui::SliderFloat3("Camera focus", &lookat[0], -13.0f, 13.0f)) {
 				change_view = true;
-				
-				samples_per_pixel = default_samples_per_pixel;
-
-				pixels            = empty_pixels;
-				samples_in_pixels = empty_samples_in_pixels;
 			}
 			else { change_view = false; }
 			ImGui::NewLine();
 
 			if(ImGui::ColorEdit3("Background color", (float*) &background)) {
 				change_bg = true;
-
-				samples_per_pixel = default_samples_per_pixel;
-
-				pixels            = empty_pixels;
-				samples_in_pixels = empty_samples_in_pixels;
 			}
 			else { change_bg = false; };
 			ImGui::NewLine();
 
 			ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+			ImGui::NewLine();
+
+			ImGui::Checkbox("Multithreading", &change_multithreading);
 			ImGui::NewLine();
 
 			if(ImGui::Button("Stop")) {
@@ -98,14 +86,10 @@ class MyImGui {
 			if(ImGui::Button("Reset")) {
 				change_default = true;
 
-				samples_per_pixel = default_samples_per_pixel;
-				max_depth         = default_max_depth;
-				lookfrom          = default_lookfrom;
-				lookat            = default_lookat;
-				background        = default_background;
-
-				pixels            = empty_pixels;
-				samples_in_pixels = empty_samples_in_pixels;
+				max_depth  = default_max_depth;
+				lookfrom   = default_lookfrom;
+				lookat     = default_lookat;
+				background = default_background;
 
 			} else { change_default = false; }
 			ImGui::SameLine();

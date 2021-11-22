@@ -44,6 +44,7 @@ Hittable_list get_scene() {
 
 	shared_ptr<Material> material_sphere_c = make_shared<Lambertian>(checker);
 	shared_ptr<Material> material_sphere_n = make_shared<Lambertian>(noise);
+	shared_ptr<Material> material_white_c = make_shared<Lambertian>(checker);
 
 	shared_ptr<Material> material_white = make_shared<Lambertian>(Color(1,1,1));
 	shared_ptr<Material> material_gray = make_shared<Lambertian>(Color(0.5,0.5,0.5));
@@ -51,20 +52,16 @@ Hittable_list get_scene() {
 	shared_ptr<Material> material_green = make_shared<Lambertian>(Color(0,1,0));
 	shared_ptr<Material> material_blue = make_shared<Lambertian>(Color(0,0,1));
 
-	shared_ptr<Material> difflight = make_shared<Diffuse_light>(Color(11,11,6));
 	shared_ptr<Material> difflight_red = make_shared<Diffuse_light>(Color(3,0,0));
 	shared_ptr<Material> difflight_blue = make_shared<Diffuse_light>(Color(0,0,3));
 	shared_ptr<Material> difflight_green = make_shared<Diffuse_light>(Color(0,3,0));
 	shared_ptr<Material> difflight_white = make_shared<Diffuse_light>(Color(3,3,3));
-	shared_ptr<Material> difflight_purple = make_shared<Diffuse_light>(Color(3,0,3));
+	shared_ptr<Material> difflight_magenta = make_shared<Diffuse_light>(Color(3,0,3));
 
-	shared_ptr<Material> difflight_w = make_shared<Diffuse_light>(Color(7,7,7));
-	shared_ptr<Material> difflight_purple_low = make_shared<Diffuse_light>(Color(0.1,0.0,0.1));
-	shared_ptr<Material> difflight_white_low = make_shared<Diffuse_light>(Color(1.0,1.0,1.0));
+	shared_ptr<Material> difflight_w = make_shared<Diffuse_light>(Color(37,37,37));
 
 	/* Objects */
 	world.add(make_shared<xz_rect>(-1000, 1000, -1000, 1000, 0, material_sphere_n));
-	// world.add(make_shared<xz_rect>(-250, 250, -250, 250, 2000, difflight_w));
 	world.add(make_shared<Sphere>(Point(0, 2000, 200), 100, difflight_w));
 
 	// l f r b from lookform(-x,+y,0)
@@ -75,13 +72,15 @@ Hittable_list get_scene() {
 	world.add(make_shared<xy_rect>(-14, 2, 0, 10, 14, material_gray));            // r-w3
 	world.add(make_shared<yz_rect>(0, 10, -2, 14, -14, material_gray));           // f-w4
 
-	world.add(make_shared<xz_rect>(-14, 2, -2, 2, 5, material_white));            // l-f1
-	world.add(make_shared<xz_rect>(-14, -10, -2, 14, 5, material_white));         // f-f2
-	world.add(make_shared<xz_rect>(-14, 2, 10, 14, 5, material_white));           // r-f3
+	world.add(make_shared<xz_rect>(-14, 2, -2, 2, 5, material_white_c));          // l-f1
+	world.add(make_shared<xz_rect>(-14, -10, -2, 14, 5, material_white_c));       // f-f2
+	world.add(make_shared<xz_rect>(-14, 2, 10, 14, 5, material_white_c));         // r-f3
 
-	world.add(make_shared<xy_rect>(-10, 2, 0, 5, 2, material_gray));              // l-in-w1
-	world.add(make_shared<yz_rect>(0, 5, -2, 10, -10, material_gray));            // f-in-w2
-	world.add(make_shared<xy_rect>(-10, 2, 0, 5, 10, material_gray));             // r-in-w3
+	world.add(make_shared<xz_rect>(-4, -2, -2, 14, 5, material_white_c));         // f-p-f1
+
+	world.add(make_shared<xy_rect>(-10, 2, 0, 5, 2, material_white_c));           // l-in-w1
+	world.add(make_shared<yz_rect>(0, 5, -2, 10, -10, material_white_c));         // f-in-w2
+	world.add(make_shared<xy_rect>(-10, 2, 0, 5, 10, material_white_c));          // r-in-w3
 
 	world.add(make_shared<xz_rect>(-14, 2, -2, 2, 10, material_white));           // l-r1
 	world.add(make_shared<xz_rect>(-14, -10, -2, 14, 10, material_white));        // f-r2
@@ -91,7 +90,6 @@ Hittable_list get_scene() {
 	world.add(make_shared<xz_rect>(-4, -2, -2, 14, 10, material_white));          // p-r2
 	world.add(make_shared<xz_rect>(0, 2, -2, 14, 10, material_white));            // p-r3
 
-	world.add(make_shared<xz_rect>(-4, -2, -2, 14, 5, material_white));           // f-p-f1
 	// box 2x2
 	world.add(make_shared<xy_rect>(-3.5, -2.5, 5, 6.5, 5.5, material_red));       // p-l-w1
 	world.add(make_shared<yz_rect>(5, 6.5, 5.5, 6.5, -2.5, material_green));      // p-b-w2
@@ -99,9 +97,9 @@ Hittable_list get_scene() {
 	world.add(make_shared<yz_rect>(5, 6.5, 5.5, 6.5, -3.5, material_gray));       // p-f-w4
 	world.add(make_shared<xz_rect>(-3.5, -2.5, 5.5, 6.5, 6.5, material_gray));    // p-r1
 
-	world.add(make_shared<Sphere>(Point(-3, 7, 6), 0.5, difflight_white_low));    // light sphere
+	world.add(make_shared<Sphere>(Point(-3, 7, 6), 0.5, difflight_w));            // light sphere
 
-	world.add(make_shared<xz_rect>(-10, 2, 2, 10, 0, difflight_purple_low));      // light-pool
+	world.add(make_shared<xz_rect>(-10, 2, 2, 10, 0, difflight_magenta));         // light-pool
 
 	return world;
 }

@@ -131,7 +131,9 @@ int window_setup() {
 
 		MyGlfw myGlfw(window);
 
-		ThreadPool pool(MAX_NUMBER_OF_THREADS);
+		ThreadPool pool_multithread(MAX_NUMBER_OF_THREADS);
+		ThreadPool pool_onethread(1);
+
 		std::vector<Bucket> my_buckets = bucket_segmentation(image_width, image_height);
 
 		/* Loop until the user closes the window */
@@ -144,9 +146,35 @@ int window_setup() {
 
 			myImGui.newFrame();
 
+			if(change_position || change_view || change_bg || change_default) {
+				if(change_multithreading) {
+					pool_multithread.clear();
+				}
+				else {
+					pool_onethread.clear();
+				}
+				
+				reset_counter();
+
+				samples_per_pixel = default_samples_per_pixel;
+
+				pixels            = empty_pixels;
+				samples_in_pixels = empty_samples_in_pixels;
+			}
+
 			/* RENDER: */
-			for (Bucket &my_bucket : my_buckets) {
-				pool.enter_queue(my_bucket);
+			if(change_multithreading) {
+				pool_onethread.clear();
+
+				for (Bucket &my_bucket : my_buckets) {
+					pool_multithread.enter_queue(my_bucket);
+				}
+			} else {
+				pool_multithread.clear();
+
+				for (Bucket &my_bucket : my_buckets) {
+					pool_onethread.enter_queue(my_bucket);
+				}
 			}
 
 			#ifdef DEBUG

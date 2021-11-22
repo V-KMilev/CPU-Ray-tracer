@@ -4,6 +4,8 @@
 #include "Color.h"
 #include "Camera.h"
 
+#include <atomic>
+
 #define RES_DEFAULT 400
 
 #define RES_TEST 800
@@ -16,7 +18,7 @@
 /* Basic parameters | Default settings */
 float aspect_ratio = {16.0 / 9.0};                                    // Image: Aspect ratio: resolution
 
-int image_width = {RES_FULL_HD};                                      // Image: Width
+int image_width = {RES_TEST};                                         // Image: Width
 int image_height = {static_cast<int>(image_width / aspect_ratio)};    // Image: Height
 
 int samples_per_pixel = {1};                                          // Rays per pixel
@@ -42,12 +44,16 @@ Vec view_up(0.0, 1.0, 0.0);
 float dist_to_focus = 4.5;
 float aperture = 0.1;
 
+/* Render parameters */
+std::atomic<int> counter = {0};
+
 /* Change event bools */
 bool change_position = false;
 bool change_view = false;
 bool change_bg = false;
 bool change_default = false;
 bool change_stop = true;
+bool change_multithreading = false;
 
 /* Default settings */
 int default_samples_per_pixel = {1};
