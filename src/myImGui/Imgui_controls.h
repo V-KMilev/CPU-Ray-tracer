@@ -50,14 +50,35 @@ class MyImGui {
 			ImGui::InputInt("Max depth", &max_depth, 0, 250);
 			ImGui::NewLine();
 			
-			if(ImGui::SliderFloat3("Camera position", &lookfrom[0], -13.0f, 13.0f)) { change_position = true; }
+			if(ImGui::SliderFloat3("Camera position", &lookfrom[0], -13.0f, 13.0f)) {
+				change_position = true;
+
+				samples_per_pixel = default_samples_per_pixel;
+
+				pixels            = empty_pixels;
+				samples_in_pixels = empty_samples_in_pixels;
+			}
 			else { change_position = false; }
 			
-			if(ImGui::SliderFloat3("Camera focus", &lookat[0], -13.0f, 13.0f)) { change_view = true; }
+			if(ImGui::SliderFloat3("Camera focus", &lookat[0], -13.0f, 13.0f)) {
+				change_view = true;
+				
+				samples_per_pixel = default_samples_per_pixel;
+
+				pixels            = empty_pixels;
+				samples_in_pixels = empty_samples_in_pixels;
+			}
 			else { change_view = false; }
 			ImGui::NewLine();
 
-			if(ImGui::ColorEdit3("Background color", (float*) &background)) { change_bg = true; }
+			if(ImGui::ColorEdit3("Background color", (float*) &background)) {
+				change_bg = true;
+
+				samples_per_pixel = default_samples_per_pixel;
+
+				pixels            = empty_pixels;
+				samples_in_pixels = empty_samples_in_pixels;
+			}
 			else { change_bg = false; };
 			ImGui::NewLine();
 
@@ -78,14 +99,16 @@ class MyImGui {
 				change_default = true;
 
 				samples_per_pixel = default_samples_per_pixel;
-				max_depth = default_max_depth;
-				lookfrom = default_lookfrom;
-				lookat = default_lookat;
-				background =  default_background;
+				max_depth         = default_max_depth;
+				lookfrom          = default_lookfrom;
+				lookat            = default_lookat;
+				background        = default_background;
+
+				pixels            = empty_pixels;
+				samples_in_pixels = empty_samples_in_pixels;
 
 			} else { change_default = false; }
 			ImGui::SameLine();
-
 			ImGui::End();
 		}
 
@@ -97,31 +120,31 @@ class MyImGui {
 			ImGui::GetStyle().WindowRounding = 0.0f;
 			ImGui::GetStyle().WindowTitleAlign = ImVec2(0.5, 0.5);
 
-			colors[ImGuiCol_TitleBgActive]           = ImVec4(0.7f, 0.0f, 0.3f, 1.0f);
-			colors[ImGuiCol_TitleBg]                 = ImVec4(0.6f, 0.0f, 0.3f, 1.0f);
+			colors[ImGuiCol_TitleBgActive]        = ImVec4(0.7f, 0.0f, 0.3f, 1.0f);
+			colors[ImGuiCol_TitleBg]              = ImVec4(0.6f, 0.0f, 0.3f, 1.0f);
 
-			colors[ImGuiCol_Button]                  = ImVec4(0.7f, 0.0f, 0.3f, 1.0f);
-			colors[ImGuiCol_ButtonHovered]           = ImVec4(0.6f, 0.0f, 0.3f, 1.0f);
-			colors[ImGuiCol_ButtonActive]            = ImVec4(1.0f, 0.0f, 0.3f, 1.0f);
+			colors[ImGuiCol_Button]               = ImVec4(0.7f, 0.0f, 0.3f, 1.0f);
+			colors[ImGuiCol_ButtonHovered]        = ImVec4(0.6f, 0.0f, 0.3f, 1.0f);
+			colors[ImGuiCol_ButtonActive]         = ImVec4(1.0f, 0.0f, 0.3f, 1.0f);
 
-			colors[ImGuiCol_SliderGrab]              = ImVec4(0.7f, 0.0f, 0.3f, 1.0f);
-			colors[ImGuiCol_SliderGrabActive]        = ImVec4(1.0f, 0.0f, 0.3f, 1.0f);
+			colors[ImGuiCol_SliderGrab]           = ImVec4(0.7f, 0.0f, 0.3f, 1.0f);
+			colors[ImGuiCol_SliderGrabActive]     = ImVec4(1.0f, 0.0f, 0.3f, 1.0f);
 
-			colors[ImGuiCol_FrameBg]                 = ImVec4(0.1f, 0.0f, 0.1f, 1.0f);
-			colors[ImGuiCol_FrameBgHovered]          = ImVec4(0.3f, 0.0f, 0.1f, 1.0f);
-			colors[ImGuiCol_FrameBgActive]           = ImVec4(0.4f, 0.0f, 0.1f, 1.0f);
+			colors[ImGuiCol_FrameBg]              = ImVec4(0.1f, 0.0f, 0.1f, 1.0f);
+			colors[ImGuiCol_FrameBgHovered]       = ImVec4(0.3f, 0.0f, 0.1f, 1.0f);
+			colors[ImGuiCol_FrameBgActive]        = ImVec4(0.4f, 0.0f, 0.1f, 1.0f);
 
-			colors[ImGuiCol_CheckMark]               = ImVec4(0.7f, 0.0f, 0.3f, 1.0f);
+			colors[ImGuiCol_CheckMark]            = ImVec4(0.7f, 0.0f, 0.3f, 1.0f);
 
-			colors[ImGuiCol_ScrollbarBg]             = ImVec4(0.2f, 0.0f, 0.1f, 1.0f);
-			colors[ImGuiCol_ScrollbarGrab]           = ImVec4(0.6f, 0.0f, 0.2f, 1.0f);
-			colors[ImGuiCol_ScrollbarGrabHovered]    = ImVec4(0.7f, 0.0f, 0.2f, 1.0f);
-			colors[ImGuiCol_ScrollbarGrabActive]     = ImVec4(0.7f, 0.0f, 0.3f, 1.0f);
+			colors[ImGuiCol_ScrollbarBg]          = ImVec4(0.2f, 0.0f, 0.1f, 1.0f);
+			colors[ImGuiCol_ScrollbarGrab]        = ImVec4(0.6f, 0.0f, 0.2f, 1.0f);
+			colors[ImGuiCol_ScrollbarGrabHovered] = ImVec4(0.7f, 0.0f, 0.2f, 1.0f);
+			colors[ImGuiCol_ScrollbarGrabActive]  = ImVec4(0.7f, 0.0f, 0.3f, 1.0f);
 
-			colors[ImGuiCol_ResizeGrip]              = ImVec4(0.6f, 0.0f, 0.3f, 1.0f);
-			colors[ImGuiCol_ResizeGripHovered]       = ImVec4(0.7f, 0.0f, 0.3f, 1.0f);
-			colors[ImGuiCol_ResizeGripActive]        = ImVec4(0.7f, 0.0f, 0.3f, 1.0f);
+			colors[ImGuiCol_ResizeGrip]           = ImVec4(0.6f, 0.0f, 0.3f, 1.0f);
+			colors[ImGuiCol_ResizeGripHovered]    = ImVec4(0.7f, 0.0f, 0.3f, 1.0f);
+			colors[ImGuiCol_ResizeGripActive]     = ImVec4(0.7f, 0.0f, 0.3f, 1.0f);
 
-			colors[ImGuiCol_TextSelectedBg]          = ImVec4(0.3f, 0.0f, 0.1f, 1.0f);
+			colors[ImGuiCol_TextSelectedBg]       = ImVec4(0.3f, 0.0f, 0.1f, 1.0f);
 		}
 };

@@ -144,12 +144,6 @@ int window_setup() {
 
 			myImGui.newFrame();
 
-			// Reset of the texture
-			if(change_position || change_view || change_bg || change_default) {
-				samples_per_pixel = default_samples_per_pixel;
-				pixels = empty_pixels;
-			}
-
 			/* RENDER: */
 			for (Bucket &my_bucket : my_buckets) {
 				pool.enter_queue(my_bucket);

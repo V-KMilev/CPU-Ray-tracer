@@ -19,24 +19,24 @@ float aspect_ratio = {16.0 / 9.0};                                    // Image: 
 int image_width = {RES_FULL_HD};                                      // Image: Width
 int image_height = {static_cast<int>(image_width / aspect_ratio)};    // Image: Height
 
-int samples_per_pixel = {20};                                         // Rays per pixel
+int samples_per_pixel = {1};                                          // Rays per pixel
 int max_depth = {2};                                                  // Ray bounce limit per pixel
 
 int total_buckets = {0};                                              // Bucket: Total amount of buckets
 
 /* Image pixels*/
 std::vector<Color> pixels(image_width * image_height);                // Image: output pixels
+std::vector<int> samples_in_pixels(image_width * image_height);       // Image: samples in pixel
 
-std::vector<Color> empty_pixels(image_width * image_height);          // Image: (0.0 ,0.0 ,0.0) pixels
-
-std::vector<int> samples_in_pixels(image_width * image_height);              // Image: samples in pixel
+std::vector<Color> empty_pixels(image_width * image_height);          // Image: output pixels = (0.0 ,0.0 ,0.0)
+std::vector<int> empty_samples_in_pixels(image_width * image_height); // Image: samples in pixel = 0
 
 /* Background parameters */
 Color background(0.0, 0.0, 0.0);
 
 /* Camera parameters */
 Point lookfrom(1.9, 7.0, -1.9);
-Point lookat(-5.0, 6.0, 5.0);
+Point lookat(-3.0, 7.0, 6.0);
 Vec view_up(0.0, 1.0, 0.0);
 
 float dist_to_focus = 4.5;
@@ -50,10 +50,10 @@ bool change_default = false;
 bool change_stop = true;
 
 /* Default settings */
-int default_samples_per_pixel = {20};
+int default_samples_per_pixel = {1};
 int default_max_depth = {2};
 
 Point default_lookfrom(1.9, 7.0, -1.9);
-Point default_lookat(-5.0, 6.0, 5.0);
+Point default_lookat(-3.0, 7.0, 6.0);
 
 Color default_background(0.0, 0.0, 0.0);
