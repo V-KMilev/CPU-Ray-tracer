@@ -28,7 +28,7 @@
 2. [`ImGui`](https://github.com/ocornut/imgui)
 3. [`GLM`](https://github.com/g-truc/glm)
   
-# Baisc Controls
+# Basic Controls
 ### GLFW controls
 **Set: ( + - )**
 1. Move by X: `W` `S`
