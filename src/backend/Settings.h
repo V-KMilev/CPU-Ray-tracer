@@ -37,8 +37,8 @@ std::vector<int> empty_samples_in_pixels(image_width * image_height); // Image: 
 Color background(0.0, 0.0, 0.0);
 
 /* Camera parameters */
-Point lookfrom(1.9, 7.0, -1.9);
-Point lookat(-3.0, 7.0, 6.0);
+Point lookfrom(0.0, 1.0, 0.0);
+Point lookat(1.0, 1.0, 0.0);
 Vec view_up(0.0, 1.0, 0.0);
 
 float dist_to_focus = 4.5;
@@ -56,10 +56,12 @@ bool change_stop = true;
 bool change_multithreading = false;
 
 /* Default settings */
+float precision = 0.1;
+
 int default_samples_per_pixel = {1};
 int default_max_depth = {2};
 
-Point default_lookfrom(1.9, 7.0, -1.9);
-Point default_lookat(-3.0, 7.0, 6.0);
+Point default_lookfrom(0.0, 1.0, 0.0);
+Point default_lookat(1.0, 1.0, 0.0);
 
 Color default_background(0.0, 0.0, 0.0);

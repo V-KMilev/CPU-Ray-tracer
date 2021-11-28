@@ -142,7 +142,7 @@ int window_setup() {
 			renderer.clear();
 			renderer.clearColor();
 
-			myGlfw.fullControlSet(0.37);
+			myGlfw.fullControlSet(precision);
 
 			myImGui.newFrame();
 

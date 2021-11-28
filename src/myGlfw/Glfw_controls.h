@@ -81,7 +81,7 @@ class MyGlfw {
 			if (state == GLFW_PRESS) {
 				change_position = true;
 
-				lookfrom[2] += -precision;
+				lookfrom[2] += precision;
 				glfwWaitEventsTimeout(0.1);
 			}
 		}
@@ -92,7 +92,7 @@ class MyGlfw {
 			if (state == GLFW_PRESS) {
 				change_position = true;
 
-				lookfrom[2] += precision;
+				lookfrom[2] += -precision;
 				glfwWaitEventsTimeout(0.1);
 			}
 		}

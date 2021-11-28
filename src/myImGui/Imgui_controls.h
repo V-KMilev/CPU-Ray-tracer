@@ -67,6 +67,9 @@ class MyImGui {
 			else { change_bg = false; };
 			ImGui::NewLine();
 
+			ImGui::InputFloat("Move precision", &precision, 0, 37);
+			ImGui::NewLine();
+
 			ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 			ImGui::NewLine();
 

@@ -36,71 +36,117 @@ Hittable_list get_scene() {
 	Hittable_list world;
 
 	/* Textues */
-	shared_ptr<Texture> checker = make_shared<Checker_Texture>(Color(0.0, 0.0, 0.0), Color(1.0, 1.0, 1.0));
+	shared_ptr<Texture> checker_w = make_shared<Checker_Texture>(Color(0.0, 0.0, 0.0), Color(1.0, 1.0, 1.0));
+	shared_ptr<Texture> checker_m = make_shared<Checker_Texture>(Color(0.0, 0.0, 0.0), Color(1.0, 0.0, 1.0));
 	shared_ptr<Texture> noise = make_shared<Noise_Texture>();
 
 	/* Materials */
 	shared_ptr<Material> material_sphere_i_0 = image_material("");
 
-	shared_ptr<Material> material_sphere_c = make_shared<Lambertian>(checker);
-	shared_ptr<Material> material_sphere_n = make_shared<Lambertian>(noise);
-	shared_ptr<Material> material_white_c = make_shared<Lambertian>(checker);
+	shared_ptr<Material> material_n = make_shared<Lambertian>(noise);
+	
+	shared_ptr<Material> material_white_c = make_shared<Lambertian>(checker_w);
+	shared_ptr<Material> material_magenta_c = make_shared<Lambertian>(checker_m);
 
 	shared_ptr<Material> material_white = make_shared<Lambertian>(Color(1,1,1));
+	shared_ptr<Material> material_black = make_shared<Lambertian>(Color(0,0,0));
 	shared_ptr<Material> material_gray = make_shared<Lambertian>(Color(0.5,0.5,0.5));
 	shared_ptr<Material> material_red = make_shared<Lambertian>(Color(1,0,0));
 	shared_ptr<Material> material_green = make_shared<Lambertian>(Color(0,1,0));
 	shared_ptr<Material> material_blue = make_shared<Lambertian>(Color(0,0,1));
 
+	shared_ptr<Material> material_magenta = make_shared<Lambertian>(Color(0.7,0,0.7));
+
 	shared_ptr<Material> difflight_red = make_shared<Diffuse_light>(Color(3,0,0));
 	shared_ptr<Material> difflight_blue = make_shared<Diffuse_light>(Color(0,0,3));
 	shared_ptr<Material> difflight_green = make_shared<Diffuse_light>(Color(0,3,0));
 	shared_ptr<Material> difflight_white = make_shared<Diffuse_light>(Color(3,3,3));
-	shared_ptr<Material> difflight_magenta = make_shared<Diffuse_light>(Color(3,0,3));
+	shared_ptr<Material> difflight_magenta = make_shared<Diffuse_light>(Color(6,0,6));
 
 	shared_ptr<Material> difflight_w = make_shared<Diffuse_light>(Color(37,37,37));
+	shared_ptr<Material> difflight_w_low = make_shared<Diffuse_light>(Color(1,1,1));
+	shared_ptr<Material> difflight_d = make_shared<Diffuse_light>(Color(0,0,0));
+	shared_ptr<Material> difflight_magenta_m = make_shared<Diffuse_light>(Color(7,0,6));
 
 	/* Objects */
-	world.add(make_shared<xz_rect>(-1000, 1000, -1000, 1000, 0, material_sphere_n));
+	world.add(make_shared<xz_rect>(-1000, 1000, -1000, 1000, 0, material_n));
 	world.add(make_shared<Sphere>(Point(0, 2000, 200), 100, difflight_w));
 
-	// l f r b from lookform(-x,+y,0)
-	// l - left, f - front, r - right, b - back
-	// fN - floor, wN - wall, rN - roof, p - plate
-	world.add(make_shared<xy_rect>(-14, 2, 0, 10, -2, material_gray));            // l-w1
-	world.add(make_shared<yz_rect>(0, 10, -2, 14, 2, material_gray));             // b-w2
-	world.add(make_shared<xy_rect>(-14, 2, 0, 10, 14, material_gray));            // r-w3
-	world.add(make_shared<yz_rect>(0, 10, -2, 14, -14, material_gray));           // f-w4
+	// bases
+	world.add(make_shared<xz_rect>(-5, 5, -5, 5, 0.2, material_black));           // base in
+	world.add(make_shared<xz_rect>(-10, 10, -10, 10, 0.19, material_magenta));    // base out
+	
+	// center sphere
+	world.add(make_shared<Sphere>(Point(0, 2, 0), 1, difflight_white));    // sphere
 
-	world.add(make_shared<xz_rect>(-14, 2, -2, 2, 5, material_white_c));          // l-f1
-	world.add(make_shared<xz_rect>(-14, -10, -2, 14, 5, material_white_c));       // f-f2
-	world.add(make_shared<xz_rect>(-14, 2, 10, 14, 5, material_white_c));         // r-f3
+	// walls in
+	world.add(make_shared<xy_rect>(-2.5, 2.5, 0, 3.2, 5, material_white_c));     // wall in
+	world.add(make_shared<xy_rect>(-2.5, 2.5, 0, 3.2, -5, material_white_c));    // wall in
+	world.add(make_shared<yz_rect>(0, 3.2, -2.5, 2.5, 5, material_white_c));     // wall in
+	world.add(make_shared<yz_rect>(0, 3.2, -2.5, 2.5, -5, material_white_c));    // wall in
 
-	world.add(make_shared<xz_rect>(-4, -2, -2, 14, 5, material_white_c));         // f-p-f1
+	// walls out
+	world.add(make_shared<xy_rect>(-10, 10, 0, 4.2, 10, material_white_c));      // wall out
+	world.add(make_shared<xy_rect>(-10, 10, 0, 4.2, -10, material_white_c));     // wall out
+	world.add(make_shared<yz_rect>(0, 4.2, -10, 10, 10, material_white_c));      // wall out
+	world.add(make_shared<yz_rect>(0, 4.2, -10, 10, -10, material_white_c));     // wall out
 
-	world.add(make_shared<xy_rect>(-10, 2, 0, 5, 2, material_white_c));           // l-in-w1
-	world.add(make_shared<yz_rect>(0, 5, -2, 10, -10, material_white_c));         // f-in-w2
-	world.add(make_shared<xy_rect>(-10, 2, 0, 5, 10, material_white_c));          // r-in-w3
 
-	world.add(make_shared<xz_rect>(-14, 2, -2, 2, 10, material_white));           // l-r1
-	world.add(make_shared<xz_rect>(-14, -10, -2, 14, 10, material_white));        // f-r2
-	world.add(make_shared<xz_rect>(-14, 2, 10, 14, 10, material_white));          // r-r3
 
-	world.add(make_shared<xz_rect>(-8, -6, -2, 14, 10, material_white));          // p-r1
-	world.add(make_shared<xz_rect>(-4, -2, -2, 14, 10, material_white));          // p-r2
-	world.add(make_shared<xz_rect>(0, 2, -2, 14, 10, material_white));            // p-r3
+	// t1
+	world.add(make_shared<xy_rect>(6, 10, 0, 6, 10, material_gray));                 // turret wall
+	world.add(make_shared<xy_rect>(6, 10, 0, 6, 6, material_gray));                  // turret wall
+	world.add(make_shared<yz_rect>(0, 6, 6, 10, 6, material_gray));                  // turret wall
+	world.add(make_shared<yz_rect>(0, 6, 6, 10, 10, material_gray));                 // turret wall
+	world.add(make_shared<xz_rect>(4, 10, 4, 10, 6, material_gray));                 // turret roof
 
-	// box 2x2
-	world.add(make_shared<xy_rect>(-3.5, -2.5, 5, 6.5, 5.5, material_red));       // p-l-w1
-	world.add(make_shared<yz_rect>(5, 6.5, 5.5, 6.5, -2.5, material_green));      // p-b-w2
-	world.add(make_shared<xy_rect>(-3.5, -2.5, 5, 6.5, 6.5, material_blue));      // p-r-w3
-	world.add(make_shared<yz_rect>(5, 6.5, 5.5, 6.5, -3.5, material_gray));       // p-f-w4
-	world.add(make_shared<xz_rect>(-3.5, -2.5, 5.5, 6.5, 6.5, material_gray));    // p-r1
+	// t1 lamps
+	world.add(make_shared<xz_rect>(4.5, 5.5, 4.5, 5.5, 5.99, difflight_magenta_m));    // turret roof
+	world.add(make_shared<xz_rect>(4.5, 5.5, 8.5, 9.5, 5.99, difflight_magenta_m));    // turret roof
+	world.add(make_shared<xz_rect>(8.5, 9.5, 4.5, 5.5, 5.99, difflight_magenta_m));    // turret roof
 
-	world.add(make_shared<Sphere>(Point(-3, 7, 6), 0.5, difflight_w));            // light sphere
 
-	world.add(make_shared<xz_rect>(-10, 2, 2, 10, 0, difflight_magenta));         // light-pool
 
+	// t2
+	world.add(make_shared<xy_rect>(6, 10, 0, 6, -10, material_gray));                  // turret wall
+	world.add(make_shared<xy_rect>(6, 10, 0, 6, -6, material_gray));                   // turret wall
+	world.add(make_shared<yz_rect>(0, 6, -10, -6, 6, material_gray));                  // turret wall
+	world.add(make_shared<yz_rect>(0, 6, -10, -6, 10, material_gray));                 // turret wall
+	world.add(make_shared<xz_rect>(4, 10, -10, -4, 6, material_gray));                 // turret roof
+
+	// t2 lamps
+	world.add(make_shared<xz_rect>(4.5, 5.5, -5.5, -4.5, 5.99, difflight_magenta_m));    // turret roof
+	world.add(make_shared<xz_rect>(4.5, 5.5, -9.5, -8.5, 5.99, difflight_magenta_m));    // turret roof
+	world.add(make_shared<xz_rect>(8.5, 9.5, -5.5, -4.5, 5.99, difflight_magenta_m));    // turret roof
+
+
+
+	// t3
+	world.add(make_shared<xy_rect>(-10, -6, 0, 6, 10, material_gray));                 // turret wall
+	world.add(make_shared<xy_rect>(-10, -6, 0, 6, 6, material_gray));                  // turret wall
+	world.add(make_shared<yz_rect>(0, 6, 6, 10, -6, material_gray));                   // turret wall
+	world.add(make_shared<yz_rect>(0, 6, 6, 10, -10, material_gray));                  // turret wall
+	world.add(make_shared<xz_rect>(-10, -4, 4, 10, 6, material_gray));                 // turret roof
+
+	// t3 lamps
+	world.add(make_shared<xz_rect>(-5.5, -4.5, 4.5, 5.5, 5.99, difflight_magenta_m));    // turret roof
+	world.add(make_shared<xz_rect>(-5.5, -4.5, 8.5, 9.5, 5.99, difflight_magenta_m));    // turret roof
+	world.add(make_shared<xz_rect>(-9.5, -8.5, 4.5, 5.5, 5.99, difflight_magenta_m));    // turret roof
+
+
+
+	// t4
+	world.add(make_shared<xy_rect>(-10, -6, 0, 6, -10, material_gray));                  // turret wall
+	world.add(make_shared<xy_rect>(-10, -6, 0, 6, -6, material_gray));                   // turret wall
+	world.add(make_shared<yz_rect>(0, 6, -10, -6, -6, material_gray));                   // turret wall
+	world.add(make_shared<yz_rect>(0, 6, -10, -6, -10, material_gray));                  // turret wall
+	world.add(make_shared<xz_rect>(-10, -4, -10, -4, 6, material_gray));                 // turret roof
+
+	// t4 lamps
+	world.add(make_shared<xz_rect>(-5.5, -4.5, -5.5, -4.5, 5.99, difflight_magenta));    // turret roof
+	world.add(make_shared<xz_rect>(-5.5, -4.5, -9.5, -8.5, 5.99, difflight_magenta));    // turret roof
+	world.add(make_shared<xz_rect>(-9.5, -8.5, -5.5, -4.5, 5.99, difflight_magenta));    // turret roof
+	
 	return world;
 }
 
