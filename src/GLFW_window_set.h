@@ -64,7 +64,7 @@ int window_setup() {
 	window = glfwCreateWindow(
 		image_width, image_height,
 		"dont open",
-		nullptr,    // glfwGetPrimaryMonitor to set fullsrean
+		nullptr,    // glfwGetPrimaryMonitor to set fullscrean
 		nullptr
 	);
 
@@ -146,14 +146,14 @@ int window_setup() {
 
 			myImGui.newFrame();
 
-			if(change_position || change_view || change_bg || change_default) {
+			if(change_position || change_view || change_bg || change_clear || change_default) {
 				if(change_multithreading) {
 					pool_multithread.clear();
 				}
 				else {
 					pool_onethread.clear();
 				}
-				
+
 				reset_counter();
 
 				samples_per_pixel = default_samples_per_pixel;

@@ -86,6 +86,15 @@ class MyImGui {
 			}
 			ImGui::SameLine();
 
+			if(ImGui::Button("Clear")) {
+				change_clear = true;
+
+				max_depth  = default_max_depth;
+				background = default_background;
+			} else { change_clear = false; }
+			
+			ImGui::SameLine();
+
 			if(ImGui::Button("Reset")) {
 				change_default = true;
 

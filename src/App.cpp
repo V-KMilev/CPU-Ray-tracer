@@ -5,7 +5,7 @@
 #include "GLFW_window_set.h"
 
 int main(int argc, char **argv) {
-	
+
 	window_setup();
 
 	return 0;

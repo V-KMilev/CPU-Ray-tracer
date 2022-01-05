@@ -53,6 +53,7 @@ bool change_view = false;
 bool change_bg = false;
 bool change_default = false;
 bool change_stop = true;
+bool change_clear = false;
 bool change_multithreading = false;
 
 /* Default settings */
