@@ -22,9 +22,6 @@
 #include "GL_vertex_buffer.h"
 #include "GL_vertex_buffer_layout.h"
 
-#include "TestClearColor.h"
-#include "TestTexture2D.h"
-
 #include "Imgui_controls.h"
 #include "Glfw_controls.h"
 

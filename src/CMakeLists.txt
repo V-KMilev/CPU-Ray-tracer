@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.21.3)
 
-# set the project name
+# Set the project name
 project(Tutorial)
 
 set(CMAKE_CXX_STANDARD 17)
@@ -10,19 +10,52 @@ set(OpenGL_GL_PREFERENCE GLVND)
 
 find_package(OpenGL REQUIRED)
 
+add_definitions(-D_CRT_SECURE_NO_WARNINGS)
+
+# Need to have GLFW
 add_subdirectory(
 	"${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/glfw"
 )
 
-set(GLAD_GL
-	"${GLFW_SOURCE_DIR}/deps/glad/gl.h"
-	"${GLFW_SOURCE_DIR}/deps/glad_gl.c"
+# Submodules DIRS
+set(EMBREE_DIR
+	"${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/embree"
 )
-
+set(GLFW_DIR
+	"${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/glfw"
+)
+set(GLM_DIR
+	"${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/glm"
+)
 set(IMGUI_DIR
 	"${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/imgui"
 )
 
+# My folders DIRS
+set(MY_BACKEND_DIR
+	"${CMAKE_CURRENT_SOURCE_DIR}/backend"
+)
+set(MY_GL_DIR
+	"${CMAKE_CURRENT_SOURCE_DIR}/myGL"
+)
+set(MY_GLFW_DIR
+	"${CMAKE_CURRENT_SOURCE_DIR}/myGlfw"
+)
+set(MY_IMGUI_DIR
+	"${CMAKE_CURRENT_SOURCE_DIR}/myImGui"
+)
+set(MY_SHADERS_DIR
+	"${CMAKE_CURRENT_SOURCE_DIR}/Shaders"
+)
+set(MY_TEXTURES_DIR
+	"${CMAKE_CURRENT_SOURCE_DIR}/Textures"
+)
+
+# Need in SOURCES files
+set(GLAD_GL
+	"${GLFW_DIR}/deps/glad/gl.h"
+	"${GLFW_DIR}/deps/glad_gl.c"
+)
 set(IMGUI
 	"${IMGUI_DIR}/backends/imgui_impl_opengl3.h"
 	"${IMGUI_DIR}/backends/imgui_impl_opengl3.cpp"
@@ -38,40 +71,20 @@ set(IMGUI
 	"${IMGUI_DIR}/imgui.h"
 	"${IMGUI_DIR}/imgui.cpp"
 )
-
 set(GLM
-	"${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/glm/glm"
+	"${GLM_DIR}/glm"
 )
 
-set(MY_BACKEND_DIR
-	"${CMAKE_CURRENT_SOURCE_DIR}/backend"
+# INFO
+message(
+INFO
+" ==================================
+-- ${GLAD_GL}
+-- ${GLM}
+-- ${IMGUI}\n"
+INFO
+" =================================="
 )
-
-set(MY_GLFW_DIR
-	"${CMAKE_CURRENT_SOURCE_DIR}/myGlfw"
-)
-
-set(MY_IMGUI_DIR
-	"${CMAKE_CURRENT_SOURCE_DIR}/myImGui"
-)
-
-set(MY_GL_DIR
-	"${CMAKE_CURRENT_SOURCE_DIR}/myGL"
-)
-
-set(MY_TESTS_DIR
-	"${CMAKE_CURRENT_SOURCE_DIR}/tests"
-)
-
-set(MY_SHADERS_DIR
-	"${CMAKE_CURRENT_SOURCE_DIR}/Shaders"
-)
-
-set(MY_TEXTURES_DIR
-	"${CMAKE_CURRENT_SOURCE_DIR}/Textures"
-)
-
-message(INFO " ========================================= ${GLAD_GL}")
 
 set(SOURCES
 	${GLAD_GL}
@@ -82,32 +95,32 @@ set(SOURCES
 	# Test.cpp
 )
 
-add_definitions(-D_CRT_SECURE_NO_WARNINGS)
-
 # add executables
 add_executable(Tutorial ${SOURCES})
 
 target_include_directories(${PROJECT_NAME} PUBLIC
-	"${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/glfw/include"
-	"${GLFW_SOURCE_DIR}/deps"
+	"${EMBREE_DIR}/include"
 
-	"${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/glm/glm"
+	"${GLFW_DIR}/include"
+	"${GLFW_DIR}/deps"
+
+	"${GLM_DIR}/glm"
 
 	"${IMGUI_DIR}"
 	"${IMGUI_DIR}/backends"
-
-	"${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/STB/include"
 
 	"${MY_BACKEND_DIR}"
 	"${MY_GLFW_DIR}"
 	"${MY_IMGUI_DIR}"
 	"${MY_GL_DIR}"
-	"${MY_TESTS_DIR}"
 	"${MY_SHADERS_DIR}"
 	"${MY_TEXTURES_DIR}"
+
+	"${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/STB/include"
 )
 
-target_link_libraries(${PROJECT_NAME} PUBLIC # Don't change the postions of the libraries!
+# DO NOT change the postions of the libraries!
+target_link_libraries(${PROJECT_NAME} PUBLIC
 	glfw
 	OpenGL::GL
 	${CMAKE_DL_LIBS}

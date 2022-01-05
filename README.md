@@ -31,9 +31,9 @@
 # Basic Controls
 ### GLFW controls
 **Set: ( + - )**
-1. Move by X: `W` `S`
+1. Move by X: `W` `S` or  `UP` `DOWN`
 2. Move by Y: `Q` `E`
-3. Move by Z: `A` `D`
+3. Move by Z: `A` `D` or  `LEFT` `RIGHT`
   
 ### ImGui controls
 Open the `Menu` in the OpenGL window

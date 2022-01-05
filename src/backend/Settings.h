@@ -47,7 +47,7 @@ float aperture = 0.1;
 /* Render parameters */
 std::atomic<int> counter = {0};
 
-/* Change event bools */
+/* Event flags */
 bool change_position = false;
 bool change_view = false;
 bool change_bg = false;

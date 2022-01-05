@@ -32,7 +32,7 @@ class MyGlfw {
 		}
 
 		void setW(float precision) {
-			int state = glfwGetKey(window, GLFW_KEY_W);
+			int state = glfwGetKey(window, GLFW_KEY_W) || glfwGetKey(window, GLFW_KEY_UP);
 
 			if (state == GLFW_PRESS) {
 				change_position = true;
@@ -43,7 +43,7 @@ class MyGlfw {
 		}
 
 		void setS(float precision) {
-			int state = glfwGetKey(window, GLFW_KEY_S);
+			int state = glfwGetKey(window, GLFW_KEY_S) || glfwGetKey(window, GLFW_KEY_DOWN);
 
 			if (state == GLFW_PRESS) {
 				change_position = true;
@@ -76,7 +76,7 @@ class MyGlfw {
 		}
 
 		void setA(float precision) {
-			int state = glfwGetKey(window, GLFW_KEY_A);
+			int state = glfwGetKey(window, GLFW_KEY_A) || glfwGetKey(window, GLFW_KEY_LEFT);
 
 			if (state == GLFW_PRESS) {
 				change_position = true;
@@ -87,7 +87,7 @@ class MyGlfw {
 		}
 
 		void setD(float precision) {
-			int state = glfwGetKey(window, GLFW_KEY_D);
+			int state = glfwGetKey(window, GLFW_KEY_D) || glfwGetKey(window, GLFW_KEY_RIGHT) ;
 
 			if (state == GLFW_PRESS) {
 				change_position = true;
