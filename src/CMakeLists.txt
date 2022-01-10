@@ -16,6 +16,10 @@ add_definitions(-D_CRT_SECURE_NO_WARNINGS)
 add_subdirectory(
 	"${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/glfw"
 )
+# Need to have EMBREE
+add_subdirectory(
+	"${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/embree"
+)
 
 # Submodules DIRS
 set(EMBREE_DIR
@@ -52,6 +56,9 @@ set(MY_TEXTURES_DIR
 )
 
 # Need in SOURCES files
+set(EMBREE
+	"${EMBREE_DIR}/include"
+)
 set(GLAD_GL
 	"${GLFW_DIR}/deps/glad/gl.h"
 	"${GLFW_DIR}/deps/glad_gl.c"
@@ -79,6 +86,7 @@ set(GLM
 message(
 INFO
 " ==================================
+-- ${EMBREE}
 -- ${GLAD_GL}
 -- ${GLM}
 -- ${IMGUI}\n"
@@ -121,6 +129,7 @@ target_include_directories(${PROJECT_NAME} PUBLIC
 
 # DO NOT change the postions of the libraries!
 target_link_libraries(${PROJECT_NAME} PUBLIC
+	embree
 	glfw
 	OpenGL::GL
 	${CMAKE_DL_LIBS}
