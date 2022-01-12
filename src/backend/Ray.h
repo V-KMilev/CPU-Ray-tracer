@@ -19,5 +19,6 @@ class Ray {
 	public:
 		Point origin;    // Ray: original start point
 		Vec directon;    // Ray: directon
+
 		float time;      // Ray: time
 };

@@ -30,8 +30,8 @@ int total_buckets = {0};                                              // Bucket:
 std::vector<Color> pixels(image_width * image_height);                // Image: output pixels
 std::vector<int> samples_in_pixels(image_width * image_height);       // Image: samples in pixel
 
-std::vector<Color> empty_pixels(image_width * image_height);          // Image: output pixels = (0.0 ,0.0 ,0.0)
-std::vector<int> empty_samples_in_pixels(image_width * image_height); // Image: samples in pixel = 0
+std::vector<Color> empty_pixels(image_width * image_height);          // Image: output pixels = (0.0f ,0.0f ,0.0f)
+std::vector<int> empty_samples_in_pixels(image_width * image_height); // Image: samples in pixel = 0 ... 0
 
 /* Background parameters */
 Color background(0.0, 0.0, 0.0);

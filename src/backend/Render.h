@@ -6,10 +6,6 @@
 /* WORLD: */
 const Hittable_list world = get_scene();
 
-void reset_counter() {
-	counter = 0;
-}
-
 Color ray_color(const Ray &ray, const Color &background, const Hittable &world, int depth) {
 
 	hit_record record;
@@ -71,7 +67,7 @@ void render(const Bucket &my_bucket) {
 
 	if(++counter == total_buckets) {
 		samples_per_pixel += 2;
-		reset_counter();
+		counter = 0;
 	}
 
 	std::cerr << "\n\rEnd   Bucket: " << std::this_thread::get_id() << " -> - " << my_bucket.bucket_id;

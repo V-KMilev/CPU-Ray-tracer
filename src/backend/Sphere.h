@@ -42,7 +42,7 @@ bool Sphere::hit(const Ray &ray, float distance_min, float distance_max, hit_rec
 	float c = oc.length_squared() - radius * radius;                         // Discriminant: c: OC.sqrt(length) - sqrt(radius)
 
 	float discriminant = half_b * half_b - a * c;                            // Discriminant: with half b
-	
+
 	if (discriminant < 0) { return false; }                                  // Hit: fail: The sphere was not hit
 
 	float sqrt_discriminant = sqrt(discriminant);

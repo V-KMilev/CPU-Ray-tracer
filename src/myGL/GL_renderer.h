@@ -21,7 +21,7 @@ class Renderer {
 		}
 
 		void draw(VertexArray &vertex_array, IndexBuffer &index_buffer, Shader &shader) const {
-			
+
 			shader.bind();
 			// shader.setUniform4f("u_color", r, 0.0f, 0.7f, 1.0f);
 

@@ -25,7 +25,7 @@ class Perlin {
 		}
 
 		float noise(const Point &point) const {
-			
+
 			int i = static_cast<int>(4 * point.getX()) & 255;
 			int j = static_cast<int>(4 * point.getY()) & 255;
 			int k = static_cast<int>(4 * point.getZ()) & 255;
@@ -49,10 +49,10 @@ class Perlin {
 		static void permute(int* perm, int number) {
 		
 			for (int i = number-1; i > 0; i--) {
-				
+
 				int target = random_int(0, i);
 				int tmp = perm[i];
-				
+
 				perm[i] = perm[target];
 				perm[target] = tmp;
 			}
@@ -60,10 +60,10 @@ class Perlin {
 
 	private:
 		static const int point_count = 256;
-		
+
 		int* perm_x;
 		int* perm_y;
 		int* perm_z;
-		
+
 		float* ranfloat;
 };

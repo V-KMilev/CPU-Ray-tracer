@@ -17,10 +17,10 @@ class Texture {    // Interface
 class Solid_Color : public Texture {
 	public:
 		Solid_Color() {}
-		
+
 		// Base constructor for color_value
 		Solid_Color(Color color) : color_value(color) {}
-		
+
 		// Constructor to set color_value
 		Solid_Color(float red, float green, float blue)
 			: Solid_Color(Color(red,green,blue)) {}
@@ -40,18 +40,18 @@ class Checker_Texture : public Texture {
 		// Constructor to init the even and odd Textures
 		Checker_Texture(shared_ptr<Texture> even, shared_ptr<Texture> odd)
 			: even(even), odd(odd) {}
-		
+
 		// Constructor to set the even and odd Textures
 		Checker_Texture(Color color_0, Color color_1)
 			: even(make_shared<Solid_Color>(color_0)), odd(make_shared<Solid_Color>(color_1)) {}
 
 		virtual Color value(float u, float v, const Point &point) const override {
-			
+
 			float sines = 
 				sin(10 * point.getX()) *
 				sin(10 * point.getY()) *
 				sin(10 * point.getZ());
-			
+
 			if (sines < 0) { return odd->value(u, v, point); }
 			else { return even->value(u, v, point); }
 		}
@@ -88,7 +88,7 @@ class Image_Texture : public Texture {
 				fprintf(stderr, "WARNING: Could not load texture image file \"%s\"\nSTB Reason: %s\n", filename, stbi_failure_reason());
 				width  = 0;
 				height = 0;
-			} 
+			}
 
 			bytes_per_scanline = bytes_per_pixel * width;
 		}

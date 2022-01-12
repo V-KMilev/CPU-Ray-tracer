@@ -23,7 +23,7 @@ class Color {
 		}
 
 		Color operator -() const { return Color(-e[0], -e[1], -e[2]); }
-		
+
 		float operator [] (int i) const { return e[i]; }
 		float& operator [] (int i) { return e[i]; }
 
@@ -39,7 +39,7 @@ class Color {
 			e[0] *= number;
 			e[1] *= number;
 			e[2] *= number;
-			
+
 			return *this;
 		}
 

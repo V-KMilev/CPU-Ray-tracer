@@ -6,7 +6,7 @@ class Material;
 
 struct hit_record {
 	float distance;                                                   // hit_record: distance
-	float u;                                                          // hit_record: unwrapping u
+	float u;                                                          // hit_record: uvwrapping u
 	float v;                                                          // hit_record: uvwrapping v
 	Point point;                                                      // hit_record: hit point
 	Vec normal;                                                       // hit_record: parale

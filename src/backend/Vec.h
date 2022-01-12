@@ -33,7 +33,7 @@ class Vec {
 		}
 
 		Vec operator -() const { return Vec(-e[0], -e[1], -e[2]); }
-		
+
 		float operator [] (int i) const { return e[i]; }
 		float& operator [] (int i) { return e[i]; }
 
@@ -49,7 +49,7 @@ class Vec {
 			e[0] *= number;
 			e[1] *= number;
 			e[2] *= number;
-			
+
 			return *this;
 		}
 
@@ -131,7 +131,7 @@ Vec random_in_unit_sphere() {
 		Vec point = Vec::random(-1, 1);
 		
 		if (point.length_squared() >= 1) { continue; }
-		
+
 		return point;
 	}
 }
@@ -142,12 +142,12 @@ Vec random_unit_vector() {
 
 /* Camera disk offset math */
 Vec random_in_unit_disk() {
-	
+
 	for(;;) {
 		Vec point = Vec(random_float(-1.0 ,1.0), random_float(-1.0 ,1.0), 0.0);
-		
+
 		if (point.length_squared() >= 1.0) { continue; }
-		
+
 		return point;
 	}
 }

@@ -75,7 +75,7 @@ Hittable_list get_scene() {
 	// bases
 	world.add(make_shared<xz_rect>(-5, 5, -5, 5, 0.2, material_black));           // base in
 	world.add(make_shared<xz_rect>(-10, 10, -10, 10, 0.19, material_magenta));    // base out
-	
+
 	// center sphere
 	world.add(make_shared<Sphere>(Point(0, 2, 0), 1, difflight_white));    // sphere
 
@@ -146,7 +146,7 @@ Hittable_list get_scene() {
 	world.add(make_shared<xz_rect>(-5.5, -4.5, -5.5, -4.5, 5.99, difflight_magenta));    // turret roof
 	world.add(make_shared<xz_rect>(-5.5, -4.5, -9.5, -8.5, 5.99, difflight_magenta));    // turret roof
 	world.add(make_shared<xz_rect>(-9.5, -8.5, -5.5, -4.5, 5.99, difflight_magenta));    // turret roof
-	
+
 	return world;
 }
 

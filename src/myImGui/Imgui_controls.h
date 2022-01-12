@@ -49,12 +49,12 @@ class MyImGui {
 			ImGui::InputInt("Samples per pixel", &samples_per_pixel, 0, 1337);
 			ImGui::InputInt("Max depth", &max_depth, 0, 250);
 			ImGui::NewLine();
-			
+
 			if(ImGui::SliderFloat3("Camera position", &lookfrom[0], -13.0f, 13.0f)) {
 				change_position = true;
 			}
 			else { change_position = false; }
-			
+
 			if(ImGui::SliderFloat3("Camera focus", &lookat[0], -13.0f, 13.0f)) {
 				change_view = true;
 			}
@@ -92,7 +92,7 @@ class MyImGui {
 				max_depth  = default_max_depth;
 				background = default_background;
 			} else { change_clear = false; }
-			
+
 			ImGui::SameLine();
 
 			if(ImGui::Button("Reset")) {
