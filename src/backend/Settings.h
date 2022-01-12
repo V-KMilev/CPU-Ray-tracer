@@ -16,15 +16,15 @@
 #define RES_4K 3840
 
 /* Basic parameters | Default settings */
-float aspect_ratio = {16.0 / 9.0};                                    // Image: Aspect ratio: resolution
+float aspect_ratio = {16.0 / 9.0};                                    // Image: aspect ratio: resolution
 
-int image_width = {RES_TEST};                                         // Image: Width
-int image_height = {static_cast<int>(image_width / aspect_ratio)};    // Image: Height
+int image_width = {RES_TEST};                                         // Image: width
+int image_height = {static_cast<int>(image_width / aspect_ratio)};    // Image: height
 
-int samples_per_pixel = {1};                                          // Rays per pixel
-int max_depth = {2};                                                  // Ray bounce limit per pixel
+int samples_per_pixel = {1};                                          // rays per pixel
+int max_depth = {2};                                                  // ray bounce limit per pixel
 
-int total_buckets = {0};                                              // Bucket: Total amount of buckets
+int total_buckets = {0};                                              // total amount of buckets
 
 /* Image pixels*/
 std::vector<Color> pixels(image_width * image_height);                // Image: output pixels

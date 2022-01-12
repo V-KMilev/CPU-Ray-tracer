@@ -36,13 +36,13 @@ int main()
   rtcReleaseGeometry(geom);
   rtcCommitScene(scene);
 
-  RTCRayHit rayhit; 
+  RTCRayHit rayhit;
   rayhit.ray.org_x  = 0.25f; rayhit.ray.org_y = 0.25f; rayhit.ray.org_z = -1.f;
   rayhit.ray.dir_x  = 0.f; rayhit.ray.dir_y = 0.f; rayhit.ray.dir_z =  0.5f;
   rayhit.ray.tnear  = 0.f;
   rayhit.ray.tfar   = std::numeric_limits<float>::infinity();
   rayhit.hit.geomID = RTC_INVALID_GEOMETRY_ID;
-  
+
   RTCIntersectContext context;
   rtcInitIntersectContext(&context);
 

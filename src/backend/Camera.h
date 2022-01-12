@@ -20,16 +20,16 @@ class Camera {
 			float e_time           // Camera: end time
 		) {
 
-			float degrees = degrees_to_radians(fov);                                        // Camera: fov degrees
-			float width = tan(degrees/2);                                                   // Camera: width from origin side01 side02
+			float degrees = degrees_to_radians(fov);                                        // fov degrees
+			float width = tan(degrees/2);                                                   // width from origin side01 side02
 			
-			float viewport_height = 2.0 * width;                                            // Camera: viewport height
-			float viewport_width = aspect_ratio * viewport_height;                          // Camera: viewport width
+			float viewport_height = 2.0 * width;                                            // viewport height
+			float viewport_width = aspect_ratio * viewport_height;                          // viewport width
 			
 			/* Camera plate */
-			front = unit_vector(lookat - lookfrom);                                         // Camera: depth (front) of the camera
-			right = unit_vector(cross(view_up, front));                                     // Camera: horizontal (right) of the camera
-			real_up = cross(right, front);                                                  // Camera: vertical (up) of the camera
+			front = unit_vector(lookat - lookfrom);                                         // depth (front) of the camera
+			right = unit_vector(cross(view_up, front));                                     // horizontal (right) of the camera
+			real_up = cross(right, front);                                                  // vertical (up) of the camera
 
 			origin = lookfrom;
 
@@ -38,7 +38,7 @@ class Camera {
 			vertical = focus_dist * viewport_height * real_up;
 			lower_left_corner = origin - horizontal/2 - vertical/2 + focus_dist * front;
 
-			lens_radius = aperture / 2;                                                     // Camera: light input set
+			lens_radius = aperture / 2;                                                     // light input set
 
 			this-> s_time = s_time;
 			this-> e_time = e_time;

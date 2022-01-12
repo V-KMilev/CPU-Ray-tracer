@@ -6,7 +6,7 @@
 /* WORLD: */
 const Hittable_list world = get_scene();
 
-Color ray_color(const Ray &ray, const Color &background, const Hittable &world, int depth) {
+Color tracer(const Ray &ray, const Color &background, const Hittable &world, int depth) {
 
 	hit_record record;
 	/* If we've exceeded the ray bounce limit, no more light is gathered. */
@@ -55,7 +55,7 @@ void render(const Bucket &my_bucket) {
 
 				Ray ray = camera.get_ray(u, v);
 
-				pixel_in_set += ray_color(ray, background, world, max_depth);
+				pixel_in_set += tracer(ray, background, world, max_depth);
 			}
 			pixel_in_set *= div;
 
@@ -67,7 +67,7 @@ void render(const Bucket &my_bucket) {
 
 	if(++counter == total_buckets) {
 		samples_per_pixel += 2;
-		counter = 0;
+		counter.store(0);
 	}
 
 	std::cerr << "\n\rEnd   Bucket: " << std::this_thread::get_id() << " -> - " << my_bucket.bucket_id;

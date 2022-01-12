@@ -24,15 +24,15 @@ class Hittable_list : public Hittable {
 };
 
 bool Hittable_list::hit(const Ray &ray, float distance_min, float distance_max, hit_record &record) const {
-	
+
 	hit_record temp_record;                 // temporarily hit_record
-	bool hit_anything = false;              // if anything is hit
+	bool hit_anything = false;              // hit flag
 	float closest_so_far = distance_max;    // closest hit
 
 	for (const shared_ptr<Hittable> &object : objects) {
-		
-		if (object -> hit(ray, distance_min, closest_so_far, temp_record)) {
-			
+
+		if (object->hit(ray, distance_min, closest_so_far, temp_record)) {
+
 			hit_anything = true;
 			closest_so_far = temp_record.distance;
 			record = temp_record;

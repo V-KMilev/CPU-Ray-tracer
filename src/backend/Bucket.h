@@ -6,12 +6,12 @@ const int bucket_size = { 64 };
 
 struct Bucket {
 
-	int start_x;      // Start index x
-	int start_y;      // Start index y
-	int end_x;        // End index x
-	int end_y;        // End index y
+	int start_x;      // Bucket: start index x
+	int start_y;      // Bucket: start index y
+	int end_x;        // Bucket: end index x
+	int end_y;        // Bucket: end index y
 
-	int bucket_id;    // Bucket id
+	int bucket_id;    // Bucket: id
 };
 
 std::vector<Bucket> bucket_segmentation(const int image_width, const int image_height) {
