@@ -125,6 +125,7 @@ target_include_directories(${PROJECT_NAME} PUBLIC
 	"${MY_TEXTURES_DIR}"
 
 	"${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/STB/include"
+	"${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/TOB/include"
 )
 
 # DO NOT change the postions of the libraries!
