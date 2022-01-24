@@ -151,7 +151,8 @@ int window_setup() {
 					pool_onethread.clear();
 				}
 
-				reset_counter();
+				/* Reset Render samples counter */
+				samples_in_counter.store(0);
 
 				samples_per_pixel = default_samples_per_pixel;
 
@@ -216,6 +217,8 @@ int window_setup() {
 		}
 		myImGui.shutdown();
 	}
+
+	embree.release();
 
 	glfwTerminate();
 

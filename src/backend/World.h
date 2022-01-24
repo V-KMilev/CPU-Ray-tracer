@@ -10,10 +10,11 @@
 
 #include "Sphere_moving.h"
 #include "Sphere.h"
+#include "AArect.h"
+#include "Obj.h"
 
 #include "Material.h"
 #include "Texture.h"
-#include "AArect.h"
 
 #include "Camera.h"
 
@@ -146,6 +147,8 @@ Hittable_list get_scene() {
 	world.add(make_shared<xz_rect>(-5.5, -4.5, -5.5, -4.5, 5.99, difflight_magenta));    // turret roof
 	world.add(make_shared<xz_rect>(-5.5, -4.5, -9.5, -8.5, 5.99, difflight_magenta));    // turret roof
 	world.add(make_shared<xz_rect>(-9.5, -8.5, -5.5, -4.5, 5.99, difflight_magenta));    // turret roof
+
+	world.add(make_shared<obj>(embree, "/home/vk/work/Ray-tracer/src/Models/Body_low.obj", "./Models/"));
 
 	return world;
 }

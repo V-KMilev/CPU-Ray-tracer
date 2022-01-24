@@ -15,7 +15,8 @@ Color tracer(const Ray &ray, const Color &background, const Hittable &world, int
 	}
 
 	/* If the ray hits nothing, return the background color. */
-	if (!world.hit(ray, 0.001, infinity, record)) {    // 0.001 to fix the shadow problem
+	/* 0.001 to fix the shadow problem */
+	if (!world.hit(ray, 0.001, infinity, record)) {
 		return background;
 	}
 
@@ -28,7 +29,7 @@ Color tracer(const Ray &ray, const Color &background, const Hittable &world, int
 		return emitted;
 	}
 
-	return emitted + attenuation * ray_color(scattered, background, world, depth-1);
+	return emitted + attenuation * tracer(scattered, background, world, depth-1);
 }
 
 void render(const Bucket &my_bucket) {
@@ -65,9 +66,9 @@ void render(const Bucket &my_bucket) {
 		}
 	}
 
-	if(++counter == total_buckets) {
+	if(++samples_in_counter == total_buckets) {
 		samples_per_pixel += 2;
-		counter.store(0);
+		samples_in_counter.store(0);
 	}
 
 	std::cerr << "\n\rEnd   Bucket: " << std::this_thread::get_id() << " -> - " << my_bucket.bucket_id;

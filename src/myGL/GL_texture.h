@@ -5,7 +5,7 @@
 
 #include "GL_error_handler.h"
 
-#include "r_stb_image.h"
+#include "RT_stb_image.h"
 
 #define STBI_ONLY_PNM
 

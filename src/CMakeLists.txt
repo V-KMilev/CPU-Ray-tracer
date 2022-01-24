@@ -39,6 +39,9 @@ set(IMGUI_DIR
 set(MY_BACKEND_DIR
 	"${CMAKE_CURRENT_SOURCE_DIR}/backend"
 )
+set(MY_EMBREE_DIR
+	"${CMAKE_CURRENT_SOURCE_DIR}/myEmbree"
+)
 set(MY_GL_DIR
 	"${CMAKE_CURRENT_SOURCE_DIR}/myGL"
 )
@@ -118,6 +121,7 @@ target_include_directories(${PROJECT_NAME} PUBLIC
 	"${IMGUI_DIR}/backends"
 
 	"${MY_BACKEND_DIR}"
+	"${MY_EMBREE_DIR}"
 	"${MY_GLFW_DIR}"
 	"${MY_IMGUI_DIR}"
 	"${MY_GL_DIR}"
