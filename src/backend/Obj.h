@@ -87,7 +87,7 @@ class obj : public Hittable {
 			Vec outward_normal = record.normal;
 			record.set_face_normal(ray, outward_normal);
 
-			record.material_ptr = mtl;
+			record.material_ptr = material_ptr;
 			record.point = ray.at(distance);
 			record.distance = distance;
 
@@ -95,7 +95,8 @@ class obj : public Hittable {
 		}
 
 	private:
-		shared_ptr<Lambertian> mtl = make_shared<Lambertian>(Color(1,0,0));
+		shared_ptr<Material> material_ptr = make_shared<Lambertian>(Color(1,0,0));;
+
 		std::string filePath;
 		std::string basePath;
 

@@ -85,7 +85,12 @@ class Image_Texture : public Texture {
 			data = stbi_load(filename, &width, &height, &components_per_pixel, components_per_pixel);
 
 			if (!data) {
-				fprintf(stderr, "WARNING: Could not load texture image file \"%s\"\nSTB Reason: %s\n", filename, stbi_failure_reason());
+
+				Logger::getDefaultLogger() << "WARNING: Could not load texture image file " << filename << "\n STB Reason: " << stbi_failure_reason() << "\n";
+				
+				#ifdef DEBUG
+					std::cerr << << "WARNING: Could not load texture image file " << filename << "\n STB Reason: " << stbi_failure_reason() << "\n";
+				#endif
 				width  = 0;
 				height = 0;
 			}

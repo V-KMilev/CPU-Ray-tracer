@@ -6,6 +6,7 @@
 #include "Vec.h"
 
 #include <atomic>
+#include <thread>
 
 #define RES_DEFAULT 400
 
@@ -17,22 +18,26 @@
 #define RES_4K 3840
 
 /* Basic parameters | Default settings */
-float aspect_ratio = {16.0 / 9.0};                                    // Image: aspect ratio: resolution
+float aspect_ratio = {16.0 / 9.0};                                     // Image: aspect ratio: resolution
 
-int image_width = {RES_TEST};                                         // Image: width
-int image_height = {static_cast<int>(image_width / aspect_ratio)};    // Image: height
+int image_width = {RES_TEST};                                          // Image: width
+int image_height = {static_cast<int>(image_width / aspect_ratio)};     // Image: height
 
-int samples_per_pixel = {1};                                          // rays per pixel
-int max_depth = {2};                                                  // ray bounce limit per pixel
+int samples_per_pixel = {1};                                           // rays per pixel
+int max_depth = {2};                                                   // ray bounce limit per pixel
 
-int total_buckets = {0};                                              // total amount of buckets
+const int bucket_size = { 64 };                                        // bucket size x by y
+
+int total_buckets = {0};                                               // total amount of buckets
+
+const int MAX_NUMBER_OF_THREADS = std::thread::hardware_concurrency(); // max number of threads
 
 /* Image pixels*/
-std::vector<Color> pixels(image_width * image_height);                // Image: output pixels
-std::vector<int> samples_in_pixels(image_width * image_height);       // Image: samples in pixel
+std::vector<Color> pixels(image_width * image_height);                 // Image: output pixels
+std::vector<int> samples_in_pixels(image_width * image_height);        // Image: samples in pixel
 
-std::vector<Color> empty_pixels(image_width * image_height);          // Image: output pixels = (0.0f ,0.0f ,0.0f)
-std::vector<int> empty_samples_in_pixels(image_width * image_height); // Image: samples in pixel = 0 ... 0
+std::vector<Color> empty_pixels(image_width * image_height);           // Image: output pixels = (0.0f ,0.0f ,0.0f)
+std::vector<int> empty_samples_in_pixels(image_width * image_height);  // Image: samples in pixel = 0 ... 0
 
 /* Background parameters */
 Color background(0.0, 0.0, 0.0);

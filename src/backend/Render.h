@@ -2,6 +2,7 @@
 
 #include "World.h"
 #include "Settings.h"
+#include "Log.h"
 
 /* WORLD: */
 const Hittable_list world = get_scene();
@@ -38,7 +39,11 @@ void render(const Bucket &my_bucket) {
 
 	const float div = 1.0f / samples_per_pixel;
 
-	std::cerr << "\n\rStart Bucket: " << std::this_thread::get_id() << " -> + " << my_bucket.bucket_id;
+	Logger::getDefaultLogger() << "\n\rStart Bucket: " << std::this_thread::get_id() << " -> + " << my_bucket.bucket_id;
+	
+	#ifdef DEBUG
+		std::cerr << "\n\rStart Bucket: " << std::this_thread::get_id() << " -> + " << my_bucket.bucket_id;
+	#endif
 
 	for (int y = my_bucket.start_y; y < my_bucket.end_y; y++) {
 		for (int x = my_bucket.start_x; x < my_bucket.end_x; x++) {
@@ -71,5 +76,9 @@ void render(const Bucket &my_bucket) {
 		samples_in_counter.store(0);
 	}
 
-	std::cerr << "\n\rEnd   Bucket: " << std::this_thread::get_id() << " -> - " << my_bucket.bucket_id;
+	Logger::getDefaultLogger() << "\n\rEnd   Bucket: " << std::this_thread::get_id() << " -> - " << my_bucket.bucket_id;
+
+	#ifdef DEBUG
+		std::cerr << "\n\rEnd   Bucket: " << std::this_thread::get_id() << " -> - " << my_bucket.bucket_id;
+	#endif
 }

@@ -12,6 +12,11 @@ find_package(OpenGL REQUIRED)
 
 add_definitions(-D_CRT_SECURE_NO_WARNINGS)
 
+set(EMBREE_ISPC_SUPPORT OFF)
+set(EMBREE_TUTORIALS OFF)
+set(EMBREE_TUTORIALS_GLFW OFF)
+set(EMBREE_TASKING_SYSTEM "INTERNAL")
+
 # Need to have GLFW
 add_subdirectory(
 	"${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/glfw"

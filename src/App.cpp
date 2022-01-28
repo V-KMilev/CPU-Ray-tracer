@@ -3,6 +3,9 @@
 #include <ctime>
 
 #include "GLFW_window_set.h"
+#include "Log.h"
+
+std::stringstream* Logger::lg = nullptr;
 
 int main(int argc, char **argv) {
 

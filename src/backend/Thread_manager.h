@@ -14,16 +14,19 @@
 #include <queue>
 
 #include "Bucket.h"
+#include "Settings.h"
 
 void render(const Bucket &my_bucket_task);
-
-const int MAX_NUMBER_OF_THREADS = std::thread::hardware_concurrency();
 
 class ThreadPool {
 	public:
 		explicit ThreadPool(std::size_t num_threads) {    // Explicit: size_t to size_t only
 
-			std::cerr << "\rStart Thread Pool: " << num_threads << "\n";
+			Logger::getDefaultLogger() << "\rStart Thread Pool: " << num_threads << "\n";
+
+			#ifdef DEBUG
+				std::cerr << "\rStart Thread Pool: " << num_threads << "\n";
+			#endif
 
 			start(num_threads);
 		}

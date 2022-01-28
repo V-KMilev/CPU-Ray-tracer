@@ -2,7 +2,8 @@
 
 #include <vector>
 
-const int bucket_size = { 64 };
+#include "Settings.h"
+#include "Log.h"
 
 struct Bucket {
 
@@ -54,6 +55,11 @@ std::vector<Bucket> bucket_segmentation(const int image_width, const int image_h
 	}
 	total_buckets = bucket_idx - 1;
 	
-	std::cerr << "\rBuckets, Size: " << my_buckets.size() << " | " << bucket_size << "\n";
+	Logger::getDefaultLogger() << "\rBuckets, Size: " << my_buckets.size() << " | " << bucket_size << "\n";
+
+	#ifdef DEBUG
+		std::cerr << "\rBuckets, Size: " << my_buckets.size() << " | " << bucket_size << "\n";
+	#endif
+
 	return my_buckets;
 }

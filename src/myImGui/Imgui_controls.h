@@ -4,6 +4,7 @@
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
 
+#include "Log.h"
 #include "Settings.h"
 
 class MyImGui {
@@ -70,10 +71,24 @@ class MyImGui {
 			ImGui::InputFloat("Move precision", &precision, 0, 37);
 			ImGui::NewLine();
 
-			ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+			ImGui::Checkbox("Multithreading", &change_multithreading);
 			ImGui::NewLine();
 
-			ImGui::Checkbox("Multithreading", &change_multithreading);
+			ImGui::Separator();
+
+			ImGui::TextColored(ImVec4(0.7f, 0.0f, 0.3f, 1.0f), "BASIC INFO");
+			ImGui::NewLine();
+
+			ImGui::Text("Total buckets: %d", total_buckets);
+
+			ImGui::Text("Bucket size: %d", bucket_size);
+
+			ImGui::Text("Max Threads: %d", MAX_NUMBER_OF_THREADS);
+			ImGui::NewLine();
+
+			ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+
+			ImGui::Separator();
 			ImGui::NewLine();
 
 			if(ImGui::Button("Stop")) {
@@ -106,6 +121,13 @@ class MyImGui {
 			} else { change_default = false; }
 			ImGui::SameLine();
 			ImGui::End();
+
+			ImGui::Begin("Console log");
+
+			const std::string &msg = Logger::getDefaultLogger().str();
+
+			ImGui::InputTextMultiline("", (char*)msg.c_str(), msg.length());
+			ImGui::End();
 		}
 
 	private:
@@ -131,6 +153,7 @@ class MyImGui {
 			colors[ImGuiCol_FrameBgActive]        = ImVec4(0.4f, 0.0f, 0.1f, 1.0f);
 
 			colors[ImGuiCol_CheckMark]            = ImVec4(0.7f, 0.0f, 0.3f, 1.0f);
+			colors[ImGuiCol_Separator]            = ImVec4(0.7f, 0.0f, 0.3f, 1.0f);
 
 			colors[ImGuiCol_ScrollbarBg]          = ImVec4(0.2f, 0.0f, 0.1f, 1.0f);
 			colors[ImGuiCol_ScrollbarGrab]        = ImVec4(0.6f, 0.0f, 0.2f, 1.0f);
