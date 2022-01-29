@@ -10,8 +10,8 @@ class Sphere : public Hittable {
 
 		virtual bool hit(
 			const Ray &ray, float distance_min, float distance_max, hit_record &record) const override;
-		
-	private: 
+
+	private:
 		static void get_sphere_uv(const Point &point, float &u, float &v) {
 			// point: a given point on the sphere of radius one, centered at the origin.
 			// u: returned value [0,1] of angle around the Y axis from X=-1.
@@ -57,7 +57,7 @@ bool Sphere::hit(const Ray &ray, float distance_min, float distance_max, hit_rec
 
 	/* Find the nearest root that lies in the acceptable range. */
 	float root = (-b - sqrt_discriminant) / a;                               // Quadratic equation: - version: first hit point
-	
+
 	if (root < distance_min || distance_max < root) {                        // Hit: if fist point out of range
 		root = (-b + sqrt_discriminant) / a;                                 // Quadratic equation: + version: second hit point
 

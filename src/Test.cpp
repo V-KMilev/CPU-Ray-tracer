@@ -1,13 +1,14 @@
 #include <iostream>
 
-#include "GLFW_window_set_test.h"
+#include "GLFW_window_set.h"
+#include "Log.h"
 
 const float E = 1e-3f;
 
-using namespace std;
+std::stringstream* Logger::log = nullptr;
 
-int main() {
-	
+int main(int argc, char **argv) {
+
 	window_setup();
 	
 	return 0;

@@ -1,7 +1,7 @@
 #pragma once
 
-#include "GL_vertex_buffer.h"
 #include "GL_vertex_buffer_layout.h"
+#include "GL_vertex_buffer.h"
 
 class VertexArray {
 	public:

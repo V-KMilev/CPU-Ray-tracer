@@ -4,8 +4,8 @@
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
 
-#include "Log.h"
 #include "Settings.h"
+#include "Log.h"
 
 class MyImGui {
 	public:

@@ -10,7 +10,7 @@ class Sphere_moving : public Hittable {
 		: center_0(center_0), center_1(center_1), s_time(s_time), e_time(e_time), radius(radius), material_ptr(material) {};
 
 		virtual bool hit(
-		const Ray &ray, float t_min, float t_max, hit_record &record) const override;
+			const Ray &ray, float t_min, float t_max, hit_record &record) const override;
 
 		Point center(float time) const;
 

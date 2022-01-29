@@ -1,13 +1,14 @@
 #pragma once
-#include "RT_tiny_obj_loader.h"
-#include "Settings.h"
 
+#include "RT_tiny_obj_loader.h"
+
+#include "Settings.h"
 #include "Material.h"
 
 class obj : public Hittable {
 	public:
-		obj(MyEmbree &embree, const char* path, const char* basePath)
-			: embree(embree), filePath(path), basePath(basePath)
+		obj(MyEmbree &embree, const char* path, const char* basePath, shared_ptr<Material> material)
+			: embree(embree), filePath(path), basePath(basePath), material_ptr(material)
 		{
 			myTOL.myLoadObj(path, basePath);
 
@@ -95,7 +96,7 @@ class obj : public Hittable {
 		}
 
 	private:
-		shared_ptr<Material> material_ptr = make_shared<Lambertian>(Color(1,0,0));;
+		shared_ptr<Material> material_ptr;
 
 		std::string filePath;
 		std::string basePath;

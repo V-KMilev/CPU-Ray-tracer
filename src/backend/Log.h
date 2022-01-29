@@ -7,23 +7,23 @@
 class Logger {
 	public:
 		~Logger() { 
-			delete lg;
-			lg = nullptr;
+			delete log;
+			log = nullptr;
 		}
 
 		static std::stringstream& getDefaultLogger() {
-			if (lg == nullptr) {
-				lg = new std::stringstream();
+			if (log == nullptr) {
+				log = new std::stringstream();
 			}
 
-			return *lg;
+			return *log;
 		}
 
 		std::string get() {
-			std::string res = (*lg).str();
+			std::string res = (*log).str();
 
-			if(res.length() > 10000) {
-				(*lg).clear();
+			if(res.length() > 1000) {
+				(*log).clear();
 			}
 
 			if(debug) { return ""; }
@@ -41,13 +41,14 @@ class Logger {
 			bool debug = false;
 		#endif
 
-		static std::stringstream *lg;
+		static std::stringstream *log;
 };
 
 enum LogLevel {
-	BASIC = 0,
-	WARNING = 1,
-	ERROR = 2
+	LOG_CONFIG = 0,
+	LOG_BASIC = 1,
+	LOG_WARNING = 2,
+	LOG_ERROR = 3
 };
 
 /* TODO: add levles of logs */

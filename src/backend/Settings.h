@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Embree_set.h"
+#include "Embree_setup.h"
 #include "Camera.h"
 #include "Color.h"
 #include "Vec.h"

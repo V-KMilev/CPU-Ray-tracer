@@ -8,28 +8,27 @@ class MyTOL {
 		MyTOL() {}
 		~MyTOL() {}
 
-		bool myLoadObj(const char* filename, const char* basepath = NULL,
-								bool triangulate = true) {
-		std::cout << "Loading " << filename << std::endl;
+		bool myLoadObj(const char* filename, const char* basepath = NULL, bool triangulate = true) {
+			std::cout << "Loading " << filename << std::endl;
 
-		std::string warn;
-		std::string err;
-		bool ret = tinyobj::LoadObj(&attrib, &shapes, &materials, &warn, &err, filename, basepath, triangulate);
+			std::string warn;
+			std::string err;
+			bool ret = tinyobj::LoadObj(&attrib, &shapes, &materials, &warn, &err, filename, basepath, triangulate);
 
-		if (!warn.empty()) {
-			std::cout << "WARN: " << warn << std::endl;
-		}
+			if (!warn.empty()) {
+				std::cout << "WARN: " << warn << std::endl;
+			}
 
-		if (!err.empty()) {
-			std::cerr << "ERR: " << err << std::endl;
-		}
+			if (!err.empty()) {
+				std::cerr << "ERR: " << err << std::endl;
+			}
 
-		if (!ret) {
-			printf("Failed to load/parse .obj.\n");
-			return false;
-		}
+			if (!ret) {
+				std::cerr << "Failed to load/parse .obj.\n";
+				return false;
+			}
 
-		return true;
+			return true;
 		}
 
 	public:

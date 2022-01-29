@@ -1,7 +1,7 @@
 #pragma once
 
-#include "World.h"
 #include "Settings.h"
+#include "World.h"
 #include "Log.h"
 
 /* WORLD: */
@@ -40,7 +40,7 @@ void render(const Bucket &my_bucket) {
 	const float div = 1.0f / samples_per_pixel;
 
 	Logger::getDefaultLogger() << "\n\rStart Bucket: " << std::this_thread::get_id() << " -> + " << my_bucket.bucket_id;
-	
+
 	#ifdef DEBUG
 		std::cerr << "\n\rStart Bucket: " << std::this_thread::get_id() << " -> + " << my_bucket.bucket_id;
 	#endif
@@ -63,6 +63,7 @@ void render(const Bucket &my_bucket) {
 
 				pixel_in_set += tracer(ray, background, world, max_depth);
 			}
+
 			pixel_in_set *= div;
 
 			current_pixel = current_pixel * (samples_in_pixels[idx] / (float) total) +  pixel_in_set * (samples_per_pixel / (float) total);

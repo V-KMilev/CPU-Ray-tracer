@@ -14,19 +14,20 @@
 #include <iostream>
 
 #include "GL_error_handler.h"
-#include "GL_shader.h"
-#include "GL_texture.h"
-#include "GL_renderer.h"
+
+#include "GL_vertex_buffer_layout.h"
+#include "GL_vertex_buffer.h"
 #include "GL_vertex_array.h"
 #include "GL_index_buffer.h"
-#include "GL_vertex_buffer.h"
-#include "GL_vertex_buffer_layout.h"
+#include "GL_renderer.h"
+#include "GL_texture.h"
+#include "GL_shader.h"
 
 #include "Imgui_controls.h"
 #include "Glfw_controls.h"
 
-#include "Render.h"
 #include "File_write.h"
+#include "Render.h"
 
 const char* gl_version = "#version 330";
 
@@ -84,7 +85,7 @@ int window_setup() {
 			0.0f               , (float) image_height, 0.0f, 0.0f     // 3
 		};
 
-		unsigned int indices[]  = {
+		unsigned int indices[] = {
 			0, 1, 2,
 			2, 3, 0
 		};

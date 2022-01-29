@@ -1,7 +1,7 @@
 #pragma once
 
-#include <string>
 #include <unordered_map>
+#include <string>
 
 #include "GL_error_handler.h"
 #include "File_read.h"
@@ -72,7 +72,7 @@ class Shader {
 			my_uniform_location_cache[name] = location;
 			return location;
 		}
-		
+
 		ProgramShaders getShaders(const std::string &vertex_file_name, const std::string &fragment_file_name) {
 
 			const std::string vertex_shader = fileToString(vertex_file_name);
@@ -97,7 +97,7 @@ class Shader {
 
 			// GL_FALSE = 0
 			if(result != GL_TRUE) {
-				
+
 				int length;
 				MY_GL_CHECK(glGetShaderiv(id, GL_INFO_LOG_LENGTH, &length));    // set length size
 

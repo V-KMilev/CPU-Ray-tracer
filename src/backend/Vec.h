@@ -126,10 +126,10 @@ inline Vec unit_vector(Vec v) {
 /* Utility function to set random point in sphere */
 
 Vec random_in_unit_sphere() {
-	
+
 	for(;;) {
 		Vec point = Vec::random(-1, 1);
-		
+
 		if (point.length_squared() >= 1) { continue; }
 
 		return point;

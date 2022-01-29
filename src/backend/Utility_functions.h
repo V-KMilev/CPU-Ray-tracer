@@ -11,7 +11,6 @@ using std::make_shared;
 using std::sqrt;
 
 /* Constants: */
-
 const double infinity = std::numeric_limits<float>::infinity();
 const double pi = 3.1415926535897932385;
 const float epsilon = 1e-3f;

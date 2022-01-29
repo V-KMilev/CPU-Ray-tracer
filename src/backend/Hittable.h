@@ -10,7 +10,7 @@ struct hit_record {
 	float v;                                                          // hit_record: uvwrapping v
 	Point point;                                                      // hit_record: hit point
 	Vec normal;                                                       // hit_record: parale
-	
+
 	shared_ptr<Material> material_ptr;                                // hit_record: material hitted
 
 	bool front_face;                                                  // hit_record: parallel to the tangent

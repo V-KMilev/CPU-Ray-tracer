@@ -7,7 +7,7 @@ class Perlin {
 	public:
 		Perlin() {
 			ranfloat = new float[point_count];
-			
+
 			for (int i = 0; i < point_count; ++i) {
 				ranfloat[i] = random_float();
 			}
@@ -34,7 +34,7 @@ class Perlin {
 		}
 	private:
 		static int* perlin_generate_perm() {
-		
+
 			int* perm = new int[point_count];
 
 			for (int i = 0; i < Perlin::point_count; i++) {
@@ -47,7 +47,7 @@ class Perlin {
 		}
 
 		static void permute(int* perm, int number) {
-		
+
 			for (int i = number-1; i > 0; i--) {
 
 				int target = random_int(0, i);

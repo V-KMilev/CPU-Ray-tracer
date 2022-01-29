@@ -13,8 +13,8 @@
 
 #include <queue>
 
-#include "Bucket.h"
 #include "Settings.h"
+#include "Bucket.h"
 
 void render(const Bucket &my_bucket_task);
 

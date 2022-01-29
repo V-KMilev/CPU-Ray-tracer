@@ -48,7 +48,7 @@ class yz_rect : public Hittable {
 };
 
 bool xy_rect::hit(const Ray &ray, float distance_min, float distance_max, hit_record &record) const {
-	
+
 	float distance = (z - ray.get_origin().getZ()) / ray.get_direction().getZ();
 
 	if (distance < distance_min || distance > distance_max) {
@@ -76,7 +76,7 @@ bool xy_rect::hit(const Ray &ray, float distance_min, float distance_max, hit_re
 }
 
 bool xz_rect::hit(const Ray &ray, float distance_min, float distance_max, hit_record &record) const {
-	
+
 	float distance = (y - ray.get_origin().getY()) / ray.get_direction().getY();
 
 	if (distance < distance_min || distance > distance_max) {
