@@ -21,7 +21,7 @@ class MyGLTexture {
 			my_local_buffer = stbi_load(&file_name[0], &width, &height, &components_per_pixel, bytes_per_pixel);
 
 			if (!my_local_buffer) {
-				fprintf(stderr, "WARNING: Could not load texture image file \"%s\"\nSTB Reason: %s\n", &file_name[0], stbi_failure_reason());
+				std::cerr << "WARNING: Could not load texture image file " << file_name << "\n STB Reason: " << stbi_failure_reason() << "\n";
 				width  = 0;
 				height = 0;
 			}

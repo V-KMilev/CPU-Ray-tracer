@@ -60,6 +60,11 @@ class MyImGui {
 				change_view = true;
 			}
 			else { change_view = false; }
+
+			if(ImGui::InputFloat("Camera aperture ", &aperture, 0.0f, 10.0f)) {
+				change_aperture = true;
+			}
+			else { change_aperture = false; }
 			ImGui::NewLine();
 
 			if(ImGui::ColorEdit3("Background color", (float*) &background)) {
@@ -136,7 +141,7 @@ class MyImGui {
 			ImVec4* colors = ImGui::GetStyle().Colors;
 
 			ImGui::GetStyle().WindowRounding = 0.0f;
-			ImGui::GetStyle().WindowTitleAlign = ImVec2(0.5, 0.5);
+			ImGui::GetStyle().WindowTitleAlign = ImVec2(0.5f, 0.5f);
 
 			colors[ImGuiCol_TitleBgActive]        = ImVec4(0.7f, 0.0f, 0.3f, 1.0f);
 			colors[ImGuiCol_TitleBg]              = ImVec4(0.6f, 0.0f, 0.3f, 1.0f);

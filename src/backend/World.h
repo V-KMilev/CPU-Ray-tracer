@@ -75,7 +75,7 @@ Hittable_list get_scene() {
 	world.add(make_shared<xz_rect>(-10, 10, -10, 10, 0.19, material_magenta));    // base out
 
 	// center sphere
-	world.add(make_shared<Sphere>(Point(0, 2, 0), 1, difflight_white));    // sphere
+	// world.add(make_shared<Sphere>(Point(0, 2, 0), 1, difflight_white));    // sphere
 
 	// walls in
 	world.add(make_shared<xy_rect>(-2.5, 2.5, 0, 3.2, 5, material_white_c));     // wall in
@@ -145,7 +145,9 @@ Hittable_list get_scene() {
 	world.add(make_shared<xz_rect>(-5.5, -4.5, -9.5, -8.5, 5.99, difflight_magenta));    // turret roof
 	world.add(make_shared<xz_rect>(-9.5, -8.5, -5.5, -4.5, 5.99, difflight_magenta));    // turret roof
 
-	world.add(make_shared<obj>(embree, "/home/vk/work/Ray-tracer/src/Models/Body_low.obj", "./Models/", material_red));
+	// world.add(make_shared<yz_rect>(-3, 3, -7, 0, 9, difflight_w));
+
+	world.add(make_shared<obj>(embree, "F:\\cpp\\ray-t-c\\Ray-tracer\\src\\Models\\Body_low.obj", ".\\Models\\", material_red));
 
 	return world;
 }

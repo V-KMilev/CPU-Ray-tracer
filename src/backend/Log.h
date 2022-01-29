@@ -22,8 +22,8 @@ class Logger {
 		std::string get() {
 			std::string res = (*log).str();
 
-			if(res.length() > 1000) {
-				(*log).clear();
+			if(res.length() > 10000) {
+				(*log).str(std::string());
 			}
 
 			if(debug) { return ""; }
@@ -42,13 +42,6 @@ class Logger {
 		#endif
 
 		static std::stringstream *log;
-};
-
-enum LogLevel {
-	LOG_CONFIG = 0,
-	LOG_BASIC = 1,
-	LOG_WARNING = 2,
-	LOG_ERROR = 3
 };
 
 /* TODO: add levles of logs */

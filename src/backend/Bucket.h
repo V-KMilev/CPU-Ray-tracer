@@ -55,11 +55,7 @@ std::vector<Bucket> bucket_segmentation(const int image_width, const int image_h
 	}
 	total_buckets = bucket_idx - 1;
 
-	Logger::getDefaultLogger() << "\rBuckets, Size: " << my_buckets.size() << " | " << bucket_size << "\n";
-
-	#ifdef DEBUG
-		std::cerr << "\rBuckets, Size: " << my_buckets.size() << " | " << bucket_size << "\n";
-	#endif
+	std::cerr << "\rBuckets, Size: " << my_buckets.size() << " | " << bucket_size << "\n";
 
 	return my_buckets;
 }
