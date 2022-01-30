@@ -22,18 +22,20 @@
 # Includes
 1. [`OpenGL`](https://www.opengl.org)
 2. [`STB`](https://github.com/nothings/stb)
-  
+3. [`TOB`](https://github.com/tinyobjloader/tinyobjloader)
+
 ### Submodules
-1. [`GLFW`](https://github.com/glfw/glfw)
-2. [`ImGui`](https://github.com/ocornut/imgui)
-3. [`GLM`](https://github.com/g-truc/glm)
-  
+1. [`EMBREE`](https://github.com/embree/embree)
+2. [`GLFW`](https://github.com/glfw/glfw)
+3. [`ImGui`](https://github.com/ocornut/imgui)
+4. [`GLM`](https://github.com/g-truc/glm)
+
 # Basic Controls
 ### GLFW controls
 **Set: ( + - )**
-1. Move by X: `W` `S` or  `UP` `DOWN`
+1. Move by X: `UP` `DOWN` or  `W` `S`
 2. Move by Y: `Q` `E`
-3. Move by Z: `A` `D` or  `LEFT` `RIGHT`
-  
+3. Move by Z: `LEFT` `RIGHT` or  `A` `D`
+
 ### ImGui controls
 Open the `Menu` in the OpenGL window
