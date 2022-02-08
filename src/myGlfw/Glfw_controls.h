@@ -8,9 +8,9 @@
 #define GLFW_INCLUDE_NONE
 #include <GLFW/glfw3.h>
 
-// W moves +1 by X, S moves -1 by X
+// W, UP moves +1 by X, S, DOWN moves -1 by X
+// A, LEFT moves +1 by Z, D, RIGHT moves -1 by Z
 // Q moces +1 by Y, E moves -1 by Y
-// A moves +1 by Z, D moves -1 by Z
 
 class MyGlfw {
 	public:
@@ -18,8 +18,8 @@ class MyGlfw {
 		~MyGlfw() {}
 
 		void fullControlSet(float precision) {
-			setQ(precision); setW(precision); setE(precision);
-			setA(precision); setS(precision); setD(precision);
+			setYp(precision); setXp(precision); setYn(precision);
+			setZp(precision); setXn(precision); setZn(precision);
 		}
 
 	private:
@@ -31,69 +31,69 @@ class MyGlfw {
 			}
 		}
 
-		void setW(float precision) {
+		void setXp(float precision) {
 			int state = glfwGetKey(window, GLFW_KEY_W) || glfwGetKey(window, GLFW_KEY_UP);
 
 			if (state == GLFW_PRESS) {
 				change_position = true;
 
 				lookfrom[0] += precision;
-				glfwWaitEventsTimeout(0.1);
+				glfwWaitEventsTimeout(0.7);
 			}
 		}
 
-		void setS(float precision) {
+		void setXn(float precision) {
 			int state = glfwGetKey(window, GLFW_KEY_S) || glfwGetKey(window, GLFW_KEY_DOWN);
 
 			if (state == GLFW_PRESS) {
 				change_position = true;
 
 				lookfrom[0] += -precision;
-				glfwWaitEventsTimeout(0.1);
+				glfwWaitEventsTimeout(0.7);
 			}
 		}
 
-		void setQ(float precision) {
+		void setYp(float precision) {
 			int state = glfwGetKey(window, GLFW_KEY_Q);
 
 			if (state == GLFW_PRESS) {
 				change_position = true;
 
 				lookfrom[1] += precision;
-				glfwWaitEventsTimeout(0.1);
+				glfwWaitEventsTimeout(0.7);
 			}
 		}
 
-		void setE(float precision) {
+		void setYn(float precision) {
 			int state = glfwGetKey(window, GLFW_KEY_E);
 
 			if (state == GLFW_PRESS) {
 				change_position = true;
 
 				lookfrom[1] += -precision;
-				glfwWaitEventsTimeout(0.1);
+				glfwWaitEventsTimeout(0.7);
 			}
 		}
 
-		void setA(float precision) {
+		void setZp(float precision) {
 			int state = glfwGetKey(window, GLFW_KEY_A) || glfwGetKey(window, GLFW_KEY_LEFT);
 
 			if (state == GLFW_PRESS) {
 				change_position = true;
 
 				lookfrom[2] += precision;
-				glfwWaitEventsTimeout(0.1);
+				glfwWaitEventsTimeout(0.7);
 			}
 		}
 
-		void setD(float precision) {
-			int state = glfwGetKey(window, GLFW_KEY_D) || glfwGetKey(window, GLFW_KEY_RIGHT) ;
+		void setZn(float precision) {
+			int state = glfwGetKey(window, GLFW_KEY_D) || glfwGetKey(window, GLFW_KEY_RIGHT);
 
 			if (state == GLFW_PRESS) {
 				change_position = true;
 
 				lookfrom[2] += -precision;
-				glfwWaitEventsTimeout(0.1);
+				glfwWaitEventsTimeout(0.7);
 			}
 		}
 

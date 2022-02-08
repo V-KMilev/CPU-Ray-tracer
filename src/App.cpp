@@ -9,7 +9,7 @@ std::stringstream* Logger::log = nullptr;
 
 int main(int argc, char **argv) {
 
-	std::cerr << "Ok we are working! For now..\n";
+	std::cerr << "Ok we are working! For now..\n\n";
 
 	window_setup();
 
