@@ -11,6 +11,21 @@ class Logger {
 			log = nullptr;
 		}
 
+		/*
+		 * Function - getDefaultLogger
+		 *
+		 * Parameters:
+		 * none
+		 * 
+		 * Return type:
+		 * std::stringstream&
+		 * 
+		 * Use:
+		 * This funtion is funtion to the class. 
+		 * By calling it you ask for the in return log. 
+		 * The log is std::stringstream.
+		 */
+
 		static std::stringstream& getDefaultLogger() {
 			if (log == nullptr) {
 				log = new std::stringstream();
@@ -18,6 +33,21 @@ class Logger {
 
 			return *log;
 		}
+
+		/*
+		 * Function - get
+		 *
+		 * Parameters:
+		 * none
+		 * 
+		 * Return type:
+		 * std::string
+		 * 
+		 * Use:
+		 * By calling get, you ask for 
+		 * the log content in return. 
+		 * In debug get returns empty string.
+		 */
 
 		std::string get() {
 			std::string res = (*log).str();
@@ -32,6 +62,7 @@ class Logger {
 		}
 
 	private:
+		/* We never create object so we don't need constructor */
 		Logger() {}
 
 	private:

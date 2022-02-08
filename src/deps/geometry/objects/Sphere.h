@@ -8,17 +8,51 @@ class Sphere : public Hittable {
 		Sphere() {}
 		Sphere(Point center, float radius, shared_ptr<Material> material) : center(center), radius(radius), material_ptr(material) {};
 
+		/*
+		 * Function - hit
+		 *
+		 * Parameters:
+		 * [p] const Ray &ray,
+		 * [p] float distance_min,
+		 * [p] float distance_max,
+		 * [p] hit_record &record
+		 * 
+		 * Return type:
+		 * bool
+		 * 
+		 * Use:
+		 * Hit is Hittable based funtion. 
+		 * Hit_record update. 
+		 * If ray hits Sphere hit returns 1 (true), 
+		 * else 0 (false).
+		 */
+
 		virtual bool hit(
 			const Ray &ray, float distance_min, float distance_max, hit_record &record) const override;
 
 	private:
+
+		/*
+		 * Function - get_sphere_uv
+		 *
+		 * Parameters:
+		 * [p] const Point &point, 
+		 * [p] float &u, 
+		 * [p] float &v
+		 * 
+		 * Return type:
+		 * void
+		 * 
+		 * Use:
+		 * point: a given point on the sphere of radius one, centered at the origin.
+		 * u: returned value [0,1] of angle around the Y axis from X=-1.
+		 * v: returned value [0,1] of angle from Y=-1 to Y=+1.
+		 *   <1 0 0> yields <0.50 0.50>       <-1  0  0> yields <0.00 0.50>
+		 *   <0 1 0> yields <0.50 1.00>       < 0 -1  0> yields <0.50 0.00>
+		 *   <0 0 1> yields <0.25 0.50>       < 0  0 -1> yields <0.75 0.50>
+		 */
+
 		static void get_sphere_uv(const Point &point, float &u, float &v) {
-			// point: a given point on the sphere of radius one, centered at the origin.
-			// u: returned value [0,1] of angle around the Y axis from X=-1.
-			// v: returned value [0,1] of angle from Y=-1 to Y=+1.
-			//     <1 0 0> yields <0.50 0.50>       <-1  0  0> yields <0.00 0.50>
-			//     <0 1 0> yields <0.50 1.00>       < 0 -1  0> yields <0.50 0.00>
-			//     <0 0 1> yields <0.25 0.50>       < 0  0 -1> yields <0.75 0.50>
 
 			float theta = acos(-point.getY());
 			float phi = atan2(-point.getZ(), point.getX()) + pi;

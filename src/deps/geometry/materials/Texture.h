@@ -7,10 +7,26 @@
 #include "Color.h"
 
 #include "RT_stb_image.h"
-#include "Perlin.h"
 
 class Texture {    // Interface
 	public:
+
+		/*
+		 * Function - value
+		 *
+		 * Parameters:
+		 * [p] float u,
+		 * [p] float v,
+		 * [p] const Point &point
+		 * 
+		 * Return type:
+		 * Color
+		 * 
+		 * Use:
+		 * Base funtion (virtual). 
+		 * Value is used to get the pixel Color value.
+		 */
+
 		virtual Color value(float u, float v, const Point &point) const = 0;
 };
 
@@ -24,6 +40,14 @@ class Solid_Color : public Texture {
 		// Constructor to set color_value
 		Solid_Color(float red, float green, float blue)
 			: Solid_Color(Color(red,green,blue)) {}
+
+		/*
+		 * Function - value
+		 *
+		 * Use:
+		 * Override of base funtion. 
+		 * return the Color value of color_value.
+		 */
 
 		virtual Color value(float u, float v, const Point &point) const override {
 			return color_value;
@@ -59,18 +83,6 @@ class Checker_Texture : public Texture {
 	private:
 		shared_ptr<Texture> odd;     // odd Texture
 		shared_ptr<Texture> even;    // even Texture
-};
-
-class Noise_Texture : public Texture {
-	public:
-		Noise_Texture() {}
-
-		virtual Color value(float u, float v, const Point &point) const override {
-			return Color(1,1,1) * noise.noise(point);
-		}
-
-	public:
-		Perlin noise;
 };
 
 class Image_Texture : public Texture {

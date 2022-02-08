@@ -9,6 +9,25 @@ class Sphere_moving : public Hittable {
 		Sphere_moving(Point center_0, Point center_1, float s_time, float e_time, float radius, shared_ptr<Material> material)
 		: center_0(center_0), center_1(center_1), s_time(s_time), e_time(e_time), radius(radius), material_ptr(material) {};
 
+		/*
+		 * Function - hit
+		 *
+		 * Parameters:
+		 * [p] const Ray &ray,
+		 * [p] float distance_min,
+		 * [p] float distance_max,
+		 * [p] hit_record &record
+		 * 
+		 * Return type:
+		 * bool
+		 * 
+		 * Use:
+		 * Hit is Hittable based funtion. 
+		 * Hit_record update. 
+		 * If ray hits Sphere_moving hit returns 1 (true), 
+		 * else 0 (false).
+		 */
+
 		virtual bool hit(
 			const Ray &ray, float t_min, float t_max, hit_record &record) const override;
 

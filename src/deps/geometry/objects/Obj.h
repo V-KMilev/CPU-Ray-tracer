@@ -5,9 +5,7 @@
 #include "Settings.h"
 #include "Material.h"
 
-//
 // TODO: FIX materials
-//
 
 class obj : public Hittable {
 	public:
@@ -55,6 +53,25 @@ class obj : public Hittable {
 			embree.commit();
 		}
 		~obj() {}
+
+		/*
+		 * Function - hit
+		 *
+		 * Parameters:
+		 * [p] const Ray &ray,
+		 * [p] float distance_min,
+		 * [p] float distance_max,
+		 * [p] hit_record &record
+		 * 
+		 * Return type:
+		 * bool
+		 * 
+		 * Use:
+		 * Hit is Hittable based funtion. 
+		 * Hit_record update. 
+		 * If ray hits obj (triangle) hit returns 1 (true), 
+		 * else 0 (false).
+		 */
 
 		bool hit(const Ray &ray, float distance_min, float distance_max, hit_record &record) const {
 

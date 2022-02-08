@@ -2,6 +2,21 @@
 
 #include <fstream>
 
+/*
+ * Function - fileToString
+ *
+ * Parameters:
+ * [p] const std::string& file_name
+ * 
+ * Return type:
+ * const std:string
+ * 
+ * Use:
+ * By giving a file name (file path) to the 
+ * funtion you, get in return the content 
+ * of the file in string form.
+ */
+
 const std::string fileToString(const std::string &file_name) {
 
 	FILE *file = fopen(&file_name[0], "r");

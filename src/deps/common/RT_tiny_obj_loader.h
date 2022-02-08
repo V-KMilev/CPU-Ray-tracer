@@ -8,6 +8,23 @@ class MyTOL {
 		MyTOL() {}
 		~MyTOL() {}
 
+		/*
+		 * Function - myLoadObj
+		 *
+		 * Parameters:
+		 * [p] const char* file_name,
+		 * [p] const char* file_name (by defult equals to NULL),
+		 * [p] bool triangulate (by defult equals to true)
+		 * 
+		 * Return type:
+		 * bool
+		 * 
+		 * Use:
+		 * By giving file name (file path) you set
+		 * object file to be read. 
+		 * If the load failed in return you will get 1.
+		 */
+
 		bool myLoadObj(const char* file_name, const char* material_path = NULL, bool triangulate = true) {
 			std::cout << "Loading " << file_name << std::endl;
 

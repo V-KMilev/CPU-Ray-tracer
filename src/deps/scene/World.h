@@ -38,11 +38,8 @@ Hittable_list get_scene() {
 	/* Textues */
 	shared_ptr<Texture> checker_w = make_shared<Checker_Texture>(Color(0.0, 0.0, 0.0), Color(1.0, 1.0, 1.0));
 	shared_ptr<Texture> checker_m = make_shared<Checker_Texture>(Color(0.0, 0.0, 0.0), Color(1.0, 0.0, 1.0));
-	shared_ptr<Texture> noise = make_shared<Noise_Texture>();
 
 	/* Materials */
-	shared_ptr<Material> material_n = make_shared<Lambertian>(noise);
-
 	shared_ptr<Material> material_white_c = make_shared<Lambertian>(checker_w);
 	shared_ptr<Material> material_magenta_c = make_shared<Lambertian>(checker_m);
 
@@ -67,7 +64,7 @@ Hittable_list get_scene() {
 	shared_ptr<Material> difflight_w         = make_shared<Diffuse_light>(Color(37,37,37));
 
 	/* Objects */
-	world.add(make_shared<xz_rect>(-1000, 1000, -1000, 1000, 0, material_n));
+	world.add(make_shared<xz_rect>(-1000, 1000, -1000, 1000, 0, material_gray));
 	world.add(make_shared<Sphere>(Point(0, 2000, 200), 100, difflight_w));
 
 	// bases

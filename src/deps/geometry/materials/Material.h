@@ -10,11 +10,46 @@
 
 struct hit_record;
 
-class Material {    // Abstract Class
+class Material {    // Interface
 	public:
+
+		/*
+		 * Function - scatter
+		 *
+		 * Parameters:
+		 * [p] const Ray &ray_in,
+		 * [p] const hit_record &record,
+		 * [p] Color &attenuation,
+		 * [p] Ray &scattered
+		 * 
+		 * Return type:
+		 * bool
+		 * 
+		 * Use:
+		 * Base funtion (virtual). 
+		 * Scatter is used to understand (to simulate) 
+		 * the way the Rays are scattering.
+		 */
+
 		virtual bool scatter(
 			const Ray &ray_in, const hit_record &record, Color &attenuation, Ray &scattered
 		) const = 0;
+
+		/*
+		 * Function - emitted
+		 *
+		 * Parameters:
+		 * [p] float u,
+		 * [p] float v,
+		 * [p] const Point &point
+		 * 
+		 * Return type:
+		 * Color
+		 * 
+		 * Use:
+		 * Base funtion (virtual). 
+		 * Emitted is used only for light sources. 
+		 */
 
 		virtual Color emitted(float u, float v, const Point &point) const {
 			return Color(0,0,0);
@@ -25,6 +60,20 @@ class Lambertian : public Material {
 	public:
 		Lambertian(const Color &albedo) : albedo(make_shared<Solid_Color>(albedo)) {}
 		Lambertian(shared_ptr<Texture> albedo) : albedo(albedo) {}
+
+		/*
+		 * Function - scatter
+		 *
+		 * Use:
+		 * Override of base funtion.
+		 * Lambertian scatter is aways true. 
+		 * In this case scatter updates the 
+		 * attenuation Color and the scattered Ray.
+		 * 
+		 * [p] Attenuation Color - represents the Color value of the albedo
+		 * [p] Scattered Ray - Ray(hit_record.point, hit_record.normal + 
+		 * random vector , ...)
+		 */
 
 		virtual bool scatter(
 			const Ray &ray_in, const hit_record &record, Color &attenuation, Ray &scattered) const override {
@@ -51,10 +100,27 @@ class Diffuse_light : public Material  {
 		Diffuse_light(shared_ptr<Texture> texture) : emit(texture) {}
 		Diffuse_light(Color color) : emit(make_shared<Solid_Color>(color)) {}
 
+		/*
+		 * Function - scatter
+		 *
+		 * Use:
+		 * Override of base funtion.
+		 * Diffuse_light scatter is aways false. 
+		 * Rays can't scatter in light so...
+		 */
+
 		virtual bool scatter(
 			const Ray &ray_in, const hit_record &record, Color &attenuation, Ray &scattered) const override {
 			return false;
 		}
+
+		/*
+		 * Function - emitted
+		 *
+		 * Use:
+		 * Override of base funtion.
+		 * Return the Color value of the emit.
+		 */
 
 		virtual Color emitted(float u, float v, const Point &point) const override {    //emitted
 			return emit->value(u, v, point);
