@@ -103,11 +103,11 @@ int window_setup() {
 		IndexBuffer index_buffer(indices, 6);
 
 		#ifdef _WIN32
-			Shader shader("../../src/Shaders/vertexShader.shader", "../../src/Shaders/fragmentShader.shader");
+			Shader shader("../../src/shaders/vertexShader.shader", "../../src/shaders/fragmentShader.shader");
 		#endif
 
 		#ifdef __linux__
-			Shader shader("../src/Shaders/vertexShader.shader", "../src/Shaders/fragmentShader.shader");
+			Shader shader("../src/shaders/vertexShader.shader", "../src/shaders/fragmentShader.shader");
 		#endif
 
 		MyGLTexture texture(GL_RGB32F, image_width, image_height, GL_RGB, GL_FLOAT, &pixels[0]);
@@ -180,11 +180,11 @@ int window_setup() {
 				char fileName[256] = {0};
 
 				#ifdef _WIN32
-					sprintf(fileName, "../../src/Textures/debug/RTout%d.ppm", frameNum);
+					sprintf(fileName, "../../src/textures/debug/RTout%d.ppm", frameNum);
 				#endif
 
 				#ifdef __linux__
-					sprintf(fileName, "../src/Textures/debug/RTout%d.ppm", frameNum);
+					sprintf(fileName, "../src/textures/debug/RTout%d.ppm", frameNum);
 				#endif
 
 				std::ofstream out(fileName);

@@ -5,12 +5,16 @@
 #include "Settings.h"
 #include "Material.h"
 
+//
+// TODO: FIX materials
+//
+
 class obj : public Hittable {
 	public:
-		obj(MyEmbree &embree, const char* path, const char* basePath, shared_ptr<Material> material)
+		obj(MyEmbree &embree, const char* path, const char* material_path, shared_ptr<Material> material)
 			: embree(embree), filePath(path), basePath(basePath), material_ptr(material)
 		{
-			myTOL.myLoadObj(path, basePath);
+			myTOL.myLoadObj(path, material_path);
 
 			embree.setup(RTC_GEOMETRY_TYPE_TRIANGLE);
 

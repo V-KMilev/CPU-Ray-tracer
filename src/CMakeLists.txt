@@ -41,8 +41,8 @@ set(IMGUI_DIR
 )
 
 # My folders DIRS
-set(MY_BACKEND_DIR
-	"${CMAKE_CURRENT_SOURCE_DIR}/backend"
+set(MY_DEPS_DIR
+	"${CMAKE_CURRENT_SOURCE_DIR}/deps"
 )
 set(MY_EMBREE_DIR
 	"${CMAKE_CURRENT_SOURCE_DIR}/myEmbree"
@@ -125,7 +125,16 @@ target_include_directories(${PROJECT_NAME} PUBLIC
 	"${IMGUI_DIR}"
 	"${IMGUI_DIR}/backends"
 
-	"${MY_BACKEND_DIR}"
+	"${MY_DEPS_DIR}"
+	"${MY_DEPS_DIR}/common"
+	"${MY_DEPS_DIR}/common/file_edit"
+	"${MY_DEPS_DIR}/geometry"
+	"${MY_DEPS_DIR}/geometry/materials"
+	"${MY_DEPS_DIR}/geometry/objects"
+	"${MY_DEPS_DIR}/math"
+	"${MY_DEPS_DIR}/render"
+	"${MY_DEPS_DIR}/scene"
+
 	"${MY_EMBREE_DIR}"
 	"${MY_GLFW_DIR}"
 	"${MY_IMGUI_DIR}"

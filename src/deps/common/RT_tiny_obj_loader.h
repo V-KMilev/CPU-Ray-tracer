@@ -8,12 +8,12 @@ class MyTOL {
 		MyTOL() {}
 		~MyTOL() {}
 
-		bool myLoadObj(const char* filename, const char* basepath = NULL, bool triangulate = true) {
-			std::cout << "Loading " << filename << std::endl;
+		bool myLoadObj(const char* file_name, const char* material_path = NULL, bool triangulate = true) {
+			std::cout << "Loading " << file_name << std::endl;
 
 			std::string warn;
 			std::string err;
-			bool ret = tinyobj::LoadObj(&attrib, &shapes, &materials, &warn, &err, filename, basepath, triangulate);
+			bool ret = tinyobj::LoadObj(&attrib, &shapes, &materials, &warn, &err, file_name, material_path, triangulate);
 
 			if (!warn.empty()) {
 				std::cout << "WARN: " << warn << std::endl;

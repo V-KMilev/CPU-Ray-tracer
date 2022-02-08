@@ -147,7 +147,7 @@ Hittable_list get_scene() {
 
 	// world.add(make_shared<yz_rect>(-3, 3, -7, 0, 9, difflight_w));
 
-	world.add(make_shared<obj>(embree, "F:\\cpp\\ray-t-c\\Ray-tracer\\src\\Models\\Body_low.obj", ".\\Models\\", material_red));
+	world.add(make_shared<obj>(embree, "/home/vk/work/Ray-tracer/src/models/Body_low.obj", "../materials/", material_red));
 
 	return world;
 }
