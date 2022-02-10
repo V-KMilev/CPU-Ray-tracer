@@ -2,25 +2,38 @@
 
 #include "Utility_functions.h"
 
-#include "Thread_manager.h"
+#include "Color.h"
+#include "Vec.h"
+#include "Ray.h"
+
+#include "Camera.h"
+#include "Bucket.h"
 
 #include "Hittable_list.h"
 #include "Hittable.h"
-#include "Bucket.h"
+
+#include "Material.h"
+#include "Texture.h"
 
 #include "Sphere_moving.h"
 #include "Sphere.h"
 #include "AArect.h"
 #include "Obj.h"
 
-#include "Material.h"
-#include "Texture.h"
-
-#include "Camera.h"
-
-#include "Color.h"
-#include "Vec.h"
-#include "Ray.h"
+/*
+ * Function - image_material
+ *
+ * Parameters:
+ * [p] const char *image_name
+ * 
+ * Return type:
+ * shared_ptr<Material>
+ * 
+ * Use:
+ * By calling image_material you get 
+ * in return the image you have set as 
+ * a Material.
+ */
 
 shared_ptr<Material> image_material(const char *image_name) {
 	shared_ptr<Texture> image = make_shared<Image_Texture>(image_name);
@@ -28,16 +41,34 @@ shared_ptr<Material> image_material(const char *image_name) {
 	return make_shared<Lambertian>(image);
 }
 
+/*
+ * Function - get_scene
+ *
+ * Parameters:
+ * none
+ * 
+ * Return type:
+ * Hittable_list
+ * 
+ * Use:
+ * By calling get_scene you get 
+ * in return the hardcoded scene you 
+ * have created (written).
+ * 
+ * The scene works with the right hand rule 
+ * for the coordinates.
+ */
+
 Hittable_list get_scene() {
-	// World set: +x goes right from the camera
-	// World set: +y goes up from the camera
-	// World set: +z goes front from the camera
-	// WOLRD right hand:
 	Hittable_list world;
+
+////////////////////////////////////////////////////////////////////////////
 
 	/* Textues */
 	shared_ptr<Texture> checker_w = make_shared<Checker_Texture>(Color(0.0, 0.0, 0.0), Color(1.0, 1.0, 1.0));
 	shared_ptr<Texture> checker_m = make_shared<Checker_Texture>(Color(0.0, 0.0, 0.0), Color(1.0, 0.0, 1.0));
+
+////////////////////////////////////////////////////////////////////////////
 
 	/* Materials */
 	shared_ptr<Material> material_white_c = make_shared<Lambertian>(checker_w);
@@ -62,6 +93,8 @@ Hittable_list get_scene() {
 	shared_ptr<Material> difflight_w_low     = make_shared<Diffuse_light>(Color(1,1,1));
 	shared_ptr<Material> difflight_d         = make_shared<Diffuse_light>(Color(0,0,0));
 	shared_ptr<Material> difflight_w         = make_shared<Diffuse_light>(Color(37,37,37));
+
+////////////////////////////////////////////////////////////////////////////
 
 	/* Objects */
 	world.add(make_shared<xz_rect>(-1000, 1000, -1000, 1000, 0, material_gray));
@@ -145,6 +178,8 @@ Hittable_list get_scene() {
 	// world.add(make_shared<yz_rect>(-3, 3, -7, 0, 9, difflight_w));
 
 	world.add(make_shared<obj>(embree, "/home/vk/work/Ray-tracer/src/models/Body_low.obj", "../materials/", material_red));
+
+////////////////////////////////////////////////////////////////////////////
 
 	return world;
 }

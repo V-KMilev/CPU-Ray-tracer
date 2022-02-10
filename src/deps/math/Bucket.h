@@ -15,20 +15,36 @@ struct Bucket {
 	int bucket_id;    // Bucket: id
 };
 
+/*
+ * Function - bucket_segmentation
+ *
+ * Parameters:
+ * [p] const int image_width, 
+ * [p] const int image_height
+ * 
+ * Return type:
+ * std::vector<Bucket>
+ * 
+ * Use:
+ * By calling bucket_segmentation you segment 
+ * your input image to buckets (bucket_size by bucket_size) 
+ * in return you get vecotr with the ready buckets.
+ */
+
 std::vector<Bucket> bucket_segmentation(const int image_width, const int image_height) {
 
-	const int columns = { image_width / bucket_size };
-	const int rows = { image_height / bucket_size };
+	const int columns = image_width / bucket_size;
+	const int rows = image_height / bucket_size;
 
-	const int leftover_column = { image_width - bucket_size * columns };
-	const int leftover_row = { image_height - bucket_size * rows };
+	const int leftover_column = image_width - bucket_size * columns;
+	const int leftover_row = image_height - bucket_size * rows;
 
-	const int numb_of_buckets = { rows * columns };
+	const int numb_of_buckets = rows * columns;
 
 	std::vector<Bucket> my_buckets(numb_of_buckets);
 
-	int bucket_idx = {0};
-	int row_idx = {0};
+	int bucket_idx = 0;
+	int row_idx = 0;
 
 	for (int y = 0; y <= image_height - (bucket_size + leftover_row); y+=bucket_size, row_idx++) {
 		for (int x = 0; x <= image_width - (bucket_size + leftover_column); x+=bucket_size) {

@@ -44,6 +44,21 @@ class Camera {
 			this-> e_time = e_time;
 		}
 
+		/*
+		 * Function - get_ray
+		 *
+		 * Parameters:
+		 * [p] float image_u,
+		 * [p] float image_v
+		 * 
+		 * Return type:
+		 * Ray
+		 * 
+		 * Use:
+		 * By calling get_ray you get 
+		 * in return random Ray from camera.
+		 */
+
 		Ray get_ray(float image_u, float image_v) const {
 
 			Vec rd = lens_radius * random_in_unit_disk();            // Ray: offset postion

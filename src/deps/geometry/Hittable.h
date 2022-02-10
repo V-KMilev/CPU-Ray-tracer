@@ -2,6 +2,7 @@
 
 #include "Ray.h"
 
+/* Forward declaration */
 class Material;
 
 struct hit_record {
@@ -27,7 +28,7 @@ struct hit_record {
 	 * 
 	 * Use:
 	 * If the normal face is set wronge, 
-	 * correct it.
+	 * it will correct it.
 	 */
 
 	inline void set_face_normal(const Ray &ray, const Vec &outward_normal) {

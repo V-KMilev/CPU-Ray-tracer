@@ -26,8 +26,10 @@
 #include "Imgui_controls.h"
 #include "Glfw_controls.h"
 
+#include "Thread_manager.h"
 #include "File_write.h"
 #include "Render.h"
+
 
 const char* gl_version = "#version 330";
 
@@ -144,6 +146,20 @@ int window_setup() {
 
 			myImGui.newFrame();
 
+			if(change_multithreading) {
+				pool_onethread.clear();
+
+				for (Bucket &my_bucket : my_buckets) {
+					pool_multithread.enter_queue(my_bucket);
+				}
+			} else {
+				pool_multithread.clear();
+
+				for (Bucket &my_bucket : my_buckets) {
+					pool_onethread.enter_queue(my_bucket);
+				}
+			}
+
 			if(change_position || change_view || change_aperture || change_bg || change_clear || change_default) {
 				if(change_multithreading) {
 					pool_multithread.clear();
@@ -159,21 +175,6 @@ int window_setup() {
 
 				pixels            = empty_pixels;
 				samples_in_pixels = empty_samples_in_pixels;
-			}
-
-			/* RENDER: */
-			if(change_multithreading) {
-				pool_onethread.clear();
-
-				for (Bucket &my_bucket : my_buckets) {
-					pool_multithread.enter_queue(my_bucket);
-				}
-			} else {
-				pool_multithread.clear();
-
-				for (Bucket &my_bucket : my_buckets) {
-					pool_onethread.enter_queue(my_bucket);
-				}
 			}
 
 			#ifdef DEBUG
@@ -208,7 +209,7 @@ int window_setup() {
 
 			myImGui.render();
 
-			if(change_stop) {
+			if(change_run) {
 				/* Swap front and back buffers */
 				glfwSwapBuffers(window);
 			}

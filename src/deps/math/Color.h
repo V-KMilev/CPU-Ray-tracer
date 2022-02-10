@@ -7,6 +7,20 @@ class Color {
 		Color() : e{ 0.0f, 0.0f, 0.0f} {}
 		Color(float red, float green, float blue) : e{red, green, blue} {}
 
+		/*
+		 * Functions - getRed, getGreen, getBlue
+		 *
+		 * Parameters:
+		 * none
+		 * 
+		 * Return type:
+		 * float
+		 * 
+		 * Use:
+		 * By calling this funtion you get 
+		 * in return color value.
+		 */
+
 		float getRed() const { return e[0]; }
 		float getGreen() const { return e[1]; }
 		float getBlue() const { return e[2]; }

@@ -24,8 +24,7 @@ class Sphere_moving : public Hittable {
 		 * Use:
 		 * Hit is Hittable based funtion. 
 		 * Hit_record update. 
-		 * If ray hits Sphere_moving hit returns 1 (true), 
-		 * else 0 (false).
+		 * If ray hits Sphere_moving hit returns 1 (true).
 		 */
 
 		virtual bool hit(

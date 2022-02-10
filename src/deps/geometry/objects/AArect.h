@@ -26,8 +26,7 @@ class xy_rect : public Hittable {
 		 * Use:
 		 * Hit is Hittable based funtion. 
 		 * Hit_record update. 
-		 * If ray hits xy_rect hit returns 1 (true), 
-		 * else 0 (false).
+		 * If ray hits xy_rect hit returns 1 (true).
 		 */
 
 		virtual bool hit(const Ray &ray, float distance_min, float distance_max, hit_record &record) const override {
@@ -85,8 +84,7 @@ class xz_rect : public Hittable {
 		 * Use:
 		 * Hit is Hittable based funtion. 
 		 * Hit_record update. 
-		 * If ray hits xz_rect hit returns 1 (true), 
-		 * else 0 (false).
+		 * If ray hits xz_rect hit returns 1 (true).
 		 */
 
 		virtual bool hit(const Ray &ray, float distance_min, float distance_max, hit_record &record) const override {
@@ -144,8 +142,7 @@ class yz_rect : public Hittable {
 		 * Use:
 		 * Hit is Hittable based funtion. 
 		 * Hit_record update. 
-		 * If ray hits yz_rect hit returns 1 (true), 
-		 * else 0 (false).
+		 * If ray hits yz_rect hit returns 1 (true).
 		 */
 
 		virtual bool hit(const Ray &ray, float distance_min, float distance_max, hit_record &record) const override {

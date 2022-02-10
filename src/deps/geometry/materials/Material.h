@@ -8,9 +8,10 @@
 #include "Ray.h"
 #include "Vec.h"
 
+/* Forward declaration */
 struct hit_record;
 
-class Material {    // Interface
+class Material {
 	public:
 
 		/*
@@ -72,7 +73,7 @@ class Lambertian : public Material {
 		 * 
 		 * [p] Attenuation Color - represents the Color value of the albedo
 		 * [p] Scattered Ray - Ray(hit_record.point, hit_record.normal + 
-		 * random vector , ...)
+		 * random vector , ...).
 		 */
 
 		virtual bool scatter(

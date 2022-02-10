@@ -77,6 +77,9 @@ class MyImGui {
 			ImGui::NewLine();
 
 			ImGui::Checkbox("Multithreading", &change_multithreading);
+			ImGui::SameLine();
+
+			ImGui::Checkbox("Static render", &change_static);
 			ImGui::NewLine();
 
 			ImGui::Separator();
@@ -97,12 +100,12 @@ class MyImGui {
 			ImGui::NewLine();
 
 			if(ImGui::Button("Stop")) {
-				change_stop = false;
+				change_run = false;
 			}
 			ImGui::SameLine();
 
 			if(ImGui::Button("Run")) {
-				change_stop = true;
+				change_run = true;
 			}
 			ImGui::SameLine();
 

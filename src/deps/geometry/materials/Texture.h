@@ -3,8 +3,8 @@
 #include <iostream>
 
 #include "Utility_functions.h"
-#include "Vec.h"
 #include "Color.h"
+#include "Vec.h"
 
 #include "RT_stb_image.h"
 
