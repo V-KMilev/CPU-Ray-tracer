@@ -175,9 +175,9 @@ Hittable_list get_scene() {
 	world.add(make_shared<xz_rect>(-5.5, -4.5, -9.5, -8.5, 5.99, difflight_magenta));    // turret roof
 	world.add(make_shared<xz_rect>(-9.5, -8.5, -5.5, -4.5, 5.99, difflight_magenta));    // turret roof
 
-	// world.add(make_shared<yz_rect>(-3, 3, -7, 0, 9, difflight_w));
+	world.add(make_shared<yz_rect>(-6, 6, -7, 7, 9, difflight_w_low));
 
-	world.add(make_shared<obj>(embree, "/home/vk/work/Ray-tracer/src/models/Body_low.obj", "../materials/", material_red));
+	world.add(make_shared<obj>(embree, "F:\\cpp\\ray_t\\Ray-tracer\\src\\models\\vilkasObjToRend.obj", "..\\..\\materials\\", material_red));
 
 ////////////////////////////////////////////////////////////////////////////
 

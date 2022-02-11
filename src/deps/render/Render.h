@@ -21,13 +21,11 @@ const Hittable_list world = get_scene();
  * 
  * Use:
  * By calling tracer you get 
- * in return you get calculated color 
+ * in return the calculated color 
  * value of a pixel of the scene.
  * 
- * The simalate that tracer does is 
- * we trace the ray (ray-tracer be like). 
- * We have the hardcoded scene, with some depth. 
- * So now we can let the rays hit.
+ * The simulation that tracer does is 
+ * it traces the ray (ray-tracer be like).
  */
 
 Color tracer(const Ray &ray, const Color &background, const Hittable &world, int depth) {
