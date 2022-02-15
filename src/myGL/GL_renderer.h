@@ -9,16 +9,68 @@
 class Renderer {
 	public:
 		Renderer() {}
-		
 		~Renderer() {}
+
+		/*
+		 * Function - clear
+		 *
+		 * Parameters:
+		 * none
+		 * 
+		 * Return type:
+		 * void
+		 * 
+		 * Use:
+		 * By calling clear it 
+		 * clear buffers to preset values. 
+		 * glClear sets the bitplane area of 
+		 * the window to values previously 
+		 * selected by glClearColor, glClearDepth 
+		 * and glClearStencil.
+		 */
 
 		void clear() const {
 			MY_GL_CHECK(glClear(GL_COLOR_BUFFER_BIT));
 		}
 
+		/*
+		 * Function - clear
+		 *
+		 * Parameters:
+		 * none
+		 * 
+		 * Return type:
+		 * void
+		 * 
+		 * Use:
+		 * By calling glClearColor it 
+		 * specifies the red, green, blue, and alpha values 
+		 * used by glClear to clear the color buffers. 
+		 * Values specified by glClearColor are 
+		 * clamped to the range [0,1].
+		 */
+
 		void clearColor() const {
 			MY_GL_CHECK(glClearColor(0.3f, 0.0f, 0.3f, 1.0f));
 		}
+
+		/*
+		 * Function - clear
+		 *
+		 * Parameters:
+		 * [p] VertexArray &vertex_array,
+		 * [p] IndexBuffer &index_buffer,
+		 * [p] Shader &shader
+		 * 
+		 * Return type:
+		 * void
+		 * 
+		 * Use:
+		 * By calling draw it binds 
+		 * the shaders, vertex_array and
+		 * index_buffer. After binding it renders 
+		 * primitives from array data.
+		 */
 
 		void draw(VertexArray &vertex_array, IndexBuffer &index_buffer, Shader &shader) const {
 

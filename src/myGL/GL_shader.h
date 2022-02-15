@@ -6,7 +6,20 @@
 #include "GL_error_handler.h"
 #include "File_read.h"
 
+
 struct ProgramShaders {
+
+	/*
+	 * struct - Constructor
+	 *
+	 * Parameters:
+	 * [p] const std::string &vertex_shader,
+	 * [p] const std::string &fragment_shader
+	 * 
+	 * Use:
+	 * Sets vertex_shader and fragment_shader.
+	 */
+
 	ProgramShaders(const std::string &vertex_shader, const std::string &fragment_shader) 
 	: vertex_shader(vertex_shader), fragment_shader(fragment_shader) {}
 
@@ -27,13 +40,63 @@ class Shader {
 			MY_GL_CHECK(glDeleteProgram(my_ID));
 		}
 
+		/*
+		 * Function - bind
+		 *
+		 * Parameters:
+		 * none
+		 * 
+		 * Return type:
+		 * void
+		 * 
+		 * Use:
+		 * By calling bind it 
+		 * installs a program object 
+		 * as part of current rendering.
+		 */
+
 		void bind() const {
 			MY_GL_CHECK(glUseProgram(my_ID));
 		}
 
+		/*
+		 * Function - unbind
+		 *
+		 * Parameters:
+		 * none
+		 * 
+		 * Return type:
+		 * void
+		 * 
+		 * Use:
+		 * By calling unbind we 
+		 * install the 0 object = none 
+		 * (free mem.).
+		 */
+
 		void unbind() const {
 			MY_GL_CHECK(glUseProgram(0));
 		}
+
+		/*
+		 * Function - setUniform4f
+		 *
+		 * Parameters:
+		 * [p] const std::string &uniform_name,
+		 * [p] float f0,
+		 * [p] float f1,
+		 * [p] float f2,
+		 * [p] float f3
+		 * 
+		 * Return type:
+		 * void
+		 * 
+		 * Use:
+		 * By calling setUniform4f we 
+		 * specify the value of a uniform 
+		 * variable for the current program object.
+		 * Specifying 4 floats.
+		 */
 
 		// Set uniforms
 		void setUniform4f(const std::string &uniform_name, float f0, float f1, float f2, float f3) {
@@ -43,12 +106,46 @@ class Shader {
 			MY_GL_CHECK(glUniform4f(location, f0, f1, f2, f3));
 		}
 
+		/*
+		 * Function - setUniform1i
+		 *
+		 * Parameters:
+		 * [p] const std::string &uniform_name,
+		 * [p] int i0
+		 * 
+		 * Return type:
+		 * void
+		 * 
+		 * Use:
+		 * By calling setUniform1i we 
+		 * specify the value of a uniform 
+		 * variable for the current program object.
+		 * Specifying int.
+		 */
+
 		void setUniform1i(const std::string &uniform_name, int i0) {
 
 			int location = getUniformLocation(uniform_name);
 
 			MY_GL_CHECK(glUniform1i(location, i0));
 		}
+
+		/*
+		 * Function - setUniformMat4f
+		 *
+		 * Parameters:
+		 * [p] const std::string &uniform_name,
+		 * [p] const glm::mat4 &matrix
+		 * 
+		 * Return type:
+		 * void
+		 * 
+		 * Use:
+		 * By calling setUniformMat4f we 
+		 * specify the value of a uniform 
+		 * variable for the current program object. 
+		 * Specifying float matrix 4x4.
+		 */
 
 		void setUniformMat4f(const std::string &uniform_name, const glm::mat4 &matrix) {
 
@@ -58,6 +155,22 @@ class Shader {
 		}
 
 	private:
+
+		/*
+		 * Function - getUniformLocation
+		 *
+		 * Parameters:
+		 * [p] const std::string &name
+		 * 
+		 * Return type:
+		 * int
+		 * 
+		 * Use:
+		 * By calling getUniformLocation we 
+		 * get in return the location of the 
+		 * uniform we specified.
+		 */
+
 		int getUniformLocation(const std::string &name) {
 			// If location already exist we just reuse it
 			if(my_uniform_location_cache.find(name) != my_uniform_location_cache.end()) {
@@ -73,6 +186,23 @@ class Shader {
 			return location;
 		}
 
+		/*
+		 * Function - getShaders
+		 *
+		 * Parameters:
+		 * [p] const std::string &vertex_file_name,
+		 * [p] const std::string &fragment_file_name
+		 * 
+		 * Return type:
+		 * ProgramShaders
+		 * 
+		 * Use:
+		 * By calling getUniformLocation we 
+		 * get in return the shaders. 
+		 * We read the vertex and fragment
+		 * files and import them in string format.
+		 */
+
 		ProgramShaders getShaders(const std::string &vertex_file_name, const std::string &fragment_file_name) {
 
 			const std::string vertex_shader = fileToString(vertex_file_name);
@@ -82,6 +212,22 @@ class Shader {
 
 			return shaders;
 		}
+
+		/*
+		 * Function - CompileShader
+		 *
+		 * Parameters:
+		 * [p] unsigned int type,
+		 * [p] const std::string &source
+		 * 
+		 * Return type:
+		 * unsigned int
+		 * 
+		 * Use:
+		 * By calling CompileShader we 
+		 * compile the imported shaders and
+		 * get in return the shaders id.
+		 */
 
 		unsigned int CompileShader(unsigned int type, const std::string &source) {
 
@@ -114,6 +260,22 @@ class Shader {
 
 			return id;
 		}
+
+		/*
+		 * Function - createShader
+		 *
+		 * Parameters:
+		 * [p] const std::string &vertex_shader, 
+		 * [p] const std::string &fragment_shader
+		 * 
+		 * Return type:
+		 * unsigned int
+		 * 
+		 * Use:
+		 * By calling CompileShader we 
+		 * create program and attach the shaders
+		 * to it. We get in return the program.
+		 */
 
 		unsigned int createShader(const std::string &vertex_shader, const std::string &fragment_shader) {
 

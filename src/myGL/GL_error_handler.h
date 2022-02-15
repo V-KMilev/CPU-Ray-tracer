@@ -11,6 +11,24 @@
 #include "glm.hpp"
 #include "gtc/matrix_transform.hpp"
 
+/*
+ * Function - printGLErrors
+ *
+ * Parameters:
+ * [p] const char* file,
+ * [p] int line,
+ * [p] const char* fun
+ * 
+ * Return type:
+ * void
+ * 
+ * Use:
+ * By calling printGLErrors you 
+ * print the OGL error we reseved 
+ * in the corresponding file and line. 
+ * Set for every OGL funtion.
+ */
+
 /* Printing funtion fail */
 void printGLErrors(const char* file, int line, const char* fun) {
 
