@@ -8,6 +8,9 @@
 #define GLFW_INCLUDE_NONE
 #include <GLFW/glfw3.h>
 
+#include "glm.hpp"
+#include "gtc/matrix_transform.hpp"
+
 // W, UP moves +1 by X, S, DOWN moves -1 by X
 // A, LEFT moves +1 by Z, D, RIGHT moves -1 by Z
 // Q moces +1 by Y, E moves -1 by Y

@@ -18,13 +18,57 @@ class VertexBufferLayout {
 
 		~VertexBufferLayout() {}
 
+		/*
+		 * Function - push
+		 *
+		 * Parameters:
+		 * [p] unsigned int count
+		 * 
+		 * Return type:
+		 * void
+		 * 
+		 * Use:
+		 * templated function. 
+		 * By calling push we add new 
+		 * vertex buffer element specifications.
+		 */
+
 		template<typename T>
 		void push(unsigned int count) {
 
 			assert(false);    // needs to be static_assert
 		}
 
-		inline const std::vector<VertexBufferElement>& GetElements() const { return my_Elements; }
+		/*
+		 * Function - getElements
+		 *
+		 * Parameters:
+		 * none
+		 * 
+		 * Return type:
+		 * const std::vector<VertexBufferElement>&
+		 * 
+		 * Use:
+		 * By calling getElements we 
+		 * get in return the vector with 
+		 * all elements.
+		 */
+
+		inline const std::vector<VertexBufferElement>& getElements() const { return my_Elements; }
+
+		/*
+		 * Function - getStride
+		 *
+		 * Parameters:
+		 * none
+		 * 
+		 * Return type:
+		 * unsigned int
+		 * 
+		 * Use:
+		 * By calling getStride we 
+		 * get in return the stride count.
+		 */
 
 		inline unsigned int getStride() const { return my_Stride; }
 
@@ -44,6 +88,6 @@ void VertexBufferLayout::push<float>(unsigned int count) {
 
 	my_Elements.push_back(element);
 
-	// Custom for every template : float => GLfloat
+	/* Custom for every template : float == GLfloat */
 	my_Stride += count * sizeof(GLfloat);
 }

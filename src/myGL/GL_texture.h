@@ -11,6 +11,21 @@
 
 class MyGLTexture {
 	public:
+
+		/*
+		 * Class - Constructor
+		 *
+		 * Parameters:
+		 * [p] const std::string &file_name
+		 * 
+		 * Use:
+		 * Genereates a texture. After generating
+		 * it binds the texture and sets the 2D 
+		 * GL texture parameters. After setting the 
+		 * parameters it loads the data from image file
+		 * into the texture and rebinds.
+		 */
+
 		MyGLTexture(const std::string &file_name) : my_ID(0), my_local_buffer(nullptr), width(0), height(0), components_per_pixel(0) {
 			// OGL starts its textures form the bottom so we need to flip out
 			stbi_set_flip_vertically_on_load(1);
@@ -41,6 +56,25 @@ class MyGLTexture {
 			}
 		}
 
+		/*
+		 * Class - Constructor
+		 *
+		 * Parameters:
+		 * [p] unsigned int internalFormat,
+		 * [p] unsigned int width,
+		 * [p] unsigned int height,
+		 * [p] unsigned int format,
+		 * [p] unsigned int type,
+		 * [p] void *data
+		 * 
+		 * Use:
+		 * Genereates a texture. After generating
+		 * it binds the texture and sets the 2D 
+		 * GL texture parameters. After setting the 
+		 * parameters it loads the data into the texture 
+		 * and rebinds.
+		 */
+
 		MyGLTexture(
 			unsigned int internalFormat,
 			unsigned int width,
@@ -70,6 +104,26 @@ class MyGLTexture {
 			MY_GL_CHECK(glDeleteTextures(1, &my_ID));
 		}
 
+		/*
+		 * Function - update
+		 *
+		 * Parameters:
+		 * [p] unsigned int internalFormat,
+		 * [p] unsigned int width,
+		 * [p] unsigned int height,
+		 * [p] unsigned int format,
+		 * [p] unsigned int type,
+		 * [p] void *data
+		 * 
+		 * Return type:
+		 * void
+		 * 
+		 * Use:
+		 * By calling update we rebinds the 
+		 * texture and update it data and 
+		 * unbinds it.
+		 */
+
 		void update(
 			unsigned int internalFormat,
 			unsigned int width,
@@ -85,11 +139,38 @@ class MyGLTexture {
 			MY_GL_CHECK(glBindTexture(GL_TEXTURE_2D, 0));
 		}
 
-		// If slot not specified = 0
+		/*
+		 * Function - bind
+		 *
+		 * Parameters:
+		 * unsigned int slot (by defult equals to 0)
+		 * 
+		 * Return type:
+		 * void
+		 * 
+		 * Use:
+		 * By calling bind we bind 
+		 * the texture with the corresponding id.
+		 */
+
 		void bind(unsigned int slot = 0) const {
 			MY_GL_CHECK(glActiveTexture(GL_TEXTURE0 + slot));
 			MY_GL_CHECK(glBindTexture(GL_TEXTURE_2D, my_ID));
 		};
+
+		/*
+		 * Function - unbind
+		 *
+		 * Parameters:
+		 * none
+		 * 
+		 * Return type:
+		 * void
+		 * 
+		 * Use:
+		 * By calling unbind we bind 
+		 * the 0 texture = none (free mem.).
+		 */
 
 		void unbind() const {
 			MY_GL_CHECK(glBindTexture(GL_TEXTURE_2D, 0));

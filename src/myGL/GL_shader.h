@@ -94,7 +94,7 @@ class Shader {
 		 * Use:
 		 * By calling setUniform4f we 
 		 * specify the value of a uniform 
-		 * variable for the current program object.
+		 * variable for the current program object. 
 		 * Specifying 4 floats.
 		 */
 
@@ -119,7 +119,7 @@ class Shader {
 		 * Use:
 		 * By calling setUniform1i we 
 		 * specify the value of a uniform 
-		 * variable for the current program object.
+		 * variable for the current program object. 
 		 * Specifying int.
 		 */
 
@@ -199,7 +199,7 @@ class Shader {
 		 * Use:
 		 * By calling getUniformLocation we 
 		 * get in return the shaders. 
-		 * We read the vertex and fragment
+		 * We read the vertex and fragment 
 		 * files and import them in string format.
 		 */
 
@@ -252,7 +252,7 @@ class Shader {
 
 				std::cerr << "[FAIL] Failed to complie " << (type == GL_VERTEX_SHADER ? "VERTEX" : "FRAGMENT") << " shader\n";
 				std::cerr << message << "\n";
-				
+
 				MY_GL_CHECK(glDeleteShader(id));
 
 				id = 0;
@@ -273,7 +273,7 @@ class Shader {
 		 * 
 		 * Use:
 		 * By calling CompileShader we 
-		 * create program and attach the shaders
+		 * create program and attach the shaders 
 		 * to it. We get in return the program.
 		 */
 
@@ -281,16 +281,16 @@ class Shader {
 
 			unsigned int program = glCreateProgram();    // create progam
 
-			unsigned int vertex_shad = CompileShader(GL_VERTEX_SHADER, vertex_shader);        // compile vertex shader
+			unsigned int vertex_shad = CompileShader(GL_VERTEX_SHADER, vertex_shader);          // compile vertex shader
 			unsigned int fragment_shad = CompileShader(GL_FRAGMENT_SHADER, fragment_shader);    // compile fragment shader
 
-			MY_GL_CHECK(glAttachShader(program, vertex_shad));    // add vertex shader
+			MY_GL_CHECK(glAttachShader(program, vertex_shad));      // add vertex shader
 			MY_GL_CHECK(glAttachShader(program, fragment_shad));    // add fragment shader
 
 			MY_GL_CHECK(glLinkProgram(program));        // link program
 			MY_GL_CHECK(glValidateProgram(program));    // validate program
 
-			MY_GL_CHECK(glDeleteShader(vertex_shad));    // delete vertex shader
+			MY_GL_CHECK(glDeleteShader(vertex_shad));      // delete vertex shader
 			MY_GL_CHECK(glDeleteShader(fragment_shad));    // delete fragment shader
 
 			return program;

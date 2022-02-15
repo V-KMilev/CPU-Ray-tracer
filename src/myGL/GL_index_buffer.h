@@ -61,7 +61,7 @@ class IndexBuffer {
 		}
 
 		/*
-		 * Function - bind
+		 * Function - unbind
 		 *
 		 * Parameters:
 		 * none
@@ -70,7 +70,7 @@ class IndexBuffer {
 		 * void
 		 * 
 		 * Use:
-		 * By calling bind we bind 
+		 * By calling unbind we bind 
 		 * the 0 buffer = none (free mem.).
 		 */
 
