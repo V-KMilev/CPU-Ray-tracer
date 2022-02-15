@@ -130,12 +130,12 @@ class MyImGui {
 			ImGui::SameLine();
 			ImGui::End();
 
-			ImGui::Begin("Console log");
+			// ImGui::Begin("Console log");
 
-			const std::string &msg = Logger::getDefaultLogger().str();
+			// const std::string &msg = Logger::getDefaultLogger().str();
 
-			ImGui::InputTextMultiline("", (char*)msg.c_str(), msg.length());
-			ImGui::End();
+			// ImGui::InputTextMultiline("", (char*)msg.c_str(), msg.length());
+			// ImGui::End();
 		}
 
 	private:

@@ -23,7 +23,7 @@ const int bucket_size = {64};                                          // bucket
 
 const float aspect_ratio = {16.0 / 9.0};                               // Image: aspect ratio: resolution
 
-int image_width = {RES_FULL_HD};                                       // Image: width
+int image_width = {RES_HD};                                            // Image: width
 int image_height = {static_cast<int>(image_width / aspect_ratio)};     // Image: height
 
 int samples_per_pixel = {1};                                           // rays per pixel
