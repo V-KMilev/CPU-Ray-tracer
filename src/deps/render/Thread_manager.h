@@ -10,6 +10,7 @@
 
 #include <future>
 #include <thread>
+#include <chrono>
 #include <atomic>
 
 #include "Settings.h"
@@ -126,6 +127,10 @@ class ThreadPool {
 				my_Threads.emplace_back(
 					[=]() {
 						for(;;) {
+
+							while(change_stop && !my_Stopping) {
+								std::this_thread::sleep_for(std::chrono::milliseconds(100));
+							}
 
 							Bucket task;
 							{

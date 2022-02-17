@@ -144,7 +144,7 @@ int window_setup() {
 
 			myGlfw.fullControlSet(precision);
 
-			myImGui.newFrame();
+			myImGui.newframe();
 
 			if(change_multithreading) {
 				pool_onethread.clear();
@@ -209,10 +209,12 @@ int window_setup() {
 
 			myImGui.render();
 
-			if(change_run) {
-				/* Swap front and back buffers */
-				glfwSwapBuffers(window);
+			if(change_close_window) {
+				glfwSetWindowShouldClose(window, GLFW_TRUE);
 			}
+
+			/* Swap front and back buffers */
+			glfwSwapBuffers(window);
 
 			/* Poll for and process events */
 			glfwPollEvents();
