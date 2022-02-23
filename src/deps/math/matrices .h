@@ -116,9 +116,9 @@ class matrix {
 		};
 
 		/* rotation_y_4:
-		* | +cos 0, +sin |
-		* | 0    1, 0    |
-		* | -sin 0, +cos |
+		* | +cos 0 +sin |
+		* | 0    1 0    |
+		* | -sin 0 +cos |
 		*/
 
 		float rotation_y_3[3][3] = {
@@ -130,7 +130,7 @@ class matrix {
 		/* rotation_z_4:
 		* | +cos -sin 0 |
 		* | +sin +cos 0 |
-		* | 0   0     1 |
+		* | 0    0    1 |
 		*/
 
 		float rotation_z_3[3][3] = {
