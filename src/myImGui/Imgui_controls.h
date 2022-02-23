@@ -156,7 +156,7 @@ class MyImGui {
 				ImGui::Text("Max Threads: %d", MAX_NUMBER_OF_THREADS);
 				ImGui::NewLine();
 
-				static float values[60] = {};
+				static float values[120] = {};
 				static int values_offset = 0;
 				static double refresh_time = 0.0;
 				while (refresh_time < ImGui::GetTime()) // Create data at fixed 60 Hz rate for the demo
@@ -174,7 +174,7 @@ class MyImGui {
 						average += values[n];
 					average /= (float)IM_ARRAYSIZE(values);
 					char overlay[32];
-					sprintf(overlay, "avg %f", average);
+					sprintf(overlay, "avg %.3f", average);
 					ImGui::PlotLines("FPS", values, IM_ARRAYSIZE(values), values_offset, overlay);
 				}
 
