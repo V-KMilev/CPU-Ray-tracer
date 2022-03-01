@@ -61,6 +61,7 @@ class MyImGui {
 			}
 			if(ImGui::BeginMenu("Edit")) {
 				ImGui::EndMenu();
+				/* TODO: Object modifications */
 			}
 			ImGui::SameLine(ImGui::GetWindowWidth()-50);
 			if(ImGui::MenuItem("Run")) {
@@ -75,6 +76,7 @@ class MyImGui {
 			if(ImGui::MenuItem("Reset")) {
 				change_default = true;
 
+				fov        = default_fov;
 				max_depth  = default_max_depth;
 				lookfrom   = default_lookfrom;
 				lookat     = default_lookat;
@@ -130,6 +132,11 @@ class MyImGui {
 				else { change_view = false; }
 
 				if(ImGui::InputFloat("Camera aperture ", &aperture, 0.0f, 10.0f)) {
+					change_fov = true;
+				}
+				else { change_fov = false; }
+
+				if(ImGui::InputFloat("Camera fov ", &fov, 0.0f, 180.0f)) {
 					change_aperture = true;
 				}
 				else { change_aperture = false; }

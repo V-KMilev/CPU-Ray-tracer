@@ -74,7 +74,7 @@ Color tracer(const Ray &ray, const Color &background, const Hittable &world, int
 
 void render(const Bucket &my_bucket) {
 	/* CAMERA: */
-	Camera camera(lookfrom, lookat, view_up, 53.7, aspect_ratio, aperture, dist_to_focus, 0.0, 1.0);
+	Camera camera(lookfrom, lookat, view_up, fov, aspect_ratio, aperture, dist_to_focus, 0.0, 1.0);
 
 	Logger::getDefaultLogger() << "\n\rStart Bucket: " << std::this_thread::get_id() << " -> + " << my_bucket.bucket_id;
 
@@ -101,8 +101,8 @@ void render(const Bucket &my_bucket) {
 			for (int s = 0; s < samples_per_pixel; s++) {
 
 				/* uv random value */
-				float u = (x + random_float()) / (image_width - 1);
-				float v = (y + random_float()) / (image_height - 1);
+				const float u = (x + random_float()) / (image_width - 1);
+				const float v = (y + random_float()) / (image_height - 1);
 
 				Ray ray = camera.get_ray(u, v);
 

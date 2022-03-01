@@ -23,7 +23,7 @@ const int bucket_size = {64};                                          // bucket
 
 const float aspect_ratio = {16.0 / 9.0};                               // Image: aspect ratio: resolution
 
-int image_width = {RES_FULL_HD};                                            // Image: width
+int image_width = {RES_TEST};                                            // Image: width
 int image_height = {static_cast<int>(image_width / aspect_ratio)};     // Image: height
 
 int samples_per_pixel = {1};                                           // rays per pixel
@@ -54,8 +54,9 @@ Point lookfrom(-2.0f, 1.0f, 2.0f);
 Point lookat(0.0f, 1.0f, 0.0f);
 Vec view_up(0.0f, 1.0f, 0.0f);
 
-float dist_to_focus = 3.5f;
+float fov = 53.7;
 float aperture = 0.1f;
+float dist_to_focus = 3.5f;
 
 //////////////////////////////////////////////////////////////
 
@@ -73,6 +74,7 @@ std::atomic<int> samples_in_counter = {0};
 bool change_multithreading = false;
 bool change_position       = false;
 bool change_aperture       = false;
+bool change_fov            = false;
 bool change_default        = false;
 bool change_static         = false;
 bool change_clear          = false;
@@ -86,6 +88,8 @@ bool change_stop           = true;
 /* Default settings */
 int default_samples_per_pixel = {1};
 int default_max_depth = {2};
+
+float default_fov = 53.7;
 
 Point default_lookfrom(0.0f, 1.0f, 0.0f);
 Point default_lookat(1.0f, 1.0f, 0.0f);
