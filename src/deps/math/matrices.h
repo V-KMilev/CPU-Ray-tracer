@@ -27,17 +27,26 @@ enum matrixType : unsigned int {
 
 class matrix {
 	public:
+		// TODO: Change the class into float[9] without pointers
+
+		/* Deafult constructor (indentity)*/
+		matrix() : my_type(t_indentity_3), my_matrix_ptr(indentity_3) {}
+
+		/* Indentity constructor */
 		matrix(matrixType type = t_indentity_3) 
 		: my_type(type), my_matrix_ptr(indentity_3) {}
 
-		matrix(float angle  = 0, matrixType type = t_rotation_3) 
+		/* Rotation constructor */
+		matrix(float angle = 0.f, matrixType type = t_rotation_3) 
 		: my_type(type), my_matrix_ptr(set_rotation_matrix_ptr()), angle(angle), cos_angle(cos(angle)), sin_angle(sin(angle)) {}
 
-		matrix(Vec translation = Vec(0,0,0), matrixType type = t_translation_3) 
+		/* Translation constructor */
+		matrix(Vec translation = Vec(0.f,0.f,0.f), matrixType type = t_translation_3) 
 		: my_type(type), my_matrix_ptr(nullptr), translation(translation) {}
 
-		matrix(float scaling[3] = 0, matrixType type = t_scaling_3) 
-		: my_type(type), my_matrix_ptr(scaling_3), scaling{scaling[0], scaling[1], scaling[2]} {}
+		/* Scaling constructor */
+		matrix(float scaling_x = 0.f, float scaling_y = 0.f, float scaling_z = 0.f, matrixType type = t_scaling_3) 
+		: my_type(type), my_matrix_ptr(scaling_3), scaling{scaling_x, scaling_y, scaling_z} {}
 
 		~matrix() {}
 
@@ -52,7 +61,7 @@ class matrix {
 
 			if(my_type == t_scaling_3)
 				my_matrix_ptr = scaling_3;
-			
+
 			if(my_type == t_rotation_x_3)
 				my_matrix_ptr = rotation_x_3;
 
@@ -69,8 +78,8 @@ class matrix {
 		// TODO: Creates new matrix and gives a pointer
 		matrix_ptr inverse_matrix() {
 
-			// if(get_det() == 0)
-			// 	return nullptr;
+			if(get_det() == 0)
+				return nullptr;
 
 			// if(my_type == t_indentity_3) {
 			// 	return indentity_3;
