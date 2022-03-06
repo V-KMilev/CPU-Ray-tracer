@@ -5,24 +5,14 @@
 
 #include "Vec.h"
 
-enum matrixType : unsigned int {
-	t_none          = 0,
-	t_indentity_3   = 1,
-	t_scaling_3     = 2,
-	t_rotation_3    = 3,
-	t_rotation_x_3  = 4,
-	t_rotation_y_3  = 5,
-	t_rotation_z_3  = 6
-};
-
 class Matrix {
 	public:
-		Matrix(float matrix[9] = 0, matrixType type = t_none)
+		Matrix(float matrix[9] = {0})
 		: my_matrix{ matrix[0], matrix[1], matrix[2],
 					 matrix[3], matrix[4], matrix[5],
 					 matrix[6], matrix[7], matrix[8] } {}
 
-		Matrix operator *= (Matrix &t0_matrix) {
+		Matrix& operator *= (const Matrix &t0_matrix) {
 			/* Matrix multiplication 3x3 with 3x3:
 			 * this Matrix:
 			 * | m00 m01 m02 |
@@ -69,7 +59,7 @@ class Matrix {
 			return *this;
 		}
 
-		Matrix operator *= (float t) {
+		Matrix& operator *= (float t) {
 			/* Matrix multiplication 3x3 with float:
 			 * this Matrix:
 			 * | m00 m01 m02 |
@@ -97,32 +87,13 @@ class Matrix {
 			return *this;
 		}
 
-		Matrix inverse_matrix() {
+		Matrix& inverse_matrix() {
 			float det = get_det();
 
 			if(det == 0) {
 				std::cerr << "Matrix: The determinant is equal to zero!\n";
 				return *this;
 			}
-
-			float* adjoint_matrix = get_adjoint();
-
-			my_matrix[0] = adjoint_matrix[0] * (1 / det);
-			my_matrix[1] = adjoint_matrix[1] * (1 / det);
-			my_matrix[2] = adjoint_matrix[2] * (1 / det);
-
-			my_matrix[3] = adjoint_matrix[3] * (1 / det);
-			my_matrix[4] = adjoint_matrix[4] * (1 / det);
-			my_matrix[5] = adjoint_matrix[5] * (1 / det);
-
-			my_matrix[6] = adjoint_matrix[6] * (1 / det);
-			my_matrix[7] = adjoint_matrix[7] * (1 / det);
-			my_matrix[8] = adjoint_matrix[8] * (1 / det);
-
-			return *this;
-		}
-
-		float* get_adjoint() {
 			/* adjoint for 3x3:
 			 * Matrix:
 			 * | 0 1 2 |
@@ -144,21 +115,35 @@ class Matrix {
 			 * cofactor = 0 * 3 - 1 * 2;
 			 */
 
-			my_adjoint_matrix[0] = my_matrix[4] * my_matrix[8] - my_matrix[5] * my_matrix[7];
-			my_adjoint_matrix[1] = -(my_matrix[3] * my_matrix[8] - my_matrix[5] * my_matrix[6]);
-			my_adjoint_matrix[2] = my_matrix[3] * my_matrix[7] - my_matrix[4] * my_matrix[6];
+			float adjoint_matrix[9];
 
-			my_adjoint_matrix[3] = -(my_matrix[1] * my_matrix[8] - my_matrix[2] * my_matrix[7]);
-			my_adjoint_matrix[4] = my_matrix[0] * my_matrix[8] - my_matrix[2] * my_matrix[6];
-			my_adjoint_matrix[5] = -(my_matrix[0] * my_matrix[7] - my_matrix[1] * my_matrix[6]);
+			adjoint_matrix[0] = my_matrix[4] * my_matrix[8] - my_matrix[5] * my_matrix[7];
+			adjoint_matrix[1] = -(my_matrix[3] * my_matrix[8] - my_matrix[5] * my_matrix[6]);
+			adjoint_matrix[2] = my_matrix[3] * my_matrix[7] - my_matrix[4] * my_matrix[6];
 
-			my_adjoint_matrix[6] = my_matrix[1] * my_matrix[5] - my_matrix[2] * my_matrix[4];
-			my_adjoint_matrix[7] = -(my_matrix[0] * my_matrix[5] - my_matrix[2] * my_matrix[3]);
-			my_adjoint_matrix[8] = my_matrix[0] * my_matrix[4] - my_matrix[1] * my_matrix[3];
+			adjoint_matrix[3] = -(my_matrix[1] * my_matrix[8] - my_matrix[2] * my_matrix[7]);
+			adjoint_matrix[4] = my_matrix[0] * my_matrix[8] - my_matrix[2] * my_matrix[6];
+			adjoint_matrix[5] = -(my_matrix[0] * my_matrix[7] - my_matrix[1] * my_matrix[6]);
 
-			return my_adjoint_matrix;
+			adjoint_matrix[6] = my_matrix[1] * my_matrix[5] - my_matrix[2] * my_matrix[4];
+			adjoint_matrix[7] = -(my_matrix[0] * my_matrix[5] - my_matrix[2] * my_matrix[3]);
+			adjoint_matrix[8] = my_matrix[0] * my_matrix[4] - my_matrix[1] * my_matrix[3];
+
+			my_matrix[0] = adjoint_matrix[0] * (1 / det);
+			my_matrix[1] = adjoint_matrix[1] * (1 / det);
+			my_matrix[2] = adjoint_matrix[2] * (1 / det);
+
+			my_matrix[3] = adjoint_matrix[3] * (1 / det);
+			my_matrix[4] = adjoint_matrix[4] * (1 / det);
+			my_matrix[5] = adjoint_matrix[5] * (1 / det);
+
+			my_matrix[6] = adjoint_matrix[6] * (1 / det);
+			my_matrix[7] = adjoint_matrix[7] * (1 / det);
+			my_matrix[8] = adjoint_matrix[8] * (1 / det);
+
+			return *this;
 		}
-
+		
 		float get_det() {
 			/* determinant for 3x3:
 			 * Matrix:
@@ -171,24 +156,16 @@ class Matrix {
 			 *     - (2 * 4 * 6) - (0 * 5 * 7) - (1 * 3 * 8);
 			 */
 
-			my_determinant = my_matrix[0] * my_matrix[4] * my_matrix[8] +
-							 my_matrix[1] * my_matrix[5] * my_matrix[6] +
-							 my_matrix[2] * my_matrix[3] * my_matrix[7] -
-							 my_matrix[2] * my_matrix[4] * my_matrix[6] -
-							 my_matrix[0] * my_matrix[5] * my_matrix[7] -
-							 my_matrix[1] * my_matrix[3] * my_matrix[8];
-
-			return my_determinant;
+			return my_matrix[0] * my_matrix[4] * my_matrix[8] +
+				   my_matrix[1] * my_matrix[5] * my_matrix[6] +
+				   my_matrix[2] * my_matrix[3] * my_matrix[7] -
+				   my_matrix[2] * my_matrix[4] * my_matrix[6] -
+				   my_matrix[0] * my_matrix[5] * my_matrix[7] -
+				   my_matrix[1] * my_matrix[3] * my_matrix[8];
 		}
 
 	public:
 		float my_matrix[9];
-
-		matrixType my_type;
-
-	private:
-		float my_adjoint_matrix[9];
-		float my_determinant;
 };
 
 inline std::ostream& operator << (std::ostream &out, const Matrix &m) {
@@ -197,7 +174,7 @@ inline std::ostream& operator << (std::ostream &out, const Matrix &m) {
 			   << m.my_matrix[6] << ' ' << m.my_matrix[7] << ' ' << m.my_matrix[8] << '\n';
 }
 
-inline Matrix operator * (Matrix &t0_matrix, Matrix &t1_matrix) {
+inline Matrix operator * (const Matrix &t0_matrix, const Matrix &t1_matrix) {
 	/* Matrix multiplication 3x3 with 3x3:
 	 * t0_Matrix:
 	 * | m00 m01 m02 |
@@ -232,7 +209,7 @@ inline Matrix operator * (Matrix &t0_matrix, Matrix &t1_matrix) {
 	return Matrix(mult);
 }
 
-inline Vec operator * (Matrix &t0_matrix, Vec &t0_vec) {
+inline Vec operator * (const Matrix &t0_matrix, const Vec &t0_vec) {
 	/* Matrix multiplication 3x3 with vector 3x1:
 	 * t0_Matrix:
 	 * | m00 m01 m02 |
@@ -248,14 +225,13 @@ inline Vec operator * (Matrix &t0_matrix, Vec &t0_vec) {
 
 	return Vec
 	(
-		t0_matrix.my_matrix[0] * t0_vec.getX() + t0_matrix.my_matrix[1] * t0_vec.getY() +  t0_matrix.my_matrix[2] * t0_vec.getZ(),
-		t0_matrix.my_matrix[3] * t0_vec.getX() + t0_matrix.my_matrix[4] * t0_vec.getY() +  t0_matrix.my_matrix[5] * t0_vec.getZ(),
-		t0_matrix.my_matrix[6] * t0_vec.getX() + t0_matrix.my_matrix[7] * t0_vec.getY() +  t0_matrix.my_matrix[8] * t0_vec.getZ()
+		t0_matrix.my_matrix[0] * t0_vec[0] + t0_matrix.my_matrix[1] * t0_vec[1] +  t0_matrix.my_matrix[2] * t0_vec[2],
+		t0_matrix.my_matrix[3] * t0_vec[0] + t0_matrix.my_matrix[4] * t0_vec[1] +  t0_matrix.my_matrix[5] * t0_vec[2],
+		t0_matrix.my_matrix[6] * t0_vec[0] + t0_matrix.my_matrix[7] * t0_vec[1] +  t0_matrix.my_matrix[8] * t0_vec[2]
 	);
 }
 
-
-inline Matrix operator * (Matrix &t0_matrix, float t) {
+inline Matrix operator * (const Matrix &t0_matrix, const float t) {
 	/* Matrix multiplication 3x3 with float:
 	 * t0_Matrix:
 	 * | m00 m01 m02 |
@@ -268,19 +244,21 @@ inline Matrix operator * (Matrix &t0_matrix, float t) {
 	 * | (m06 * t) (m07 * t) (m08 * t) |
 	 */
 
-	t0_matrix.my_matrix[0] *= t;
-	t0_matrix.my_matrix[1] *= t;
-	t0_matrix.my_matrix[2] *= t;
+	float mult[9];
 
-	t0_matrix.my_matrix[3] *= t;
-	t0_matrix.my_matrix[4] *= t;
-	t0_matrix.my_matrix[5] *= t;
+	mult[0] = t0_matrix.my_matrix[0] * t;
+	mult[1] = t0_matrix.my_matrix[1] * t;
+	mult[2] = t0_matrix.my_matrix[2] * t;
 
-	t0_matrix.my_matrix[6] *= t;
-	t0_matrix.my_matrix[7] *= t;
-	t0_matrix.my_matrix[8] *= t;
+	mult[3] = t0_matrix.my_matrix[3] * t;
+	mult[4] = t0_matrix.my_matrix[4] * t;
+	mult[5] = t0_matrix.my_matrix[5] * t;
 
-	return t0_matrix;
+	mult[6] = t0_matrix.my_matrix[6] * t;
+	mult[7] = t0_matrix.my_matrix[7] * t;
+	mult[8] = t0_matrix.my_matrix[8] * t;
+
+	return Matrix(mult);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////

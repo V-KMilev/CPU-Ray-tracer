@@ -46,12 +46,15 @@ int main(int argc, char **argv) {
 	Matrix b;
 	Matrix c;
 
-	a = rot_y;
-	b = rot_y;
+	a = scale;
+	b = scale;
 
 	std::cerr << a.get_det() << '\n' << a << '\n';
 
 	a.inverse_matrix();
+
+	std::cerr << a << '\n';
+	
 	a = a * b;
 
 	std::cerr << a;
