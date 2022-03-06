@@ -5,8 +5,6 @@
 #include "GLFW_window_set.h"
 #include "Log.h"
 
-#include "matrices.h"
-
 std::stringstream* Logger::log = nullptr;
 
 int main(int argc, char **argv) {

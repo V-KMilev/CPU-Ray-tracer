@@ -107,8 +107,8 @@ set(SOURCES
 	${IMGUI}
 	${GLM}
 
-	App.cpp
-	# Test.cpp
+	# App.cpp
+	Test.cpp
 )
 
 # add executables

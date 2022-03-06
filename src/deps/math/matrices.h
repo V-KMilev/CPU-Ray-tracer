@@ -28,6 +28,7 @@ class Matrix {
 			 * | m00 m01 m02 |
 			 * | m03 m04 m05 |
 			 * | m06 m07 m08 |
+			 * 
 			 * t1_Matrix:
 			 * | m10 m11 m12 |
 			 * | m13 m14 m15 |
@@ -136,7 +137,7 @@ class Matrix {
 			 * | +| 1 2 | - | 0 2 | -| 0 1 | |
 			 * |  | 4 5 |   | 3 5 |  | 3 4 | |
 			 * 
-			 * Matrix cofactor 2x2:
+			 * cofactor Matrix 2x2:
 			 * cofactor Matrix:
 			 * | 0 1 |
 			 * | 2 3 |
@@ -164,6 +165,7 @@ class Matrix {
 			 * | 0 1 2 | 0 1
 			 * | 3 4 5 | 3 4
 			 * | 6 7 8 | 6 7
+			 * 
 			 * Determinant:
 			 * det = (0 * 4 * 8) + (1 * 5 * 6) + (2 * 3 * 7) 
 			 *     - (2 * 4 * 6) - (0 * 5 * 7) - (1 * 3 * 8);
@@ -201,6 +203,7 @@ inline Matrix operator * (Matrix &t0_matrix, Matrix &t1_matrix) {
 	 * | m00 m01 m02 |
 	 * | m03 m04 m05 |
 	 * | m06 m07 m08 |
+	 * 
 	 * t1_Matrix:
 	 * | m10 m11 m12 |
 	 * | m13 m14 m15 |
@@ -235,6 +238,7 @@ inline Vec operator * (Matrix &t0_matrix, Vec &t0_vec) {
 	 * | m00 m01 m02 |
 	 * | m03 m04 m05 |
 	 * | m06 m07 m08 |
+	 * 
 	 * t0_Vector:
 	 * | v0x v0y v0z |
 	 * 
@@ -333,4 +337,4 @@ float indentity_3[9] = {
 * 1 / scaling_value_z;
 */
 
-// ///////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////
