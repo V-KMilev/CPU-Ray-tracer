@@ -5,9 +5,15 @@
 
 #include "Vec.h"
 
+float indentity_3[9] = {
+	1.0f, 0.0f, 0.0f,
+	0.0f, 1.0f, 0.0f,
+	0.0f, 0.0f, 1.0f
+};
+
 class Matrix {
 	public:
-		Matrix(float matrix[9] = {0})
+		Matrix(float matrix[9] = indentity_3)
 		: my_matrix{ matrix[0], matrix[1], matrix[2],
 					 matrix[3], matrix[4], matrix[5],
 					 matrix[6], matrix[7], matrix[8] } {}
@@ -87,7 +93,7 @@ class Matrix {
 			return *this;
 		}
 
-		Matrix& inverse_matrix() {
+		Matrix inverse_matrix() {
 			float det = get_det();
 
 			if(det == 0) {
@@ -96,9 +102,9 @@ class Matrix {
 			}
 			/* adjoint for 3x3:
 			 * Matrix:
-			 * | 0 1 2 |
-			 * | 3 4 5 |
-			 * | 6 7 8 |
+			 * | 0 1 2 | | 11 12 13 |
+			 * | 3 4 5 | | 21 22 23 |
+			 * | 6 7 8 | | 31 32 33 |
 			 * 
 			 * adjoint Matrix:
 			 * | +| 4 5 | - | 3 5 | +| 3 4 | |
@@ -129,21 +135,21 @@ class Matrix {
 			adjoint_matrix[7] = -(my_matrix[0] * my_matrix[5] - my_matrix[2] * my_matrix[3]);
 			adjoint_matrix[8] = my_matrix[0] * my_matrix[4] - my_matrix[1] * my_matrix[3];
 
-			my_matrix[0] = adjoint_matrix[0] * (1 / det);
-			my_matrix[1] = adjoint_matrix[1] * (1 / det);
-			my_matrix[2] = adjoint_matrix[2] * (1 / det);
+			adjoint_matrix[0] *= (1 / det);
+			adjoint_matrix[1] *= (1 / det);
+			adjoint_matrix[2] *= (1 / det);
 
-			my_matrix[3] = adjoint_matrix[3] * (1 / det);
-			my_matrix[4] = adjoint_matrix[4] * (1 / det);
-			my_matrix[5] = adjoint_matrix[5] * (1 / det);
+			adjoint_matrix[3] *= (1 / det);
+			adjoint_matrix[4] *= (1 / det);
+			adjoint_matrix[5] *= (1 / det);
 
-			my_matrix[6] = adjoint_matrix[6] * (1 / det);
-			my_matrix[7] = adjoint_matrix[7] * (1 / det);
-			my_matrix[8] = adjoint_matrix[8] * (1 / det);
+			adjoint_matrix[6] *= (1 / det);
+			adjoint_matrix[7] *= (1 / det);
+			adjoint_matrix[8] *= (1 / det);
 
-			return *this;
+			return Matrix(adjoint_matrix);
 		}
-		
+
 		float get_det() {
 			/* determinant for 3x3:
 			 * Matrix:
@@ -209,6 +215,8 @@ inline Matrix operator * (const Matrix &t0_matrix, const Matrix &t1_matrix) {
 	return Matrix(mult);
 }
 
+/* Matrix Utility Functions: */
+
 inline Vec operator * (const Matrix &t0_matrix, const Vec &t0_vec) {
 	/* Matrix multiplication 3x3 with vector 3x1:
 	 * t0_Matrix:
@@ -231,7 +239,7 @@ inline Vec operator * (const Matrix &t0_matrix, const Vec &t0_vec) {
 	);
 }
 
-inline Matrix operator * (const Matrix &t0_matrix, const float t) {
+inline Matrix operator * (const Matrix &t0_matrix, float t) {
 	/* Matrix multiplication 3x3 with float:
 	 * t0_Matrix:
 	 * | m00 m01 m02 |
@@ -261,58 +269,113 @@ inline Matrix operator * (const Matrix &t0_matrix, const float t) {
 	return Matrix(mult);
 }
 
-///////////////////////////////////////////////////////////////////////////////////
+Matrix get_indentity_matrix() {
+	/* indentity_3:
+	* | 1 0 0 |
+	* | 0 1 0 |
+	* | 0 0 1 |
+	*/
 
-/* indentity_3:
- * | 1 0 0 |
- * | 0 1 0 |
- * | 0 0 1 |
- */
+	float indentity[9] = {
+		1.0f, 0.0f, 0.0f,
+		0.0f, 1.0f, 0.0f,
+		0.0f, 0.0f, 1.0f
+	};
 
-float indentity_3[9] = {
-	1.0f, 0.0f, 0.0f,
-	0.0f, 1.0f, 0.0f,
-	0.0f, 0.0f, 1.0f
-};
+	return Matrix(indentity);
+}
 
-///////////////////////////////////////////////////////////////////////////////////
+Matrix get_rotationX_matrix(float angle) {
+	/* rotation_x_3:
+	 * | 1 0   0     |
+	 * | 0 +cos -sin |
+	 * | 0 +sin +cos |
+	 */
 
-/* rotation_x_3:
-* | 1 0   0     |
-* | 0 +cos -sin |
-* | 0 +sin +cos |
-*/
+	float rad = degrees_to_radians(angle);
 
-/* rotation_y_3:
-* | +cos 0 +sin |
-* | 0    1 0    |
-* | -sin 0 +cos |
-*/
+	float m_cos = cos(rad);
+	float m_sin = sin(rad);
 
-/* rotation_z_3:
-* | +cos -sin 0 |
-* | +sin +cos 0 |
-* | 0    0    1 |
-*/
+	float rotation_x[9] = {
+		1.f, 0.f, 0.f,
+		0.f, m_cos, -m_sin,
+		0.f, m_sin, m_cos
+	};
 
-/* Reversed rotation_3:
-* Set angle to -angle.
-* -angle;
-*/
+	return Matrix(rotation_x);
+}
 
-///////////////////////////////////////////////////////////////////////////////////
+Matrix get_rotationY_matrix(float angle) {
+	/* rotation_y_3:
+	 * | +cos 0 +sin |
+	 * | 0    1 0    |
+	 * | -sin 0 +cos |
+	 */
 
-/* scaling_3:
-* | Kx 0 0 |
-* | 0 Ky 0 |
-* | 0 0 Kz |
-*/
+	float rad = degrees_to_radians(angle);
 
-/* Reversed scaling:
-* Set scaling_value(s) to 1/scaling_value(s).
-* 1 / scaling_value_x;
-* 1 / scaling_value_y;
-* 1 / scaling_value_z;
-*/
+	float m_cos = cos(rad);
+	float m_sin = sin(rad);
 
-///////////////////////////////////////////////////////////////////////////////////
+	float rotation_y[9] = {
+		m_cos, 0.f, m_sin,
+		0.f, 1.f, 0.f,
+		-m_sin, 0.f, m_cos
+	};
+
+	return Matrix(rotation_y);
+}
+
+Matrix get_rotationZ_matrix(float angle) {
+	/* rotation_z_3:
+	 * | +cos -sin 0 |
+	 * | +sin +cos 0 |
+	 * | 0    0    1 |
+	 */
+
+	float rad = degrees_to_radians(angle);
+
+	float m_cos = cos(rad);
+	float m_sin = sin(rad);
+
+	float rotation_z[9] = {
+		m_cos, -m_sin, 0.f,
+		m_sin, m_cos, 0.f,
+		0.f, 0.f, 1.f
+	};
+
+	return Matrix(rotation_z);
+}
+
+Matrix get_scaling_matrix(const Vec &scale) {
+	/* scaling_3:
+	 * | Kx 0 0 |
+	 * | 0 Ky 0 |
+	 * | 0 0 Kz |
+	 */
+
+	float scaling[9] = {
+		scale[0], 0.0f, 0.0f,
+		0.0f, scale[1], 0.0f,
+		0.0f, 0.0f, scale[2]
+	};
+
+	return Matrix(scaling);
+}
+
+Matrix get_scaling_matrix(float scale) {
+	/* scaling_3:
+	 * | Kx 0 0 |
+	 * | 0 Ky 0 |
+	 * | 0 0 Kz |
+	 */
+
+	float scaling[9] = {
+		scale, 0.0f, 0.0f,
+		0.0f, scale, 0.0f,
+		0.0f, 0.0f, scale
+	};
+
+	return Matrix(scaling);
+}
