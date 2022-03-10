@@ -10,7 +10,7 @@
 class obj : public Hittable {
 	public:
 		obj(MyEmbree &embree, const char* path, const char* material_path, shared_ptr<Material> material)
-			: embree(embree), filePath(path), basePath(basePath), material_ptr(material)
+			: embree(embree), filePath(path), basePath(basePath), material_ptr(material), object_name(&filePath[0])
 		{
 			myTOL.myLoadObj(path, material_path);
 
@@ -123,4 +123,6 @@ class obj : public Hittable {
 
 		MyEmbree &embree;
 		MyTOL myTOL;
+
+		const char* object_name;
 };

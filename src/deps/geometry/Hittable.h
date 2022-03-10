@@ -61,4 +61,7 @@ class Hittable {    // Interface
 		 */
 
 		virtual bool hit(const Ray &ray, float distance_min, float distance_max, hit_record &record) const = 0;
+
+		public:
+			const char* object_name;
 };

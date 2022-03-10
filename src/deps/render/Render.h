@@ -5,7 +5,7 @@
 #include "Log.h"
 
 /* WORLD: */
-const Hittable_list world = get_scene();
+Hittable_list world = get_scene();
 
 /*
  * Function - tracer

@@ -5,6 +5,7 @@
 #include "imgui_impl_opengl3.h"
 
 #include "Settings.h"
+#include "Render.h"
 #include "Log.h"
 
 class MyImGui {
@@ -52,6 +53,7 @@ class MyImGui {
 				ImGui::Checkbox("Settings", &show_settings);
 				ImGui::Checkbox("Camera", &show_camera);
 				ImGui::Checkbox("Render info", &show_render_info);
+				ImGui::Checkbox("File edit", &show_file_edit);
 				ImGui::Separator();
 				ImGui::Checkbox("ImGui menu", &show_demo);
 				if(ImGui::MenuItem("Exit", "Alt+F4")) {
@@ -213,6 +215,54 @@ class MyImGui {
 				ImGui::End();
 			}
 
+			if(show_file_edit) {
+				ImGui::SetNextWindowSize(ImVec2(500, 440), ImGuiCond_FirstUseEver);
+				if (ImGui::Begin("File edit"))
+				{
+					static int selected = 0;
+					static std::vector<std::shared_ptr<Hittable>> &my_objects = world.objects;
+					{
+						ImGui::BeginChild("left pane", ImVec2(150, 0), true);
+						for (int i = 0; i < my_objects.size(); i++)
+						{
+							char label[128];
+							sprintf(label, "%d | %s", i, my_objects[i]->object_name);
+							if (ImGui::Selectable(label, selected == i))
+								selected = i;
+						}
+						ImGui::EndChild();
+					}
+					ImGui::SameLine();
+
+					{
+						ImGui::BeginGroup();
+						ImGui::BeginChild("item view", ImVec2(0, -ImGui::GetFrameHeightWithSpacing())); // Leave room for 1 line below us
+						ImGui::Text("%d | %s", selected,  my_objects[selected]->object_name);
+						ImGui::Separator();
+						if (ImGui::BeginTabBar("##Tabs", ImGuiTabBarFlags_None))
+						{
+							if (ImGui::BeginTabItem("Edit"))
+							{
+								ImGui::TextWrapped("Controls:");
+								ImGui::EndTabItem();
+							}
+							if (ImGui::BeginTabItem("Details"))
+							{
+								ImGui::Text("ID: ...");
+								ImGui::EndTabItem();
+							}
+							ImGui::EndTabBar();
+						}
+						ImGui::EndChild();
+						if (ImGui::Button("Revert")) {}
+						ImGui::SameLine();
+						if (ImGui::Button("Save")) {}
+						ImGui::EndGroup();
+					}
+				}
+				ImGui::End();
+			}
+
 			// ImGui::Begin("Console log");
 
 			// const std::string &msg = Logger::getDefaultLogger().str();
@@ -266,9 +316,10 @@ class MyImGui {
 			colors[ImGuiCol_TextSelectedBg]       = ImVec4(0.3f, 0.0f, 0.1f, 1.0f);
 		}
 	private:
-		bool show_settings = false;
-		bool show_camera = false;
+		bool show_settings    = false;
+		bool show_camera      = false;
 		bool show_render_info = false;
-		bool show_demo = false;
-		bool show_overlay = true;
+		bool show_file_edit   = false;
+		bool show_demo        = false;
+		bool show_overlay     = true;
 };

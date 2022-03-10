@@ -15,4 +15,5 @@ int main(int argc, char **argv) {
 
 	return 0;
 }
+
 // Can get the full code from https://github.com/V-KMilev/Ray-tracer.git

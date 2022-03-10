@@ -9,7 +9,7 @@ class xy_rect : public Hittable {
 		xy_rect() {}
 
 		xy_rect(float x_start, float x_end, float y_start, float y_end, float z, shared_ptr<Material> material)
-			: x_start(x_start), x_end(x_end), y_start(y_start), y_end(y_end), z(z), material_ptr(material) {};
+			: x_start(x_start), x_end(x_end), y_start(y_start), y_end(y_end), z(z), material_ptr(material), object_name("xy-rect") {};
 
 		/*
 		 * Function - hit
@@ -60,6 +60,7 @@ class xy_rect : public Hittable {
 	public:
 		shared_ptr<Material> material_ptr;
 		float x_start, x_end, y_start, y_end, z;
+		const char* object_name;
 };
 
 class xz_rect : public Hittable {
@@ -67,7 +68,7 @@ class xz_rect : public Hittable {
 		xz_rect() {}
 
 		xz_rect(float x_start, float x_end, float z_start, float z_end, float y, shared_ptr<Material> material)
-			: x_start(x_start), x_end(x_end), z_start(z_start), z_end(z_end), y(y), material_ptr(material) {};
+			: x_start(x_start), x_end(x_end), z_start(z_start), z_end(z_end), y(y), material_ptr(material), object_name("xz-rect") {};
 
 		/*
 		 * Function - hit
@@ -118,6 +119,7 @@ class xz_rect : public Hittable {
 	public:
 		shared_ptr<Material> material_ptr;
 		float x_start, x_end, z_start, z_end, y;
+		const char* object_name;
 };
 
 class yz_rect : public Hittable {
@@ -125,7 +127,7 @@ class yz_rect : public Hittable {
 		yz_rect() {}
 
 		yz_rect(float y_start, float y_end, float z_start, float z_end, float x, shared_ptr<Material> material)
-			: y_start(y_start), y_end(y_end), z_start(z_start), z_end(z_end), x(x), material_ptr(material) {};
+			: y_start(y_start), y_end(y_end), z_start(z_start), z_end(z_end), x(x), material_ptr(material), object_name("yz-rect") {};
 
 		/*
 		 * Function - hit
@@ -176,4 +178,5 @@ class yz_rect : public Hittable {
 	public:
 		shared_ptr<Material> material_ptr;
 		float y_start, y_end, z_start, z_end, x;
+		const char* object_name;
 };
