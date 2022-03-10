@@ -50,10 +50,10 @@ class MyImGui {
 			ImGui::BeginMainMenuBar();
 
 			if(ImGui::BeginMenu("File")) {
+				ImGui::Checkbox("File edit", &show_file_edit);
 				ImGui::Checkbox("Settings", &show_settings);
 				ImGui::Checkbox("Camera", &show_camera);
 				ImGui::Checkbox("Render info", &show_render_info);
-				ImGui::Checkbox("File edit", &show_file_edit);
 				ImGui::Separator();
 				ImGui::Checkbox("ImGui menu", &show_demo);
 				if(ImGui::MenuItem("Exit", "Alt+F4")) {
@@ -220,6 +220,7 @@ class MyImGui {
 				if (ImGui::Begin("File edit"))
 				{
 					static int selected = 0;
+					static std::vector<std::shared_ptr<Hittable>> copy_my_objects = world.objects;
 					static std::vector<std::shared_ptr<Hittable>> &my_objects = world.objects;
 					{
 						ImGui::BeginChild("left pane", ImVec2(150, 0), true);
@@ -248,7 +249,36 @@ class MyImGui {
 							}
 							if (ImGui::BeginTabItem("Details"))
 							{
-								ImGui::Text("ID: ...");
+								if(my_objects[selected]->id <= 3 && my_objects[selected]->id != 0) {
+									if(my_objects[selected]->id == 1) {
+										ImGui::Text("Origin positions:\nx-start: %.3f\ny-start: %.3f\nx-end: %.3f\ny-end: %.3f", copy_my_objects[selected]->t0_start,
+										copy_my_objects[selected]->t1_start, copy_my_objects[selected]->t0_end, copy_my_objects[selected]->t1_end);
+									}
+									if(my_objects[selected]->id == 2) {
+										ImGui::Text("Origin positions:\nx-start: %.3f\nz-start: %.3f\nx-end: %.3f\nz-end: %.3f", copy_my_objects[selected]->t0_start,
+										copy_my_objects[selected]->t1_start, copy_my_objects[selected]->t0_end, copy_my_objects[selected]->t1_end);
+									}
+									if(my_objects[selected]->id == 3) {
+										ImGui::Text("Origin positions:\ny-start: %.3f\nz-start: %.3f\ny-end: %.3f\nz-end: %.3f", copy_my_objects[selected]->t0_start,
+										copy_my_objects[selected]->t1_start, copy_my_objects[selected]->t0_end, copy_my_objects[selected]->t1_end);
+									}
+									ImGui::NewLine();
+									ImGui::Text("Origin material: %s", copy_my_objects[selected]->h_material_ptr->material_name);
+									ImGui::Text("Origin material color: r: %.3f g: %.3f b:%3.f", copy_my_objects[selected]->h_material_ptr->material_color[0],
+									copy_my_objects[selected]->h_material_ptr->material_color[1], copy_my_objects[selected]->h_material_ptr->material_color[2]);
+									ImGui::NewLine();
+									ImGui::Text("ID: %d", my_objects[selected]->id);
+
+								} else {
+									ImGui::Text("Origin position: x: %.3f y: %.3f z: %.3f", copy_my_objects[selected]->position[0],
+									copy_my_objects[selected]->position[1], copy_my_objects[selected]->position[2]);
+									ImGui::NewLine();
+									ImGui::Text("Origin material: %s", copy_my_objects[selected]->h_material_ptr->material_name);
+									ImGui::Text("Origin material color: r: %.3f g: %.3f b: %3.f", copy_my_objects[selected]->h_material_ptr->material_color[0],
+									copy_my_objects[selected]->h_material_ptr->material_color[1], copy_my_objects[selected]->h_material_ptr->material_color[2]);
+									ImGui::NewLine();
+									ImGui::Text("ID: %d", my_objects[selected]->id);
+								}
 								ImGui::EndTabItem();
 							}
 							ImGui::EndTabBar();
@@ -312,6 +342,10 @@ class MyImGui {
 			colors[ImGuiCol_Header]               = ImVec4(0.7f, 0.0f, 0.3f, 1.0f);
 			colors[ImGuiCol_HeaderHovered]        = ImVec4(0.6f, 0.0f, 0.3f, 1.0f);
 			colors[ImGuiCol_HeaderActive]         = ImVec4(1.0f, 0.0f, 0.3f, 1.0f);
+
+			colors[ImGuiCol_Tab]                  = ImVec4(0.7f, 0.0f, 0.3f, 1.0f);
+			colors[ImGuiCol_TabHovered]           = ImVec4(0.6f, 0.0f, 0.3f, 1.0f);
+			colors[ImGuiCol_TabActive]            = ImVec4(1.0f, 0.0f, 0.3f, 1.0f);
 
 			colors[ImGuiCol_TextSelectedBg]       = ImVec4(0.3f, 0.0f, 0.1f, 1.0f);
 		}

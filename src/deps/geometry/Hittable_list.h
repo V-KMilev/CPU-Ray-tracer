@@ -68,7 +68,7 @@ class Hittable_list : public Hittable {
 			const Ray &ray, float distance_min, float distance_max, hit_record &record) const override;
 
 	public:
-		std::vector<shared_ptr<Hittable>> objects;    // vector of hitted objects
+		std::vector<shared_ptr<Hittable>> objects;    // vector of the hittable objects
 };
 
 bool Hittable_list::hit(const Ray &ray, float distance_min, float distance_max, hit_record &record) const {

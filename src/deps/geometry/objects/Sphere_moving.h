@@ -7,7 +7,16 @@ class Sphere_moving : public Hittable {
 	public:
 		Sphere_moving() {}
 		Sphere_moving(Point center_0, Point center_1, float s_time, float e_time, float radius, shared_ptr<Material> material)
-		: center_0(center_0), center_1(center_1), s_time(s_time), e_time(e_time), radius(radius), material_ptr(material), object_name("sphere-moving") {};
+		: center_0(center_0), center_1(center_1), s_time(s_time), e_time(e_time), radius(radius), material_ptr(material) {
+
+			object_name = "sphere-moving";
+
+			id = 5;
+	
+			position = center_0;
+
+			h_material_ptr = material_ptr;
+		};
 
 		/*
 		 * Function - hit
@@ -42,8 +51,6 @@ class Sphere_moving : public Hittable {
 		float radius;                         // Sphere moving: radius
 
 		shared_ptr<Material> material_ptr;    // Sphere moving: material pointer
-
-		const char* object_name;
 };
 
 Point Sphere_moving::center(float time) const {

@@ -64,4 +64,10 @@ class Hittable {    // Interface
 
 		public:
 			const char* object_name;
+			unsigned int id;
+
+			shared_ptr<Material> h_material_ptr;
+
+			Point position;
+			float t0_start, t1_start, t0_end, t1_end;
 };

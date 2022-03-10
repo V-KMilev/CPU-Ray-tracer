@@ -55,12 +55,21 @@ class Material {
 		virtual Color emitted(float u, float v, const Point &point) const {
 			return Color(0,0,0);
 		}
+
+		public:
+			const char* material_name;
+			Color material_color;
 };
 
 class Lambertian : public Material {
 	public:
-		Lambertian(const Color &albedo) : albedo(make_shared<Solid_Color>(albedo)) {}
-		Lambertian(shared_ptr<Texture> albedo) : albedo(albedo) {}
+		Lambertian(const Color &albedo) : albedo(make_shared<Solid_Color>(albedo)) {
+			material_name = "Lambertian";
+			material_color = albedo;
+		}
+		Lambertian(shared_ptr<Texture> albedo) : albedo(albedo) {
+			material_name = "Lambertian";
+		}
 
 		/*
 		 * Function - scatter
@@ -98,8 +107,13 @@ class Lambertian : public Material {
 
 class Diffuse_light : public Material  {
 	public:
-		Diffuse_light(shared_ptr<Texture> texture) : emit(texture) {}
-		Diffuse_light(Color color) : emit(make_shared<Solid_Color>(color)) {}
+		Diffuse_light(shared_ptr<Texture> texture) : emit(texture) {
+			material_name = "Diffuse-light";
+		}
+		Diffuse_light(Color color) : emit(make_shared<Solid_Color>(color)) {
+			material_name = "Diffuse-light";
+			material_color = color;
+		}
 
 		/*
 		 * Function - scatter

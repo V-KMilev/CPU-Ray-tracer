@@ -10,8 +10,16 @@
 class obj : public Hittable {
 	public:
 		obj(MyEmbree &embree, const char* path, const char* material_path, shared_ptr<Material> material)
-			: embree(embree), filePath(path), basePath(basePath), material_ptr(material), object_name(&filePath[0])
+			: embree(embree), filePath(path), basePath(basePath), material_ptr(material)
 		{
+			object_name = &filePath[0];
+			
+			id = 4;
+			
+			position = Vec(0,0,0);
+
+			h_material_ptr = material_ptr;
+
 			myTOL.myLoadObj(path, material_path);
 
 			embree.setup(RTC_GEOMETRY_TYPE_TRIANGLE);
@@ -123,6 +131,4 @@ class obj : public Hittable {
 
 		MyEmbree &embree;
 		MyTOL myTOL;
-
-		const char* object_name;
 };

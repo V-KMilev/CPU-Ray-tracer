@@ -7,7 +7,16 @@ class Sphere : public Hittable {
 	public:
 		Sphere() {}
 		Sphere(Point center, float radius, shared_ptr<Material> material)
-		: center(center), radius(radius), material_ptr(material), object_name("sphere") {};
+		: center(center), radius(radius), material_ptr(material) {
+			
+			object_name = "sphere";
+
+			id = 6;
+
+			position = center;
+
+			h_material_ptr = material_ptr;
+		};
 
 		/*
 		 * Function - hit
@@ -67,8 +76,6 @@ class Sphere : public Hittable {
 		float radius;                         // Sphere: radius
 
 		shared_ptr<Material> material_ptr;    // Sphere: material
-
-		const char* object_name;
 };
 
 bool Sphere::hit(const Ray &ray, float distance_min, float distance_max, hit_record &record) const {
