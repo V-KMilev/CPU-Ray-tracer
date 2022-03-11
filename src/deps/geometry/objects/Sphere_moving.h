@@ -12,10 +12,6 @@ class Sphere_moving : public Hittable {
 			object_name = "sphere-moving";
 
 			id = 5;
-	
-			position = center_0;
-
-			h_material_ptr = material_ptr;
 		};
 
 		/*

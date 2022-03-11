@@ -57,18 +57,18 @@ class Material {
 		}
 
 		public:
-			const char* material_name;
-			Color material_color;
+			const char* my_name;
+			Color my_color;
 };
 
 class Lambertian : public Material {
 	public:
 		Lambertian(const Color &albedo) : albedo(make_shared<Solid_Color>(albedo)) {
-			material_name = "Lambertian";
-			material_color = albedo;
+			my_name = "Lambertian";
+			my_color = albedo;
 		}
 		Lambertian(shared_ptr<Texture> albedo) : albedo(albedo) {
-			material_name = "Lambertian";
+			my_name = "Lambertian";
 		}
 
 		/*
@@ -108,11 +108,11 @@ class Lambertian : public Material {
 class Diffuse_light : public Material  {
 	public:
 		Diffuse_light(shared_ptr<Texture> texture) : emit(texture) {
-			material_name = "Diffuse-light";
+			my_name = "Diffuse-light";
 		}
 		Diffuse_light(Color color) : emit(make_shared<Solid_Color>(color)) {
-			material_name = "Diffuse-light";
-			material_color = color;
+			my_name = "Diffuse-light";
+			my_color = color;
 		}
 
 		/*

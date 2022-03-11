@@ -64,10 +64,13 @@ class Hittable {    // Interface
 
 		public:
 			const char* object_name;
+			/*Object IDs:
+			 * 1 - xy_rect
+			 * 2 - xz_rect
+			 * 3 - yz_rect
+			 * 4 - obj
+			 * 5 - sphere_moving
+			 * 6 - sphere
+			 */
 			unsigned int id;
-
-			shared_ptr<Material> h_material_ptr;
-
-			Point position;
-			float t0_start, t1_start, t0_end, t1_end;
 };

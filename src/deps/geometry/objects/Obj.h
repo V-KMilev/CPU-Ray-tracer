@@ -13,12 +13,8 @@ class obj : public Hittable {
 			: embree(embree), filePath(path), basePath(basePath), material_ptr(material)
 		{
 			object_name = &filePath[0];
-			
-			id = 4;
-			
-			position = Vec(0,0,0);
 
-			h_material_ptr = material_ptr;
+			id = 4;
 
 			myTOL.myLoadObj(path, material_path);
 
@@ -123,7 +119,7 @@ class obj : public Hittable {
 			return true;
 		}
 
-	private:
+	public:
 		shared_ptr<Material> material_ptr;
 
 		std::string filePath;

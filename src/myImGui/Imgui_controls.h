@@ -220,7 +220,6 @@ class MyImGui {
 				if (ImGui::Begin("File edit"))
 				{
 					static int selected = 0;
-					static std::vector<std::shared_ptr<Hittable>> copy_my_objects = world.objects;
 					static std::vector<std::shared_ptr<Hittable>> &my_objects = world.objects;
 					{
 						ImGui::BeginChild("left pane", ImVec2(150, 0), true);
@@ -239,45 +238,104 @@ class MyImGui {
 						ImGui::BeginGroup();
 						ImGui::BeginChild("item view", ImVec2(0, -ImGui::GetFrameHeightWithSpacing())); // Leave room for 1 line below us
 						ImGui::Text("%d | %s", selected,  my_objects[selected]->object_name);
-						ImGui::Separator();
 						if (ImGui::BeginTabBar("##Tabs", ImGuiTabBarFlags_None))
 						{
 							if (ImGui::BeginTabItem("Edit"))
 							{
 								ImGui::TextWrapped("Controls:");
+								if(my_objects[selected]->id <= 3 && my_objects[selected]->id != 0) {
+								} else {
+									// if(ImGui::SliderFloat3("position", &my_objects[selected]->position[0], -13.0f, 13.0f)) {}
+								}
 								ImGui::EndTabItem();
 							}
-							if (ImGui::BeginTabItem("Details"))
-							{
-								if(my_objects[selected]->id <= 3 && my_objects[selected]->id != 0) {
-									if(my_objects[selected]->id == 1) {
-										ImGui::Text("Origin positions:\nx-start: %.3f\ny-start: %.3f\nx-end: %.3f\ny-end: %.3f", copy_my_objects[selected]->t0_start,
-										copy_my_objects[selected]->t1_start, copy_my_objects[selected]->t0_end, copy_my_objects[selected]->t1_end);
-									}
-									if(my_objects[selected]->id == 2) {
-										ImGui::Text("Origin positions:\nx-start: %.3f\nz-start: %.3f\nx-end: %.3f\nz-end: %.3f", copy_my_objects[selected]->t0_start,
-										copy_my_objects[selected]->t1_start, copy_my_objects[selected]->t0_end, copy_my_objects[selected]->t1_end);
-									}
-									if(my_objects[selected]->id == 3) {
-										ImGui::Text("Origin positions:\ny-start: %.3f\nz-start: %.3f\ny-end: %.3f\nz-end: %.3f", copy_my_objects[selected]->t0_start,
-										copy_my_objects[selected]->t1_start, copy_my_objects[selected]->t0_end, copy_my_objects[selected]->t1_end);
-									}
-									ImGui::NewLine();
-									ImGui::Text("Origin material: %s", copy_my_objects[selected]->h_material_ptr->material_name);
-									ImGui::Text("Origin material color: r: %.3f g: %.3f b:%3.f", copy_my_objects[selected]->h_material_ptr->material_color[0],
-									copy_my_objects[selected]->h_material_ptr->material_color[1], copy_my_objects[selected]->h_material_ptr->material_color[2]);
-									ImGui::NewLine();
-									ImGui::Text("ID: %d", my_objects[selected]->id);
+							if (ImGui::BeginTabItem("Details")) {
+								if(my_objects[selected]->id == 1) {
+									std::shared_ptr<xy_rect> object = std::dynamic_pointer_cast<xy_rect>(my_objects[selected]);
 
-								} else {
-									ImGui::Text("Origin position: x: %.3f y: %.3f z: %.3f", copy_my_objects[selected]->position[0],
-									copy_my_objects[selected]->position[1], copy_my_objects[selected]->position[2]);
+									ImGui::Text("Position:\nx-start: %.3f\ny-start: %.3f\nx-end: %.3f\ny-end: %.3f\nz: %.3f",
+									object->x_start, object->y_start, object->x_end, object->y_end, object->z);
+
 									ImGui::NewLine();
-									ImGui::Text("Origin material: %s", copy_my_objects[selected]->h_material_ptr->material_name);
-									ImGui::Text("Origin material color: r: %.3f g: %.3f b: %3.f", copy_my_objects[selected]->h_material_ptr->material_color[0],
-									copy_my_objects[selected]->h_material_ptr->material_color[1], copy_my_objects[selected]->h_material_ptr->material_color[2]);
+									ImGui::Text("Material: %s", object->material_ptr->my_name);
+									ImGui::Text("Color: r: %.3f g: %.3f b: %.3f",
+									object->material_ptr->my_color[0], object->material_ptr->my_color[1], object->material_ptr->my_color[2]);
 									ImGui::NewLine();
-									ImGui::Text("ID: %d", my_objects[selected]->id);
+									ImGui::Text("ID: %d", object->id);
+								}
+
+								if(my_objects[selected]->id == 2) {
+									std::shared_ptr<xz_rect> object = std::dynamic_pointer_cast<xz_rect>(my_objects[selected]);
+
+									ImGui::Text("Position:\nx-start: %.3f\nz-start: %.3f\nx-end: %.3f\nz-end: %.3f\ny: %.3f",
+									object->x_start, object->z_start, object->x_end, object->z_end, object->y);
+
+									ImGui::NewLine();
+									ImGui::Text("Material: %s", object->material_ptr->my_name);
+									ImGui::Text("Color: r: %.3f g: %.3f b: %.3f",
+									object->material_ptr->my_color[0], object->material_ptr->my_color[1], object->material_ptr->my_color[2]);
+									ImGui::NewLine();
+									ImGui::Text("ID: %d", object->id);
+								}
+
+								if(my_objects[selected]->id == 3) {
+									std::shared_ptr<yz_rect> object = std::dynamic_pointer_cast<yz_rect>(my_objects[selected]);
+
+									ImGui::Text("Position:\ny-start: %.3f\nz-start: %.3f\ny-end: %.3f\nz-end: %.3f\nx: %.3f",
+									object->y_start, object->z_start, object->y_end, object->z_end, object->x);
+
+									ImGui::NewLine();
+									ImGui::Text("Material: %s", object->material_ptr->my_name);
+									ImGui::Text("Color: r: %.3f g: %.3f b: %.3f",
+									object->material_ptr->my_color[0], object->material_ptr->my_color[1], object->material_ptr->my_color[2]);
+									ImGui::NewLine();
+									ImGui::Text("ID: %d", object->id);
+								}
+
+								if (my_objects[selected]->id == 4) {
+									std::shared_ptr<obj> object = std::dynamic_pointer_cast<obj>(my_objects[selected]);
+
+									// ImGui::Text("Position:\nx: %.3f y: %.3f z: %.3f",
+									// object->, my_objects[selected]->position[2]);
+
+									ImGui::NewLine();
+									ImGui::Text("Material: %s", object->material_ptr->my_name);
+									ImGui::Text("Color: r: %.3f g: %.3f b: %.3f",
+									object->material_ptr->my_color[0], object->material_ptr->my_color[1], object->material_ptr->my_color[2]);
+									ImGui::NewLine();
+									ImGui::Text("ID: %d", object->id);
+								}
+
+								if (my_objects[selected]->id == 5) {
+									std::shared_ptr<Sphere_moving> object = std::dynamic_pointer_cast<Sphere_moving>(my_objects[selected]);
+
+									ImGui::Text("C0 Position:\nx: %.3f y: %.3f z: %.3f",
+									object->center_0[0], object->center_0[1], object->center_0[2]);
+									ImGui::Text("C1 Position:\nx: %.3f y: %.3f z: %.3f",
+									object->center_1[0], object->center_1[1], object->center_1[2]);
+									ImGui::Text("Radius: %.3f", object->radius);
+
+									ImGui::NewLine();
+									ImGui::Text("Material: %s", object->material_ptr->my_name);
+									ImGui::Text("Color: r: %.3f g: %.3f b: %.3f",
+									object->material_ptr->my_color[0], object->material_ptr->my_color[1], object->material_ptr->my_color[2]);
+									ImGui::NewLine();
+									ImGui::Text("ID: %d", object->id);
+								}
+
+								if (my_objects[selected]->id == 6) {
+									std::shared_ptr<Sphere> object = std::dynamic_pointer_cast<Sphere>(my_objects[selected]);
+
+									ImGui::Text("Position:\nx: %.3f y: %.3f z: %.3f",
+									object->center[0], object->center[1], object->center[2]);
+									ImGui::Text("Radius: %.3f", object->radius);
+
+									ImGui::NewLine();
+									ImGui::Text("Material: %s", object->material_ptr->my_name);
+									ImGui::Text("Color: r: %.3f g: %.3f b: %.3f",
+									object->material_ptr->my_color[0], object->material_ptr->my_color[1], object->material_ptr->my_color[2]);
+									ImGui::NewLine();
+									ImGui::Text("ID: %d", object->id);
 								}
 								ImGui::EndTabItem();
 							}
