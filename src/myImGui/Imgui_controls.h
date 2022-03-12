@@ -93,6 +93,10 @@ class MyImGui {
 				background = default_background;
 			} else { change_clear = false; }
 
+			ImGui::SameLine(ImGui::GetWindowWidth()/2);
+			if(change_stop) { ImGui::TextColored(ImVec4(0.7f, 0.0f, 0.3f, 1.0f), "STOPPED"); }
+			else { ImGui::TextColored(ImVec4(0.0f, 0.7f, 0.3f, 1.0f), "RUNNING"); }
+
 			ImGui::EndMainMenuBar();
 
 			if(show_demo) { ImGui::ShowDemoWindow(); }
@@ -168,8 +172,9 @@ class MyImGui {
 				static float values[120] = {};
 				static int values_offset = 0;
 				static double refresh_time = 0.0;
-				while (refresh_time < ImGui::GetTime()) // Create data at fixed 60 Hz rate for the demo
-				{
+
+				// Create data at fixed 60 Hz rate for the demo
+				while (refresh_time < ImGui::GetTime()) {
 					values[values_offset] = ImGui::GetIO().Framerate;
 					values_offset = (values_offset + 1) % IM_ARRAYSIZE(values);
 					refresh_time += 1.0f / 60.0f;
@@ -193,17 +198,20 @@ class MyImGui {
 
 			static int corner = 0;
 			ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_NoNav;
-			if (corner != -1)
-			{
+
+			if (corner != -1) {
 				const float PAD = 10.0f;
 				const ImGuiViewport* viewport = ImGui::GetMainViewport();
+
 				ImVec2 work_pos = viewport->WorkPos; // Use work area to avoid menu-bar/task-bar, if any!
 				ImVec2 work_size = viewport->WorkSize;
 				ImVec2 window_pos, window_pos_pivot;
+
 				window_pos.x = (3 & 1) ? (work_pos.x + work_size.x - PAD) : (work_pos.x + PAD);
 				window_pos.y = (3 & 2) ? (work_pos.y + work_size.y - PAD) : (work_pos.y + PAD);
 				window_pos_pivot.x = (3 & 1) ? 1.0f : 0.0f;
 				window_pos_pivot.y = (3 & 2) ? 1.0f : 0.0f;
+
 				ImGui::SetNextWindowPos(window_pos, ImGuiCond_Always, window_pos_pivot);
 			}
 			ImGui::SetNextWindowBgAlpha(0.35f); // Transparent background
@@ -217,18 +225,18 @@ class MyImGui {
 
 			if(show_file_edit) {
 				ImGui::SetNextWindowSize(ImVec2(500, 440), ImGuiCond_FirstUseEver);
-				if (ImGui::Begin("File edit"))
-				{
+				if (ImGui::Begin("File edit")) {
+
 					static int selected = 0;
 					static std::vector<std::shared_ptr<Hittable>> &my_objects = world.objects;
 					{
 						ImGui::BeginChild("left pane", ImVec2(150, 0), true);
-						for (int i = 0; i < my_objects.size(); i++)
-						{
+						for (int i = 0; i < my_objects.size(); i++){
+
 							char label[128];
+
 							sprintf(label, "%d | %s", i, my_objects[i]->object_name);
-							if (ImGui::Selectable(label, selected == i))
-								selected = i;
+							if (ImGui::Selectable(label, selected == i)) { selected = i; }
 						}
 						ImGui::EndChild();
 					}
@@ -238,15 +246,92 @@ class MyImGui {
 						ImGui::BeginGroup();
 						ImGui::BeginChild("item view", ImVec2(0, -ImGui::GetFrameHeightWithSpacing())); // Leave room for 1 line below us
 						ImGui::Text("%d | %s", selected,  my_objects[selected]->object_name);
-						if (ImGui::BeginTabBar("##Tabs", ImGuiTabBarFlags_None))
-						{
-							if (ImGui::BeginTabItem("Edit"))
-							{
+						
+						if (ImGui::BeginTabBar("##Tabs", ImGuiTabBarFlags_None)) {
+							if (ImGui::BeginTabItem("Edit")) {
 								ImGui::TextWrapped("Controls:");
-								if(my_objects[selected]->id <= 3 && my_objects[selected]->id != 0) {
-								} else {
-									// if(ImGui::SliderFloat3("position", &my_objects[selected]->position[0], -13.0f, 13.0f)) {}
+
+								if(my_objects[selected]->id == 1) {
+									std::shared_ptr<xy_rect> object = std::dynamic_pointer_cast<xy_rect>(my_objects[selected]);
+									
+									ImGui::InputFloat("Start X:", &object->x_start);
+									ImGui::InputFloat("Start Y:", &object->y_start);
+									ImGui::InputFloat("End X:", &object->x_end);
+									ImGui::InputFloat("End Y:", &object->y_end);
+									ImGui::InputFloat("z:", &object->z);
+
+									ImGui::NewLine();
+									// ImGui::Text("Material: %s", object->material_ptr->my_name);
+									// ImGui::Text("Color: r: %.3f g: %.3f b: %.3f",
+									// object->material_ptr->my_color[0], object->material_ptr->my_color[1], object->material_ptr->my_color[2]);
 								}
+
+								if(my_objects[selected]->id == 2) {
+									std::shared_ptr<xz_rect> object = std::dynamic_pointer_cast<xz_rect>(my_objects[selected]);
+
+									ImGui::InputFloat("Start X:", &object->x_start);
+									ImGui::InputFloat("Start Z:", &object->z_start);
+									ImGui::InputFloat("End X:", &object->x_end);
+									ImGui::InputFloat("End Z:", &object->z_end);
+									ImGui::InputFloat("Y:", &object->y);
+
+									ImGui::NewLine();
+									// ImGui::Text("Material: %s", object->material_ptr->my_name);
+									// ImGui::Text("Color: r: %.3f g: %.3f b: %.3f",
+									// object->material_ptr->my_color[0], object->material_ptr->my_color[1], object->material_ptr->my_color[2]);
+								}
+
+								if(my_objects[selected]->id == 3) {
+									std::shared_ptr<yz_rect> object = std::dynamic_pointer_cast<yz_rect>(my_objects[selected]);
+
+									ImGui::InputFloat("Start Y:", &object->y_start);
+									ImGui::InputFloat("Start Z:", &object->z_start);
+									ImGui::InputFloat("End Y:", &object->y_end);
+									ImGui::InputFloat("End Z:", &object->z_end);
+									ImGui::InputFloat("X:", &object->x);
+
+									ImGui::NewLine();
+									// ImGui::Text("Material: %s", object->material_ptr->my_name);
+									// ImGui::Text("Color: r: %.3f g: %.3f b: %.3f",
+									// object->material_ptr->my_color[0], object->material_ptr->my_color[1], object->material_ptr->my_color[2]);
+								}
+
+								if (my_objects[selected]->id == 4) {
+									std::shared_ptr<obj> object = std::dynamic_pointer_cast<obj>(my_objects[selected]);
+
+									// ImGui::InputFloat3("Position:", &object->postion);
+
+									ImGui::NewLine();
+									// ImGui::Text("Material: %s", object->material_ptr->my_name);
+									// ImGui::Text("Color: r: %.3f g: %.3f b: %.3f",
+									// object->material_ptr->my_color[0], object->material_ptr->my_color[1], object->material_ptr->my_color[2]);
+								}
+
+								if (my_objects[selected]->id == 5) {
+									std::shared_ptr<Sphere_moving> object = std::dynamic_pointer_cast<Sphere_moving>(my_objects[selected]);
+
+									ImGui::InputFloat3("Position C0:", &object->center_0[0]);
+									ImGui::InputFloat3("Position C1:", &object->center_1[0]);
+									ImGui::InputFloat("Radius:", &object->radius);
+
+									ImGui::NewLine();
+									// ImGui::Text("Material: %s", object->material_ptr->my_name);
+									// ImGui::Text("Color: r: %.3f g: %.3f b: %.3f",
+									// object->material_ptr->my_color[0], object->material_ptr->my_color[1], object->material_ptr->my_color[2]);
+								}
+
+								if (my_objects[selected]->id == 6) {
+									std::shared_ptr<Sphere> object = std::dynamic_pointer_cast<Sphere>(my_objects[selected]);
+
+									ImGui::InputFloat3("Position:", &object->center[0]);
+									ImGui::InputFloat("Radius:", &object->radius);
+
+									ImGui::NewLine();
+									// ImGui::Text("Material: %s", object->material_ptr->my_name);
+									// ImGui::Text("Color: r: %.3f g: %.3f b: %.3f",
+									// object->material_ptr->my_color[0], object->material_ptr->my_color[1], object->material_ptr->my_color[2]);
+								}
+								ImGui::Separator();
 								ImGui::EndTabItem();
 							}
 							if (ImGui::BeginTabItem("Details")) {
@@ -337,14 +422,33 @@ class MyImGui {
 									ImGui::NewLine();
 									ImGui::Text("ID: %d", object->id);
 								}
+								ImGui::Separator();
 								ImGui::EndTabItem();
 							}
 							ImGui::EndTabBar();
 						}
 						ImGui::EndChild();
-						if (ImGui::Button("Revert")) {}
+
+
+						if (ImGui::Button("ADD")) {
+							ImGui::OpenPopup("my_select_popup");
+						}
+						const char* objects_names[] = { "xy_rect", "xz_rect", "yz_rect", "obj", "sphere_moving", "sphere" };
+
+						if (ImGui::BeginPopup("my_select_popup")) {
+							ImGui::Text("Objects");
+							ImGui::Separator();
+
+							for (int i = 0; i < IM_ARRAYSIZE(objects_names); i++) {
+								if (ImGui::Selectable(objects_names[i])) {
+								}
+							}
+							ImGui::EndPopup();
+						}
 						ImGui::SameLine();
-						if (ImGui::Button("Save")) {}
+						if (ImGui::Button("REMOVE")) {
+							world.remove(selected);
+						}
 						ImGui::EndGroup();
 					}
 				}
@@ -365,6 +469,7 @@ class MyImGui {
 			ImGuiStyle& style = ImGui::GetStyle();
 
 			style.FrameBorderSize = 1.0f;
+			style.WindowBorderSize = 0.0f;
 
 			ImVec4* colors = ImGui::GetStyle().Colors;
 

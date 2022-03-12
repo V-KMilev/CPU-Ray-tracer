@@ -111,71 +111,71 @@ Hittable_list get_scene() {
 
 	// walls in
 	world.add(make_shared<xy_rect>(-2.5, 2.5, 0, 3.2, 5, material_white_c));     // wall in
-	// world.add(make_shared<xy_rect>(-2.5, 2.5, 0, 3.2, -5, material_white_c));    // wall in
+	world.add(make_shared<xy_rect>(-2.5, 2.5, 0, 3.2, -5, material_white_c));    // wall in
 	world.add(make_shared<yz_rect>(0, 3.2, -2.5, 2.5, 5, material_white_c));     // wall in
-	// world.add(make_shared<yz_rect>(0, 3.2, -2.5, 2.5, -5, material_white_c));    // wall in
+	world.add(make_shared<yz_rect>(0, 3.2, -2.5, 2.5, -5, material_white_c));    // wall in
 
-	// // walls out
-	// world.add(make_shared<xy_rect>(-10, 10, 0, 4.2, 10, material_red));      // wall out
-	// world.add(make_shared<xy_rect>(-10, 10, 0, 4.2, -10, material_red));     // wall out
-	// world.add(make_shared<yz_rect>(0, 4.2, -10, 10, 10, material_red));      // wall out
-	// world.add(make_shared<yz_rect>(0, 4.2, -10, 10, -10, material_red));     // wall out
-
-
-
-	// // t1
-	// world.add(make_shared<xy_rect>(6, 10, 0, 6, 10, material_gray));                 // turret wall
-	// world.add(make_shared<xy_rect>(6, 10, 0, 6, 6, material_gray));                  // turret wall
-	// world.add(make_shared<yz_rect>(0, 6, 6, 10, 6, material_gray));                  // turret wall
-	// world.add(make_shared<yz_rect>(0, 6, 6, 10, 10, material_gray));                 // turret wall
-	// world.add(make_shared<xz_rect>(4, 10, 4, 10, 6, material_gray));                 // turret roof
-
-	// // t1 lamps
-	// world.add(make_shared<xz_rect>(4.5, 5.5, 4.5, 5.5, 5.99, difflight_magenta_m));    // turret roof
-	// world.add(make_shared<xz_rect>(4.5, 5.5, 8.5, 9.5, 5.99, difflight_magenta_m));    // turret roof
-	// world.add(make_shared<xz_rect>(8.5, 9.5, 4.5, 5.5, 5.99, difflight_magenta_m));    // turret roof
+	// walls out
+	world.add(make_shared<xy_rect>(-10, 10, 0, 4.2, 10, material_red));      // wall out
+	world.add(make_shared<xy_rect>(-10, 10, 0, 4.2, -10, material_red));     // wall out
+	world.add(make_shared<yz_rect>(0, 4.2, -10, 10, 10, material_red));      // wall out
+	world.add(make_shared<yz_rect>(0, 4.2, -10, 10, -10, material_red));     // wall out
 
 
 
-	// // t2
-	// world.add(make_shared<xy_rect>(6, 10, 0, 6, -10, material_gray));                  // turret wall
-	// world.add(make_shared<xy_rect>(6, 10, 0, 6, -6, material_gray));                   // turret wall
-	// world.add(make_shared<yz_rect>(0, 6, -10, -6, 6, material_gray));                  // turret wall
-	// world.add(make_shared<yz_rect>(0, 6, -10, -6, 10, material_gray));                 // turret wall
-	// world.add(make_shared<xz_rect>(4, 10, -10, -4, 6, material_gray));                 // turret roof
+	// t1
+	world.add(make_shared<xy_rect>(6, 10, 0, 6, 10, material_gray));                 // turret wall
+	world.add(make_shared<xy_rect>(6, 10, 0, 6, 6, material_gray));                  // turret wall
+	world.add(make_shared<yz_rect>(0, 6, 6, 10, 6, material_gray));                  // turret wall
+	world.add(make_shared<yz_rect>(0, 6, 6, 10, 10, material_gray));                 // turret wall
+	world.add(make_shared<xz_rect>(4, 10, 4, 10, 6, material_gray));                 // turret roof
 
-	// // t2 lamps
-	// world.add(make_shared<xz_rect>(4.5, 5.5, -5.5, -4.5, 5.99, difflight_magenta_m));    // turret roof
-	// world.add(make_shared<xz_rect>(4.5, 5.5, -9.5, -8.5, 5.99, difflight_magenta_m));    // turret roof
-	// world.add(make_shared<xz_rect>(8.5, 9.5, -5.5, -4.5, 5.99, difflight_magenta_m));    // turret roof
-
-
-
-	// // t3
-	// world.add(make_shared<xy_rect>(-10, -6, 0, 6, 10, material_gray));                 // turret wall
-	// world.add(make_shared<xy_rect>(-10, -6, 0, 6, 6, material_gray));                  // turret wall
-	// world.add(make_shared<yz_rect>(0, 6, 6, 10, -6, material_gray));                   // turret wall
-	// world.add(make_shared<yz_rect>(0, 6, 6, 10, -10, material_gray));                  // turret wall
-	// world.add(make_shared<xz_rect>(-10, -4, 4, 10, 6, material_gray));                 // turret roof
-
-	// // t3 lamps
-	// world.add(make_shared<xz_rect>(-5.5, -4.5, 4.5, 5.5, 5.99, difflight_magenta_m));    // turret roof
-	// world.add(make_shared<xz_rect>(-5.5, -4.5, 8.5, 9.5, 5.99, difflight_magenta_m));    // turret roof
-	// world.add(make_shared<xz_rect>(-9.5, -8.5, 4.5, 5.5, 5.99, difflight_magenta_m));    // turret roof
+	// t1 lamps
+	world.add(make_shared<xz_rect>(4.5, 5.5, 4.5, 5.5, 5.99, difflight_magenta_m));    // turret roof
+	world.add(make_shared<xz_rect>(4.5, 5.5, 8.5, 9.5, 5.99, difflight_magenta_m));    // turret roof
+	world.add(make_shared<xz_rect>(8.5, 9.5, 4.5, 5.5, 5.99, difflight_magenta_m));    // turret roof
 
 
 
-	// // t4
-	// world.add(make_shared<xy_rect>(-10, -6, 0, 6, -10, material_gray));                  // turret wall
-	// world.add(make_shared<xy_rect>(-10, -6, 0, 6, -6, material_gray));                   // turret wall
-	// world.add(make_shared<yz_rect>(0, 6, -10, -6, -6, material_gray));                   // turret wall
-	// world.add(make_shared<yz_rect>(0, 6, -10, -6, -10, material_gray));                  // turret wall
-	// world.add(make_shared<xz_rect>(-10, -4, -10, -4, 6, material_gray));                 // turret roof
+	// t2
+	world.add(make_shared<xy_rect>(6, 10, 0, 6, -10, material_gray));                  // turret wall
+	world.add(make_shared<xy_rect>(6, 10, 0, 6, -6, material_gray));                   // turret wall
+	world.add(make_shared<yz_rect>(0, 6, -10, -6, 6, material_gray));                  // turret wall
+	world.add(make_shared<yz_rect>(0, 6, -10, -6, 10, material_gray));                 // turret wall
+	world.add(make_shared<xz_rect>(4, 10, -10, -4, 6, material_gray));                 // turret roof
 
-	// // t4 lamps
-	// world.add(make_shared<xz_rect>(-5.5, -4.5, -5.5, -4.5, 5.99, difflight_magenta));    // turret roof
-	// world.add(make_shared<xz_rect>(-5.5, -4.5, -9.5, -8.5, 5.99, difflight_magenta));    // turret roof
-	// world.add(make_shared<xz_rect>(-9.5, -8.5, -5.5, -4.5, 5.99, difflight_magenta));    // turret roof
+	// t2 lamps
+	world.add(make_shared<xz_rect>(4.5, 5.5, -5.5, -4.5, 5.99, difflight_magenta_m));    // turret roof
+	world.add(make_shared<xz_rect>(4.5, 5.5, -9.5, -8.5, 5.99, difflight_magenta_m));    // turret roof
+	world.add(make_shared<xz_rect>(8.5, 9.5, -5.5, -4.5, 5.99, difflight_magenta_m));    // turret roof
+
+
+
+	// t3
+	world.add(make_shared<xy_rect>(-10, -6, 0, 6, 10, material_gray));                 // turret wall
+	world.add(make_shared<xy_rect>(-10, -6, 0, 6, 6, material_gray));                  // turret wall
+	world.add(make_shared<yz_rect>(0, 6, 6, 10, -6, material_gray));                   // turret wall
+	world.add(make_shared<yz_rect>(0, 6, 6, 10, -10, material_gray));                  // turret wall
+	world.add(make_shared<xz_rect>(-10, -4, 4, 10, 6, material_gray));                 // turret roof
+
+	// t3 lamps
+	world.add(make_shared<xz_rect>(-5.5, -4.5, 4.5, 5.5, 5.99, difflight_magenta_m));    // turret roof
+	world.add(make_shared<xz_rect>(-5.5, -4.5, 8.5, 9.5, 5.99, difflight_magenta_m));    // turret roof
+	world.add(make_shared<xz_rect>(-9.5, -8.5, 4.5, 5.5, 5.99, difflight_magenta_m));    // turret roof
+
+
+
+	// t4
+	world.add(make_shared<xy_rect>(-10, -6, 0, 6, -10, material_gray));                  // turret wall
+	world.add(make_shared<xy_rect>(-10, -6, 0, 6, -6, material_gray));                   // turret wall
+	world.add(make_shared<yz_rect>(0, 6, -10, -6, -6, material_gray));                   // turret wall
+	world.add(make_shared<yz_rect>(0, 6, -10, -6, -10, material_gray));                  // turret wall
+	world.add(make_shared<xz_rect>(-10, -4, -10, -4, 6, material_gray));                 // turret roof
+
+	// t4 lamps
+	world.add(make_shared<xz_rect>(-5.5, -4.5, -5.5, -4.5, 5.99, difflight_magenta));    // turret roof
+	world.add(make_shared<xz_rect>(-5.5, -4.5, -9.5, -8.5, 5.99, difflight_magenta));    // turret roof
+	world.add(make_shared<xz_rect>(-9.5, -8.5, -5.5, -4.5, 5.99, difflight_magenta));    // turret roof
 
 	world.add(make_shared<yz_rect>(-6, 6, -7, 7, 9, difflight_w_low));
 

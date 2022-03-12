@@ -46,6 +46,22 @@ class Hittable_list : public Hittable {
 		void add(shared_ptr<Hittable> object) { objects.push_back(object); }
 
 		/*
+		 * Function - remove
+		 *
+		 * Parameters:
+		 * [p] int index
+		 * 
+		 * Return type:
+		 * void
+		 * 
+		 * Use:
+		 * By calling remove, you remove specific 
+		 * element from the vector.
+		 */
+
+		void remove(int index) { objects.erase(objects.begin() + index); }
+
+		/*
 		 * Function - hit
 		 *
 		 * Parameters:
