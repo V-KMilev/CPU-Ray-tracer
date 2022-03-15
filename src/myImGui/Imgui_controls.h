@@ -285,7 +285,7 @@ class MyImGui {
 					ImGui::Text("Texture: %s", texture->my_name);
 					ImGui::NewLine();
 
-					ImGui::Text("Texture name: %s", texture->data);
+					ImGui::Text("Texture name: %s", texture->my_file_name);
 				}
 			}
 
@@ -328,7 +328,7 @@ class MyImGui {
 					ImGui::Text("Texture: %s", texture->my_name);
 					ImGui::NewLine();
 
-					ImGui::Text("Texture name: %s", texture->data);
+					ImGui::Text("Texture name: %s", texture->my_file_name);
 				}
 			}
 		}
@@ -378,7 +378,7 @@ class MyImGui {
 					ImGui::Text("Texture: %s", texture->my_name);
 					ImGui::NewLine();
 
-					ImGui::Text("Texture name: %s", texture->data);
+					ImGui::Text("Texture name: %s", texture->my_file_name);
 				}
 			}
 
@@ -421,7 +421,7 @@ class MyImGui {
 					ImGui::Text("Texture: %s", texture->my_name);
 					ImGui::NewLine();
 
-					ImGui::Text("Texture name: %s", texture->data);
+					ImGui::Text("Texture name: %s", texture->my_file_name);
 				}
 			}
 		}
@@ -471,7 +471,7 @@ class MyImGui {
 					ImGui::Text("Texture: %s", texture->my_name);
 					ImGui::NewLine();
 
-					ImGui::Text("Texture name: %s", texture->data);
+					ImGui::Text("Texture name: %s", texture->my_file_name);
 				}
 			}
 
@@ -514,7 +514,7 @@ class MyImGui {
 					ImGui::Text("Texture: %s", texture->my_name);
 					ImGui::NewLine();
 
-					ImGui::Text("Texture name: %s", texture->data);
+					ImGui::Text("Texture name: %s", texture->my_file_name);
 				}
 			}
 		}
@@ -564,7 +564,7 @@ class MyImGui {
 					ImGui::Text("Texture: %s", texture->my_name);
 					ImGui::NewLine();
 
-					ImGui::Text("Texture name: %s", texture->data);
+					ImGui::Text("Texture name: %s", texture->my_file_name);
 				}
 			}
 
@@ -607,7 +607,7 @@ class MyImGui {
 					ImGui::Text("Texture: %s", texture->my_name);
 					ImGui::NewLine();
 
-					ImGui::Text("Texture name: %s", texture->data);
+					ImGui::Text("Texture name: %s", texture->my_file_name);
 				}
 			}
 		}
@@ -657,7 +657,7 @@ class MyImGui {
 					ImGui::Text("Texture: %s", texture->my_name);
 					ImGui::NewLine();
 
-					ImGui::Text("Texture name: %s", texture->data);
+					ImGui::Text("Texture name: %s", texture->my_file_name);
 				}
 			}
 
@@ -700,7 +700,7 @@ class MyImGui {
 					ImGui::Text("Texture: %s", texture->my_name);
 					ImGui::NewLine();
 
-					ImGui::Text("Texture name: %s", texture->data);
+					ImGui::Text("Texture name: %s", texture->my_file_name);
 				}
 			}
 		}
@@ -750,7 +750,7 @@ class MyImGui {
 					ImGui::Text("Texture: %s", texture->my_name);
 					ImGui::NewLine();
 
-					ImGui::Text("Texture name: %s", texture->data);
+					ImGui::Text("Texture name: %s", texture->my_file_name);
 				}
 			}
 
@@ -793,7 +793,7 @@ class MyImGui {
 					ImGui::Text("Texture: %s", texture->my_name);
 					ImGui::NewLine();
 
-					ImGui::Text("Texture name: %s", texture->data);
+					ImGui::Text("Texture name: %s", texture->my_file_name);
 				}
 			}
 		}

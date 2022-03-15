@@ -69,12 +69,16 @@ Hittable_list get_scene() {
 	shared_ptr<Texture> checker_m = make_shared<Checker_Texture>(Color(0.0, 0.0, 0.0), Color(1.0, 0.0, 1.0));
 	shared_ptr<Texture> checker_r = make_shared<Checker_Texture>(Color(0.0, 0.0, 0.0), Color(1.0, 0.0, 0.0));
 
+	shared_ptr<Texture> random_img = make_shared<Image_Texture>("sdfdsfgdfg.png");
+
 ////////////////////////////////////////////////////////////////////////////
 
 	/* Materials */
 	shared_ptr<Material> material_white_c = make_shared<Lambertian>(checker_w);
 	shared_ptr<Material> material_magenta_c = make_shared<Lambertian>(checker_m);
 	shared_ptr<Material> material_red_c = make_shared<Lambertian>(checker_r);
+
+	shared_ptr<Material> random_img_m = make_shared<Lambertian>(random_img);
 
 	shared_ptr<Material> material_white = make_shared<Lambertian>(Color(1,1,1));
 	shared_ptr<Material> material_black = make_shared<Lambertian>(Color(0,0,0));
@@ -180,6 +184,8 @@ Hittable_list get_scene() {
 	world.add(make_shared<yz_rect>(-6, 6, -7, 7, 9, difflight_w_low));
 
 	world.add(make_shared<Obj>(embree, "..\\..\\src\\models\\parvati_statue_low_poly.obj", "..\\..\\materials\\", material_red));
+
+	world.add(make_shared<xy_rect>(-2.5, 2.5, 0, 3.2, 5, random_img_m));
 
 ////////////////////////////////////////////////////////////////////////////
 
