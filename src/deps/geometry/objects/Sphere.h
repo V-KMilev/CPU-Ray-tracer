@@ -10,8 +10,7 @@ class Sphere : public Hittable {
 		: center(center), radius(radius), material_ptr(material) {
 
 			object_name = "sphere";
-
-			id = 6;
+			id = Object_ID::t_sphere;
 		};
 
 		/*

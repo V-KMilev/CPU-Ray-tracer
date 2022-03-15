@@ -5,6 +5,15 @@
 /* Forward declaration */
 class Material;
 
+enum Object_ID: unsigned int {
+	t_xy_rect       = 1,
+	t_xz_rect       = 2,
+	t_yz_rect       = 3,
+	t_obj           = 4,
+	t_sphere_moving = 5,
+	t_sphere        = 6
+};
+
 struct hit_record {
 	float distance;                                                   // hit_record: distance
 	float u;                                                          // hit_record: uvwrapping u
@@ -64,13 +73,5 @@ class Hittable {    // Interface
 
 		public:
 			const char* object_name;
-			/*Object IDs:
-			 * 1 - xy_rect
-			 * 2 - xz_rect
-			 * 3 - yz_rect
-			 * 4 - obj
-			 * 5 - sphere_moving
-			 * 6 - sphere
-			 */
-			unsigned int id;
+			Object_ID id;
 };

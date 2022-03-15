@@ -8,6 +8,13 @@
 
 #include "RT_stb_image.h"
 
+enum Texture_ID: unsigned int {
+	t_solid_color     = 1,
+	t_checker_texture = 2,
+	t_image_texture   = 3
+};
+
+
 class Texture {    // Interface
 	public:
 
@@ -28,18 +35,31 @@ class Texture {    // Interface
 		 */
 
 		virtual Color value(float u, float v, const Point &point) const = 0;
+
+	public:
+		const char* my_name;
+		Texture_ID id;
 };
 
 class Solid_Color : public Texture {
 	public:
-		Solid_Color() {}
+		Solid_Color() {
+			my_name = "Solid-Color";
+			id = Texture_ID::t_solid_color;
+		}
 
 		// Base constructor for color_value
-		Solid_Color(Color color) : color_value(color) {}
+		Solid_Color(Color color) : color_value(color) {
+			my_name = "Solid-Color";
+			id = Texture_ID::t_solid_color;
+		}
 
 		// Constructor to set color_value
 		Solid_Color(float red, float green, float blue)
-			: Solid_Color(Color(red,green,blue)) {}
+		: Solid_Color(Color(red,green,blue)) {
+			my_name = "Solid-Color";
+			id = Texture_ID::t_solid_color;
+		}
 
 		/*
 		 * Function - value
@@ -53,21 +73,30 @@ class Solid_Color : public Texture {
 			return color_value;
 		}
 
-	private:
+	public:
 		Color color_value;    // Texture color
 };
 
 class Checker_Texture : public Texture {
 	public:
-		Checker_Texture() {}
+		Checker_Texture() {
+				my_name = "Checker-Texture";
+				id = Texture_ID::t_checker_texture;
+		}
 
 		// Constructor to init the even and odd Textures
-		Checker_Texture(shared_ptr<Texture> even, shared_ptr<Texture> odd)
-			: even(even), odd(odd) {}
+		Checker_Texture(shared_ptr<Solid_Color> even, shared_ptr<Solid_Color> odd)
+			: even(even), odd(odd) {
+				my_name = "Checker-Texture";
+				id = Texture_ID::t_checker_texture;
+			}
 
 		// Constructor to set the even and odd Textures
 		Checker_Texture(Color color_0, Color color_1)
-			: even(make_shared<Solid_Color>(color_0)), odd(make_shared<Solid_Color>(color_1)) {}
+			: even(make_shared<Solid_Color>(color_0)), odd(make_shared<Solid_Color>(color_1)) {
+				my_name = "Checker-Texture";
+				id = Texture_ID::t_checker_texture;
+			}
 
 		virtual Color value(float u, float v, const Point &point) const override {
 
@@ -80,18 +109,24 @@ class Checker_Texture : public Texture {
 			else { return even->value(u, v, point); }
 		}
 
-	private:
-		shared_ptr<Texture> odd;     // odd Texture
-		shared_ptr<Texture> even;    // even Texture
+	public:
+		shared_ptr<Solid_Color> odd;     // odd Texture
+		shared_ptr<Solid_Color> even;    // even Texture
 };
 
 class Image_Texture : public Texture {
 	public:
 		const static int bytes_per_pixel = 3;
 
-		Image_Texture() : data(nullptr), width(0), height(0), bytes_per_scanline(0) {}
+		Image_Texture() : data(nullptr), width(0), height(0), bytes_per_scanline(0) {
+			my_name = "Image_Texture";
+			id = Texture_ID::t_image_texture;
+		}
 
 		Image_Texture(const char* file_name) {
+			my_name = "Image_Texture";
+			id = Texture_ID::t_image_texture;
+
 			int components_per_pixel = bytes_per_pixel;
 
 			data = stbi_load(file_name, &width, &height, &components_per_pixel, components_per_pixel);
@@ -140,7 +175,7 @@ class Image_Texture : public Texture {
 				);
 		}
 
-	private:
+	public:
 		unsigned char *data;
 		int width, height;
 		int bytes_per_scanline;

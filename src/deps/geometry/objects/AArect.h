@@ -12,8 +12,7 @@ class xy_rect : public Hittable {
 			: x_start(x_start), x_end(x_end), y_start(y_start), y_end(y_end), z(z), material_ptr(material) {
 				
 				object_name = "xy-rect";
-				
-				id = 1;
+				id = Object_ID::t_xy_rect;
 			};
 
 		/*
@@ -75,8 +74,7 @@ class xz_rect : public Hittable {
 			: x_start(x_start), x_end(x_end), z_start(z_start), z_end(z_end), y(y), material_ptr(material) {
 				
 				object_name = "xz-rect";
-				
-				id = 2;
+				id = Object_ID::t_xz_rect;
 			};
 
 		/*
@@ -138,8 +136,7 @@ class yz_rect : public Hittable {
 			: y_start(y_start), y_end(y_end), z_start(z_start), z_end(z_end), x(x), material_ptr(material) {
 				
 				object_name = "yz-rect";
-				
-				id = 3;
+				id = Object_ID::t_yz_rect;
 			};
 
 		/*

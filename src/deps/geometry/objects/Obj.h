@@ -7,14 +7,13 @@
 
 // TODO: FIX materials
 
-class obj : public Hittable {
+class Obj : public Hittable {
 	public:
-		obj(MyEmbree &embree, const char* path, const char* material_path, shared_ptr<Material> material)
+		Obj(MyEmbree &embree, const char* path, const char* material_path, shared_ptr<Material> material)
 			: embree(embree), filePath(path), basePath(basePath), material_ptr(material)
 		{
 			object_name = &filePath[0];
-
-			id = 4;
+			id = Object_ID::t_obj;
 
 			myTOL.myLoadObj(path, material_path);
 
@@ -56,7 +55,7 @@ class obj : public Hittable {
 
 			embree.commit();
 		}
-		~obj() {}
+		~Obj() {}
 
 		/*
 		 * Function - hit

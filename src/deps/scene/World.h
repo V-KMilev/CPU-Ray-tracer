@@ -85,16 +85,16 @@ Hittable_list get_scene() {
 
 	shared_ptr<Material> material_magenta = make_shared<Lambertian>(Color(0.7,0,0.7));
 
-	shared_ptr<Material> difflight_magenta = make_shared<Diffuse_light>(Color(6,0,6));
-	shared_ptr<Material> difflight_green   = make_shared<Diffuse_light>(Color(0,3,0));
-	shared_ptr<Material> difflight_white   = make_shared<Diffuse_light>(Color(3,3,3));
-	shared_ptr<Material> difflight_blue    = make_shared<Diffuse_light>(Color(0,0,3));
-	shared_ptr<Material> difflight_red     = make_shared<Diffuse_light>(Color(3,0,0));
+	shared_ptr<Material> difflight_magenta = make_shared<Diffuse_Light>(Color(6,0,6));
+	shared_ptr<Material> difflight_green   = make_shared<Diffuse_Light>(Color(0,3,0));
+	shared_ptr<Material> difflight_white   = make_shared<Diffuse_Light>(Color(3,3,3));
+	shared_ptr<Material> difflight_blue    = make_shared<Diffuse_Light>(Color(0,0,3));
+	shared_ptr<Material> difflight_red     = make_shared<Diffuse_Light>(Color(3,0,0));
 
-	shared_ptr<Material> difflight_magenta_m = make_shared<Diffuse_light>(Color(7,0,6));
-	shared_ptr<Material> difflight_w_low     = make_shared<Diffuse_light>(Color(1,1,1));
-	shared_ptr<Material> difflight_d         = make_shared<Diffuse_light>(Color(0,0,0));
-	shared_ptr<Material> difflight_w         = make_shared<Diffuse_light>(Color(37,37,37));
+	shared_ptr<Material> difflight_magenta_m = make_shared<Diffuse_Light>(Color(7,0,6));
+	shared_ptr<Material> difflight_w_low     = make_shared<Diffuse_Light>(Color(1,1,1));
+	shared_ptr<Material> difflight_d         = make_shared<Diffuse_Light>(Color(0,0,0));
+	shared_ptr<Material> difflight_w         = make_shared<Diffuse_Light>(Color(37,37,37));
 
 ////////////////////////////////////////////////////////////////////////////
 
@@ -179,7 +179,7 @@ Hittable_list get_scene() {
 
 	world.add(make_shared<yz_rect>(-6, 6, -7, 7, 9, difflight_w_low));
 
-	world.add(make_shared<obj>(embree, "..\\..\\src\\models\\parvati_statue_low_poly.obj", "..\\..\\materials\\", material_red));
+	world.add(make_shared<Obj>(embree, "..\\..\\src\\models\\parvati_statue_low_poly.obj", "..\\..\\materials\\", material_red));
 
 ////////////////////////////////////////////////////////////////////////////
 

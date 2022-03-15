@@ -11,6 +11,11 @@
 /* Forward declaration */
 struct hit_record;
 
+enum Material_ID: unsigned int {
+	t_lambertian    = 1,
+	t_diffuse_light = 2
+};
+
 class Material {
 	public:
 
@@ -58,17 +63,18 @@ class Material {
 
 		public:
 			const char* my_name;
-			Color my_color;
+			Material_ID id;
 };
 
 class Lambertian : public Material {
 	public:
 		Lambertian(const Color &albedo) : albedo(make_shared<Solid_Color>(albedo)) {
 			my_name = "Lambertian";
-			my_color = albedo;
+			id = Material_ID::t_lambertian;
 		}
 		Lambertian(shared_ptr<Texture> albedo) : albedo(albedo) {
 			my_name = "Lambertian";
+			id = Material_ID::t_lambertian;
 		}
 
 		/*
@@ -105,14 +111,15 @@ class Lambertian : public Material {
 		shared_ptr<Texture> albedo;    // Characterizes the reflectivity of the surface of objects
 };
 
-class Diffuse_light : public Material  {
+class Diffuse_Light : public Material  {
 	public:
-		Diffuse_light(shared_ptr<Texture> texture) : emit(texture) {
+		Diffuse_Light(shared_ptr<Texture> texture) : emit(texture) {
 			my_name = "Diffuse-light";
+			id = Material_ID::t_diffuse_light;
 		}
-		Diffuse_light(Color color) : emit(make_shared<Solid_Color>(color)) {
+		Diffuse_Light(Color color) : emit(make_shared<Solid_Color>(color)) {
 			my_name = "Diffuse-light";
-			my_color = color;
+			id = Material_ID::t_diffuse_light;
 		}
 
 		/*

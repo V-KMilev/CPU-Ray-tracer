@@ -99,8 +99,47 @@ class MyImGui {
 
 			ImGui::EndMainMenuBar();
 
+			file_edit();
+			settings();
+			camera_control();
+			render_info();
+
 			if(show_demo) { ImGui::ShowDemoWindow(); }
 
+			right_low_corener_info();
+		}
+
+	private:
+		void right_low_corener_info() {
+			static int corner = 0;
+			ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_NoNav;
+
+			if (corner != -1) {
+				const float PAD = 10.0f;
+				const ImGuiViewport* viewport = ImGui::GetMainViewport();
+
+				ImVec2 work_pos = viewport->WorkPos; // Use work area to avoid menu-bar/task-bar, if any!
+				ImVec2 work_size = viewport->WorkSize;
+				ImVec2 window_pos, window_pos_pivot;
+
+				window_pos.x = (3 & 1) ? (work_pos.x + work_size.x - PAD) : (work_pos.x + PAD);
+				window_pos.y = (3 & 2) ? (work_pos.y + work_size.y - PAD) : (work_pos.y + PAD);
+				window_pos_pivot.x = (3 & 1) ? 1.0f : 0.0f;
+				window_pos_pivot.y = (3 & 2) ? 1.0f : 0.0f;
+
+				ImGui::SetNextWindowPos(window_pos, ImGuiCond_Always, window_pos_pivot);
+			}
+
+			ImGui::SetNextWindowBgAlpha(0.35f); // Transparent background
+			if (ImGui::Begin("Info overlay", &show_overlay, window_flags)) {
+				ImGui::Text("Benchmark - Ray-tracer v1.00");
+				ImGui::Separator();
+				ImGui::Text("%.3f ms/frame | %.1f FPS", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+				
+				ImGui::End();
+			}
+		}
+		void settings() {
 			if(show_settings) {
 				ImGui::Begin("Settings");
 				ImGui::InputInt("Samples per pixel", &samples_per_pixel, 0, 1337);
@@ -123,7 +162,9 @@ class MyImGui {
 				ImGui::Separator();
 				ImGui::End();
 			}
+		}
 
+		void camera_control() {
 			if(show_camera) {
 				ImGui::Begin("Camera");
 
@@ -154,7 +195,9 @@ class MyImGui {
 				ImGui::Separator();
 				ImGui::End();
 			}
-
+		}
+		
+		void render_info() {
 			if(show_render_info) {
 				ImGui::Begin("INFO");
 
@@ -195,40 +238,739 @@ class MyImGui {
 				ImGui::Separator();
 				ImGui::End();
 			}
+		}
 
-			static int corner = 0;
-			ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_NoNav;
+		void xy_rect_details(unsigned int &object_id,unsigned int &material_id, unsigned int &texture_id, xy_rect *object) {
 
-			if (corner != -1) {
-				const float PAD = 10.0f;
-				const ImGuiViewport* viewport = ImGui::GetMainViewport();
+			object_id = object->id;
 
-				ImVec2 work_pos = viewport->WorkPos; // Use work area to avoid menu-bar/task-bar, if any!
-				ImVec2 work_size = viewport->WorkSize;
-				ImVec2 window_pos, window_pos_pivot;
+			ImGui::NewLine();
 
-				window_pos.x = (3 & 1) ? (work_pos.x + work_size.x - PAD) : (work_pos.x + PAD);
-				window_pos.y = (3 & 2) ? (work_pos.y + work_size.y - PAD) : (work_pos.y + PAD);
-				window_pos_pivot.x = (3 & 1) ? 1.0f : 0.0f;
-				window_pos_pivot.y = (3 & 2) ? 1.0f : 0.0f;
+			if(object->material_ptr->id == t_lambertian) {
+				Lambertian* material = static_cast<Lambertian*>(object->material_ptr.get());
 
-				ImGui::SetNextWindowPos(window_pos, ImGuiCond_Always, window_pos_pivot);
+				material_id = material->id;
+
+				ImGui::Text("Material: %s", material->my_name);
+
+				if(material->albedo->id == t_solid_color) {
+					Solid_Color* texture = static_cast<Solid_Color*>(material->albedo.get());
+
+					texture_id = texture->id;
+
+					ImGui::Text("Texture: %s", texture->my_name);
+					ImGui::NewLine();
+
+					ImGui::Text("Texture color:\nr: %.3f | g: %.3f | b: %.3f",
+					texture->color_value[0], texture->color_value[1], texture->color_value[2]);
+				}
+				if(material->albedo->id == t_checker_texture) {
+					Checker_Texture* texture = static_cast<Checker_Texture*>(material->albedo.get());
+
+					texture_id = texture->id;
+
+					ImGui::Text("Texture: %s", texture->my_name);
+					ImGui::NewLine();
+
+					ImGui::Text("Texture color odd:\nr: %.3f | g: %.3f | b: %.3f",
+					texture->odd->color_value[0], texture->odd->color_value[1], texture->odd->color_value[2]);
+					ImGui::Text("Texture color even:\nr: %.3f | g: %.3f | b: %.3f",
+					texture->even->color_value[0], texture->even->color_value[1], texture->even->color_value[2]);
+				}
+				if(material->albedo->id == t_image_texture) {
+					Image_Texture* texture = static_cast<Image_Texture*>(material->albedo.get());
+
+					texture_id = texture->id;
+
+					ImGui::Text("Texture: %s", texture->my_name);
+					ImGui::NewLine();
+
+					ImGui::Text("Texture name: %s", texture->data);
+				}
 			}
-			ImGui::SetNextWindowBgAlpha(0.35f); // Transparent background
-			if (ImGui::Begin("Info overlay", &show_overlay, window_flags)) {
-				ImGui::Text("Benchmark - Ray-tracer v1.00");
+
+			if(object->material_ptr->id == t_diffuse_light) {
+				Diffuse_Light* material = static_cast<Diffuse_Light*>(object->material_ptr.get());
+
+				material_id = material->id;
+
+				ImGui::Text("Material: %s", material->my_name);
+
+				if(material->emit->id == t_solid_color) {
+					Solid_Color* texture = static_cast<Solid_Color*>(material->emit.get());
+
+					texture_id = texture->id;
+
+					ImGui::Text("Texture: %s", texture->my_name);
+					ImGui::NewLine();
+
+					ImGui::Text("Texture color:\nr: %.3f | g: %.3f | b: %.3f",
+					texture->color_value[0], texture->color_value[1], texture->color_value[2]);
+				}
+				if(material->emit->id == t_checker_texture) {
+					Checker_Texture* texture = static_cast<Checker_Texture*>(material->emit.get());
+
+					texture_id = texture->id;
+
+					ImGui::Text("Texture: %s", texture->my_name);
+					ImGui::NewLine();
+
+					ImGui::Text("Texture color odd:\nr: %.3f | g: %.3f | b: %.3f",
+					texture->odd->color_value[0], texture->odd->color_value[1], texture->odd->color_value[2]);
+					ImGui::Text("Texture color even:\nr: %.3f | g: %.3f | b: %.3f",
+					texture->even->color_value[0], texture->even->color_value[1], texture->even->color_value[2]);
+				}
+				if(material->emit->id == t_image_texture) {
+					Image_Texture* texture = static_cast<Image_Texture*>(material->emit.get());
+
+					texture_id = texture->id;
+
+					ImGui::Text("Texture: %s", texture->my_name);
+					ImGui::NewLine();
+
+					ImGui::Text("Texture name: %s", texture->data);
+				}
+			}
+		}
+
+		void xz_rect_details(unsigned int &object_id,unsigned int &material_id, unsigned int &texture_id, xz_rect *object) {
+
+			object_id = object->id;
+
+			ImGui::NewLine();
+
+			if(object->material_ptr->id == t_lambertian) {
+				Lambertian* material = static_cast<Lambertian*>(object->material_ptr.get());
+
+				material_id = material->id;
+
+				ImGui::Text("Material: %s", material->my_name);
+
+				if(material->albedo->id == t_solid_color) {
+					Solid_Color* texture = static_cast<Solid_Color*>(material->albedo.get());
+
+					texture_id = texture->id;
+
+					ImGui::Text("Texture: %s", texture->my_name);
+					ImGui::NewLine();
+
+					ImGui::Text("Texture color:\nr: %.3f | g: %.3f | b: %.3f",
+					texture->color_value[0], texture->color_value[1], texture->color_value[2]);
+				}
+				if(material->albedo->id == t_checker_texture) {
+					Checker_Texture* texture = static_cast<Checker_Texture*>(material->albedo.get());
+
+					texture_id = texture->id;
+
+					ImGui::Text("Texture: %s", texture->my_name);
+					ImGui::NewLine();
+
+					ImGui::Text("Texture color odd:\nr: %.3f | g: %.3f | b: %.3f",
+					texture->odd->color_value[0], texture->odd->color_value[1], texture->odd->color_value[2]);
+					ImGui::Text("Texture color even:\nr: %.3f | g: %.3f | b: %.3f",
+					texture->even->color_value[0], texture->even->color_value[1], texture->even->color_value[2]);
+				}
+				if(material->albedo->id == t_image_texture) {
+					Image_Texture* texture = static_cast<Image_Texture*>(material->albedo.get());
+
+					texture_id = texture->id;
+
+					ImGui::Text("Texture: %s", texture->my_name);
+					ImGui::NewLine();
+
+					ImGui::Text("Texture name: %s", texture->data);
+				}
+			}
+
+			if(object->material_ptr->id == t_diffuse_light) {
+				Diffuse_Light* material = static_cast<Diffuse_Light*>(object->material_ptr.get());
+
+				material_id = material->id;
+
+				ImGui::Text("Material: %s", material->my_name);
+
+				if(material->emit->id == t_solid_color) {
+					Solid_Color* texture = static_cast<Solid_Color*>(material->emit.get());
+
+					texture_id = texture->id;
+
+					ImGui::Text("Texture: %s", texture->my_name);
+					ImGui::NewLine();
+
+					ImGui::Text("Texture color:\nr: %.3f | g: %.3f | b: %.3f",
+					texture->color_value[0], texture->color_value[1], texture->color_value[2]);
+				}
+				if(material->emit->id == t_checker_texture) {
+					Checker_Texture* texture = static_cast<Checker_Texture*>(material->emit.get());
+
+					texture_id = texture->id;
+
+					ImGui::Text("Texture: %s", texture->my_name);
+					ImGui::NewLine();
+
+					ImGui::Text("Texture color odd:\nr: %.3f | g: %.3f | b: %.3f",
+					texture->odd->color_value[0], texture->odd->color_value[1], texture->odd->color_value[2]);
+					ImGui::Text("Texture color even:\nr: %.3f | g: %.3f | b: %.3f",
+					texture->even->color_value[0], texture->even->color_value[1], texture->even->color_value[2]);
+				}
+				if(material->emit->id == t_image_texture) {
+					Image_Texture* texture = static_cast<Image_Texture*>(material->emit.get());
+
+					texture_id = texture->id;
+
+					ImGui::Text("Texture: %s", texture->my_name);
+					ImGui::NewLine();
+
+					ImGui::Text("Texture name: %s", texture->data);
+				}
+			}
+		}
+
+		void yz_rect_details(unsigned int &object_id,unsigned int &material_id, unsigned int &texture_id, yz_rect *object) {
+
+			object_id = object->id;
+
+			ImGui::NewLine();
+
+			if(object->material_ptr->id == t_lambertian) {
+				Lambertian* material = static_cast<Lambertian*>(object->material_ptr.get());
+
+				material_id = material->id;
+
+				ImGui::Text("Material: %s", material->my_name);
+
+				if(material->albedo->id == t_solid_color) {
+					Solid_Color* texture = static_cast<Solid_Color*>(material->albedo.get());
+
+					texture_id = texture->id;
+
+					ImGui::Text("Texture: %s", texture->my_name);
+					ImGui::NewLine();
+
+					ImGui::Text("Texture color:\nr: %.3f | g: %.3f | b: %.3f",
+					texture->color_value[0], texture->color_value[1], texture->color_value[2]);
+				}
+				if(material->albedo->id == t_checker_texture) {
+					Checker_Texture* texture = static_cast<Checker_Texture*>(material->albedo.get());
+
+					texture_id = texture->id;
+
+					ImGui::Text("Texture: %s", texture->my_name);
+					ImGui::NewLine();
+
+					ImGui::Text("Texture color odd:\nr: %.3f | g: %.3f | b: %.3f",
+					texture->odd->color_value[0], texture->odd->color_value[1], texture->odd->color_value[2]);
+					ImGui::Text("Texture color even:\nr: %.3f | g: %.3f | b: %.3f",
+					texture->even->color_value[0], texture->even->color_value[1], texture->even->color_value[2]);
+				}
+				if(material->albedo->id == t_image_texture) {
+					Image_Texture* texture = static_cast<Image_Texture*>(material->albedo.get());
+
+					texture_id = texture->id;
+
+					ImGui::Text("Texture: %s", texture->my_name);
+					ImGui::NewLine();
+
+					ImGui::Text("Texture name: %s", texture->data);
+				}
+			}
+
+			if(object->material_ptr->id == t_diffuse_light) {
+				Diffuse_Light* material = static_cast<Diffuse_Light*>(object->material_ptr.get());
+
+				material_id = material->id;
+
+				ImGui::Text("Material: %s", material->my_name);
+
+				if(material->emit->id == t_solid_color) {
+					Solid_Color* texture = static_cast<Solid_Color*>(material->emit.get());
+
+					texture_id = texture->id;
+
+					ImGui::Text("Texture: %s", texture->my_name);
+					ImGui::NewLine();
+
+					ImGui::Text("Texture color:\nr: %.3f | g: %.3f | b: %.3f",
+					texture->color_value[0], texture->color_value[1], texture->color_value[2]);
+				}
+				if(material->emit->id == t_checker_texture) {
+					Checker_Texture* texture = static_cast<Checker_Texture*>(material->emit.get());
+
+					texture_id = texture->id;
+
+					ImGui::Text("Texture: %s", texture->my_name);
+					ImGui::NewLine();
+
+					ImGui::Text("Texture color odd:\nr: %.3f | g: %.3f | b: %.3f",
+					texture->odd->color_value[0], texture->odd->color_value[1], texture->odd->color_value[2]);
+					ImGui::Text("Texture color even:\nr: %.3f | g: %.3f | b: %.3f",
+					texture->even->color_value[0], texture->even->color_value[1], texture->even->color_value[2]);
+				}
+				if(material->emit->id == t_image_texture) {
+					Image_Texture* texture = static_cast<Image_Texture*>(material->emit.get());
+
+					texture_id = texture->id;
+
+					ImGui::Text("Texture: %s", texture->my_name);
+					ImGui::NewLine();
+
+					ImGui::Text("Texture name: %s", texture->data);
+				}
+			}
+		}
+
+		void obj_details(unsigned int &object_id,unsigned int &material_id, unsigned int &texture_id, Obj* object) {
+
+			object_id = object->id;
+
+			ImGui::NewLine();
+
+			if(object->material_ptr->id == t_lambertian) {
+				Lambertian* material = static_cast<Lambertian*>(object->material_ptr.get());
+
+				material_id = material->id;
+
+				ImGui::Text("Material: %s", material->my_name);
+
+				if(material->albedo->id == t_solid_color) {
+					Solid_Color* texture = static_cast<Solid_Color*>(material->albedo.get());
+
+					texture_id = texture->id;
+
+					ImGui::Text("Texture: %s", texture->my_name);
+					ImGui::NewLine();
+
+					ImGui::Text("Texture color:\nr: %.3f | g: %.3f | b: %.3f",
+					texture->color_value[0], texture->color_value[1], texture->color_value[2]);
+				}
+				if(material->albedo->id == t_checker_texture) {
+					Checker_Texture* texture = static_cast<Checker_Texture*>(material->albedo.get());
+
+					texture_id = texture->id;
+
+					ImGui::Text("Texture: %s", texture->my_name);
+					ImGui::NewLine();
+
+					ImGui::Text("Texture color odd:\nr: %.3f | g: %.3f | b: %.3f",
+					texture->odd->color_value[0], texture->odd->color_value[1], texture->odd->color_value[2]);
+					ImGui::Text("Texture color even:\nr: %.3f | g: %.3f | b: %.3f",
+					texture->even->color_value[0], texture->even->color_value[1], texture->even->color_value[2]);
+				}
+				if(material->albedo->id == t_image_texture) {
+					Image_Texture* texture = static_cast<Image_Texture*>(material->albedo.get());
+
+					texture_id = texture->id;
+
+					ImGui::Text("Texture: %s", texture->my_name);
+					ImGui::NewLine();
+
+					ImGui::Text("Texture name: %s", texture->data);
+				}
+			}
+
+			if(object->material_ptr->id == t_diffuse_light) {
+				Diffuse_Light* material = static_cast<Diffuse_Light*>(object->material_ptr.get());
+
+				material_id = material->id;
+
+				ImGui::Text("Material: %s", material->my_name);
+
+				if(material->emit->id == t_solid_color) {
+					Solid_Color* texture = static_cast<Solid_Color*>(material->emit.get());
+
+					texture_id = texture->id;
+
+					ImGui::Text("Texture: %s", texture->my_name);
+					ImGui::NewLine();
+
+					ImGui::Text("Texture color:\nr: %.3f | g: %.3f | b: %.3f",
+					texture->color_value[0], texture->color_value[1], texture->color_value[2]);
+				}
+				if(material->emit->id == t_checker_texture) {
+					Checker_Texture* texture = static_cast<Checker_Texture*>(material->emit.get());
+
+					texture_id = texture->id;
+
+					ImGui::Text("Texture: %s", texture->my_name);
+					ImGui::NewLine();
+
+					ImGui::Text("Texture color odd:\nr: %.3f | g: %.3f | b: %.3f",
+					texture->odd->color_value[0], texture->odd->color_value[1], texture->odd->color_value[2]);
+					ImGui::Text("Texture color even:\nr: %.3f | g: %.3f | b: %.3f",
+					texture->even->color_value[0], texture->even->color_value[1], texture->even->color_value[2]);
+				}
+				if(material->emit->id == t_image_texture) {
+					Image_Texture* texture = static_cast<Image_Texture*>(material->emit.get());
+
+					texture_id = texture->id;
+
+					ImGui::Text("Texture: %s", texture->my_name);
+					ImGui::NewLine();
+
+					ImGui::Text("Texture name: %s", texture->data);
+				}
+			}
+		}
+
+		void sphere_moving_details(unsigned int &object_id,unsigned int &material_id, unsigned int &texture_id, Sphere_moving *object) {
+
+			object_id = object->id;
+
+			ImGui::NewLine();
+
+			if(object->material_ptr->id == t_lambertian) {
+				Lambertian* material = static_cast<Lambertian*>(object->material_ptr.get());
+
+				material_id = material->id;
+
+				ImGui::Text("Material: %s", material->my_name);
+
+				if(material->albedo->id == t_solid_color) {
+					Solid_Color* texture = static_cast<Solid_Color*>(material->albedo.get());
+
+					texture_id = texture->id;
+
+					ImGui::Text("Texture: %s", texture->my_name);
+					ImGui::NewLine();
+
+					ImGui::Text("Texture color:\nr: %.3f | g: %.3f | b: %.3f",
+					texture->color_value[0], texture->color_value[1], texture->color_value[2]);
+				}
+				if(material->albedo->id == t_checker_texture) {
+					Checker_Texture* texture = static_cast<Checker_Texture*>(material->albedo.get());
+
+					texture_id = texture->id;
+
+					ImGui::Text("Texture: %s", texture->my_name);
+					ImGui::NewLine();
+
+					ImGui::Text("Texture color odd:\nr: %.3f | g: %.3f | b: %.3f",
+					texture->odd->color_value[0], texture->odd->color_value[1], texture->odd->color_value[2]);
+					ImGui::Text("Texture color even:\nr: %.3f | g: %.3f | b: %.3f",
+					texture->even->color_value[0], texture->even->color_value[1], texture->even->color_value[2]);
+				}
+				if(material->albedo->id == t_image_texture) {
+					Image_Texture* texture = static_cast<Image_Texture*>(material->albedo.get());
+
+					texture_id = texture->id;
+
+					ImGui::Text("Texture: %s", texture->my_name);
+					ImGui::NewLine();
+
+					ImGui::Text("Texture name: %s", texture->data);
+				}
+			}
+
+			if(object->material_ptr->id == t_diffuse_light) {
+				Diffuse_Light* material = static_cast<Diffuse_Light*>(object->material_ptr.get());
+
+				material_id = material->id;
+
+				ImGui::Text("Material: %s", material->my_name);
+
+				if(material->emit->id == t_solid_color) {
+					Solid_Color* texture = static_cast<Solid_Color*>(material->emit.get());
+
+					texture_id = texture->id;
+
+					ImGui::Text("Texture: %s", texture->my_name);
+					ImGui::NewLine();
+
+					ImGui::Text("Texture color:\nr: %.3f | g: %.3f | b: %.3f",
+					texture->color_value[0], texture->color_value[1], texture->color_value[2]);
+				}
+				if(material->emit->id == t_checker_texture) {
+					Checker_Texture* texture = static_cast<Checker_Texture*>(material->emit.get());
+
+					texture_id = texture->id;
+
+					ImGui::Text("Texture: %s", texture->my_name);
+					ImGui::NewLine();
+
+					ImGui::Text("Texture color odd:\nr: %.3f | g: %.3f | b: %.3f",
+					texture->odd->color_value[0], texture->odd->color_value[1], texture->odd->color_value[2]);
+					ImGui::Text("Texture color even:\nr: %.3f | g: %.3f | b: %.3f",
+					texture->even->color_value[0], texture->even->color_value[1], texture->even->color_value[2]);
+				}
+				if(material->emit->id == t_image_texture) {
+					Image_Texture* texture = static_cast<Image_Texture*>(material->emit.get());
+
+					texture_id = texture->id;
+
+					ImGui::Text("Texture: %s", texture->my_name);
+					ImGui::NewLine();
+
+					ImGui::Text("Texture name: %s", texture->data);
+				}
+			}
+		}
+
+		void sphere_details(unsigned int &object_id,unsigned int &material_id, unsigned int &texture_id, Sphere* object) {
+
+			object_id = object->id;
+
+			ImGui::NewLine();
+
+			if(object->material_ptr->id == t_lambertian) {
+				Lambertian* material = static_cast<Lambertian*>(object->material_ptr.get());
+
+				material_id = material->id;
+
+				ImGui::Text("Material: %s", material->my_name);
+
+				if(material->albedo->id == t_solid_color) {
+					Solid_Color* texture = static_cast<Solid_Color*>(material->albedo.get());
+
+					texture_id = texture->id;
+
+					ImGui::Text("Texture: %s", texture->my_name);
+					ImGui::NewLine();
+
+					ImGui::Text("Texture color:\nr: %.3f | g: %.3f | b: %.3f",
+					texture->color_value[0], texture->color_value[1], texture->color_value[2]);
+				}
+				if(material->albedo->id == t_checker_texture) {
+					Checker_Texture* texture = static_cast<Checker_Texture*>(material->albedo.get());
+
+					texture_id = texture->id;
+
+					ImGui::Text("Texture: %s", texture->my_name);
+					ImGui::NewLine();
+
+					ImGui::Text("Texture color odd:\nr: %.3f | g: %.3f | b: %.3f",
+					texture->odd->color_value[0], texture->odd->color_value[1], texture->odd->color_value[2]);
+					ImGui::Text("Texture color even:\nr: %.3f | g: %.3f | b: %.3f",
+					texture->even->color_value[0], texture->even->color_value[1], texture->even->color_value[2]);
+				}
+				if(material->albedo->id == t_image_texture) {
+					Image_Texture* texture = static_cast<Image_Texture*>(material->albedo.get());
+
+					texture_id = texture->id;
+
+					ImGui::Text("Texture: %s", texture->my_name);
+					ImGui::NewLine();
+
+					ImGui::Text("Texture name: %s", texture->data);
+				}
+			}
+
+			if(object->material_ptr->id == t_diffuse_light) {
+				Diffuse_Light* material = static_cast<Diffuse_Light*>(object->material_ptr.get());
+
+				material_id = material->id;
+
+				ImGui::Text("Material: %s", material->my_name);
+
+				if(material->emit->id == t_solid_color) {
+					Solid_Color* texture = static_cast<Solid_Color*>(material->emit.get());
+
+					texture_id = texture->id;
+
+					ImGui::Text("Texture: %s", texture->my_name);
+					ImGui::NewLine();
+
+					ImGui::Text("Texture color:\nr: %.3f | g: %.3f | b: %.3f",
+					texture->color_value[0], texture->color_value[1], texture->color_value[2]);
+				}
+				if(material->emit->id == t_checker_texture) {
+					Checker_Texture* texture = static_cast<Checker_Texture*>(material->emit.get());
+
+					texture_id = texture->id;
+
+					ImGui::Text("Texture: %s", texture->my_name);
+					ImGui::NewLine();
+
+					ImGui::Text("Texture color odd:\nr: %.3f | g: %.3f | b: %.3f",
+					texture->odd->color_value[0], texture->odd->color_value[1], texture->odd->color_value[2]);
+					ImGui::Text("Texture color even:\nr: %.3f | g: %.3f | b: %.3f",
+					texture->even->color_value[0], texture->even->color_value[1], texture->even->color_value[2]);
+				}
+				if(material->emit->id == t_image_texture) {
+					Image_Texture* texture = static_cast<Image_Texture*>(material->emit.get());
+
+					texture_id = texture->id;
+
+					ImGui::Text("Texture: %s", texture->my_name);
+					ImGui::NewLine();
+
+					ImGui::Text("Texture name: %s", texture->data);
+				}
+			}
+		}
+
+		void object_editor(unsigned int current_object, std::vector<std::shared_ptr<Hittable>>& objects) {
+			ImGui::BeginGroup();
+			ImGui::BeginChild("item view", ImVec2(0, -ImGui::GetFrameHeightWithSpacing())); // Leave room for 1 line below us
+			ImGui::Text("%d | %s", current_object,  objects[current_object]->object_name);
+
+			if (ImGui::BeginTabBar("##Tabs", ImGuiTabBarFlags_None)) {
+				if (ImGui::BeginTabItem("Edit")) {
+					ImGui::TextWrapped("Controls:");
+
+					if(objects[current_object]->id == t_xy_rect) {
+						xy_rect* object = static_cast<xy_rect*>(objects[current_object].get());
+						
+						ImGui::InputFloat("Start X:", &object->x_start);
+						ImGui::InputFloat("Start Y:", &object->y_start);
+						ImGui::InputFloat("End X:", &object->x_end);
+						ImGui::InputFloat("End Y:", &object->y_end);
+						ImGui::InputFloat("z:", &object->z);
+
+						ImGui::NewLine();
+					}
+
+					if(objects[current_object]->id == t_xz_rect) {
+						xz_rect* object = static_cast<xz_rect*>(objects[current_object].get());
+
+						ImGui::InputFloat("Start X:", &object->x_start);
+						ImGui::InputFloat("Start Z:", &object->z_start);
+						ImGui::InputFloat("End X:", &object->x_end);
+						ImGui::InputFloat("End Z:", &object->z_end);
+						ImGui::InputFloat("Y:", &object->y);
+
+						ImGui::NewLine();
+					}
+
+					if(objects[current_object]->id == t_yz_rect) {
+						yz_rect* object = static_cast<yz_rect*>(objects[current_object].get());
+
+						ImGui::InputFloat("Start Y:", &object->y_start);
+						ImGui::InputFloat("Start Z:", &object->z_start);
+						ImGui::InputFloat("End Y:", &object->y_end);
+						ImGui::InputFloat("End Z:", &object->z_end);
+						ImGui::InputFloat("X:", &object->x);
+
+						ImGui::NewLine();
+					}
+
+					if (objects[current_object]->id == t_obj) {
+						Obj* object = static_cast<Obj*>(objects[current_object].get());
+
+						// ImGui::InputFloat3("Position:", &object->postion);
+
+						ImGui::NewLine();
+					}
+
+					if (objects[current_object]->id == t_sphere_moving) {
+						Sphere_moving* object = static_cast<Sphere_moving*>(objects[current_object].get());
+
+						ImGui::InputFloat3("Position C0:", &object->center_0[0]);
+						ImGui::InputFloat3("Position C1:", &object->center_1[0]);
+						ImGui::InputFloat("Radius:", &object->radius);
+
+						ImGui::NewLine();
+					}
+
+					if (objects[current_object]->id == t_sphere) {
+						Sphere* object = static_cast<Sphere*>(objects[current_object].get());
+
+						ImGui::InputFloat3("Position:", &object->center[0]);
+						ImGui::InputFloat("Radius:", &object->radius);
+
+						ImGui::NewLine();
+					}
+					ImGui::Separator();
+					ImGui::EndTabItem();
+				}
+				if (ImGui::BeginTabItem("Details")) {
+					unsigned int object_id   = 0;
+					unsigned int material_id = 0;
+					unsigned int texture_id  = 0;
+
+					if(objects[current_object]->id == t_xy_rect) {
+						xy_rect* object = static_cast<xy_rect*>(objects[current_object].get());
+
+						ImGui::Text("Position:\nx-start: %.3f\ny-start: %.3f\nx-end: %.3f\ny-end: %.3f\nz: %.3f",
+						object->x_start, object->y_start, object->x_end, object->y_end, object->z);
+
+						xy_rect_details(object_id, material_id, texture_id, object);
+					}
+					if(objects[current_object]->id == t_xz_rect) {
+						xz_rect* object = static_cast<xz_rect*>(objects[current_object].get());
+
+						ImGui::Text("Position:\nx-start: %.3f\nz-start: %.3f\nx-end: %.3f\nz-end: %.3f\ny: %.3f",
+						object->x_start, object->z_start, object->x_end, object->z_end, object->y);
+
+						xz_rect_details(object_id, material_id, texture_id, object);
+					}
+					if(objects[current_object]->id == t_yz_rect) {
+						yz_rect* object = static_cast<yz_rect*>(objects[current_object].get());
+
+						ImGui::Text("Position:\ny-start: %.3f\nz-start: %.3f\ny-end: %.3f\nz-end: %.3f\nx: %.3f",
+						object->y_start, object->z_start, object->y_end, object->z_end, object->x);
+
+						yz_rect_details(object_id, material_id, texture_id, object);
+					}
+
+					if (objects[current_object]->id == t_obj) {
+						Obj* object = static_cast<Obj*>(objects[current_object].get());
+						obj_details(object_id, material_id, texture_id, object);
+					}
+
+					if (objects[current_object]->id == t_sphere_moving) {
+						Sphere_moving* object = static_cast<Sphere_moving*>(objects[current_object].get());
+
+						ImGui::Text("C0 Position:\nx: %.3f y: %.3f z: %.3f",
+						object->center_0[0], object->center_0[1], object->center_0[2]);
+						ImGui::Text("C1 Position:\nx: %.3f y: %.3f z: %.3f",
+						object->center_1[0], object->center_1[1], object->center_1[2]);
+						ImGui::Text("Radius: %.3f", object->radius);
+
+						sphere_moving_details(object_id, material_id, texture_id, object);
+					}
+
+					if (objects[current_object]->id == t_sphere) {
+						Sphere* object = static_cast<Sphere*>(objects[current_object].get());
+
+						ImGui::Text("Position:\nx: %.3f y: %.3f z: %.3f",
+						object->center[0], object->center[1], object->center[2]);
+						ImGui::Text("Radius: %.3f", object->radius);
+
+						sphere_details(object_id, material_id, texture_id, object);
+					}
+					ImGui::NewLine();
+					ImGui::Separator();
+
+					ImGui::Text("Object   ID: %d", object_id);
+					ImGui::Text("Material ID: %d", material_id);
+					ImGui::Text("Texture  ID: %d", texture_id);
+
+					ImGui::Separator();
+					ImGui::EndTabItem();
+				}
+				ImGui::EndTabBar();
+			}
+			ImGui::EndChild();
+
+			if (ImGui::Button("ADD")) {
+				ImGui::OpenPopup("my_select_popup");
+			}
+			const char* objects_names[] = { "xy_rect", "xz_rect", "yz_rect", "obj", "sphere_moving", "sphere" };
+
+			if (ImGui::BeginPopup("my_select_popup")) {
+				ImGui::Text("Objects");
 				ImGui::Separator();
-				ImGui::Text("%.3f ms/frame | %.1f FPS", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-				
-				ImGui::End();
-			}
 
+				for (int i = 0; i < IM_ARRAYSIZE(objects_names); i++) {
+					if (ImGui::Selectable(objects_names[i])) {
+					}
+				}
+				ImGui::EndPopup();
+			}
+			ImGui::SameLine();
+			if (ImGui::Button("REMOVE")) {
+				world.remove(current_object);
+			}
+			ImGui::EndGroup();
+		}
+
+		void file_edit() {
 			if(show_file_edit) {
 				ImGui::SetNextWindowSize(ImVec2(500, 440), ImGuiCond_FirstUseEver);
 				if (ImGui::Begin("File edit")) {
 
 					static int selected = 0;
-					static std::vector<std::shared_ptr<Hittable>> &my_objects = world.objects;
+					static std::vector<shared_ptr<Hittable>> &my_objects = world.objects;
 					{
 						ImGui::BeginChild("left pane", ImVec2(150, 0), true);
 						for (int i = 0; i < my_objects.size(); i++){
@@ -242,228 +984,13 @@ class MyImGui {
 					}
 					ImGui::SameLine();
 
-					{
-						ImGui::BeginGroup();
-						ImGui::BeginChild("item view", ImVec2(0, -ImGui::GetFrameHeightWithSpacing())); // Leave room for 1 line below us
-						ImGui::Text("%d | %s", selected,  my_objects[selected]->object_name);
-						
-						if (ImGui::BeginTabBar("##Tabs", ImGuiTabBarFlags_None)) {
-							if (ImGui::BeginTabItem("Edit")) {
-								ImGui::TextWrapped("Controls:");
+					object_editor(selected, my_objects);
 
-								if(my_objects[selected]->id == 1) {
-									std::shared_ptr<xy_rect> object = std::dynamic_pointer_cast<xy_rect>(my_objects[selected]);
-									
-									ImGui::InputFloat("Start X:", &object->x_start);
-									ImGui::InputFloat("Start Y:", &object->y_start);
-									ImGui::InputFloat("End X:", &object->x_end);
-									ImGui::InputFloat("End Y:", &object->y_end);
-									ImGui::InputFloat("z:", &object->z);
-
-									ImGui::NewLine();
-									// ImGui::Text("Material: %s", object->material_ptr->my_name);
-									// ImGui::Text("Color: r: %.3f g: %.3f b: %.3f",
-									// object->material_ptr->my_color[0], object->material_ptr->my_color[1], object->material_ptr->my_color[2]);
-								}
-
-								if(my_objects[selected]->id == 2) {
-									std::shared_ptr<xz_rect> object = std::dynamic_pointer_cast<xz_rect>(my_objects[selected]);
-
-									ImGui::InputFloat("Start X:", &object->x_start);
-									ImGui::InputFloat("Start Z:", &object->z_start);
-									ImGui::InputFloat("End X:", &object->x_end);
-									ImGui::InputFloat("End Z:", &object->z_end);
-									ImGui::InputFloat("Y:", &object->y);
-
-									ImGui::NewLine();
-									// ImGui::Text("Material: %s", object->material_ptr->my_name);
-									// ImGui::Text("Color: r: %.3f g: %.3f b: %.3f",
-									// object->material_ptr->my_color[0], object->material_ptr->my_color[1], object->material_ptr->my_color[2]);
-								}
-
-								if(my_objects[selected]->id == 3) {
-									std::shared_ptr<yz_rect> object = std::dynamic_pointer_cast<yz_rect>(my_objects[selected]);
-
-									ImGui::InputFloat("Start Y:", &object->y_start);
-									ImGui::InputFloat("Start Z:", &object->z_start);
-									ImGui::InputFloat("End Y:", &object->y_end);
-									ImGui::InputFloat("End Z:", &object->z_end);
-									ImGui::InputFloat("X:", &object->x);
-
-									ImGui::NewLine();
-									// ImGui::Text("Material: %s", object->material_ptr->my_name);
-									// ImGui::Text("Color: r: %.3f g: %.3f b: %.3f",
-									// object->material_ptr->my_color[0], object->material_ptr->my_color[1], object->material_ptr->my_color[2]);
-								}
-
-								if (my_objects[selected]->id == 4) {
-									std::shared_ptr<obj> object = std::dynamic_pointer_cast<obj>(my_objects[selected]);
-
-									// ImGui::InputFloat3("Position:", &object->postion);
-
-									ImGui::NewLine();
-									// ImGui::Text("Material: %s", object->material_ptr->my_name);
-									// ImGui::Text("Color: r: %.3f g: %.3f b: %.3f",
-									// object->material_ptr->my_color[0], object->material_ptr->my_color[1], object->material_ptr->my_color[2]);
-								}
-
-								if (my_objects[selected]->id == 5) {
-									std::shared_ptr<Sphere_moving> object = std::dynamic_pointer_cast<Sphere_moving>(my_objects[selected]);
-
-									ImGui::InputFloat3("Position C0:", &object->center_0[0]);
-									ImGui::InputFloat3("Position C1:", &object->center_1[0]);
-									ImGui::InputFloat("Radius:", &object->radius);
-
-									ImGui::NewLine();
-									// ImGui::Text("Material: %s", object->material_ptr->my_name);
-									// ImGui::Text("Color: r: %.3f g: %.3f b: %.3f",
-									// object->material_ptr->my_color[0], object->material_ptr->my_color[1], object->material_ptr->my_color[2]);
-								}
-
-								if (my_objects[selected]->id == 6) {
-									std::shared_ptr<Sphere> object = std::dynamic_pointer_cast<Sphere>(my_objects[selected]);
-
-									ImGui::InputFloat3("Position:", &object->center[0]);
-									ImGui::InputFloat("Radius:", &object->radius);
-
-									ImGui::NewLine();
-									// ImGui::Text("Material: %s", object->material_ptr->my_name);
-									// ImGui::Text("Color: r: %.3f g: %.3f b: %.3f",
-									// object->material_ptr->my_color[0], object->material_ptr->my_color[1], object->material_ptr->my_color[2]);
-								}
-								ImGui::Separator();
-								ImGui::EndTabItem();
-							}
-							if (ImGui::BeginTabItem("Details")) {
-								if(my_objects[selected]->id == 1) {
-									std::shared_ptr<xy_rect> object = std::dynamic_pointer_cast<xy_rect>(my_objects[selected]);
-
-									ImGui::Text("Position:\nx-start: %.3f\ny-start: %.3f\nx-end: %.3f\ny-end: %.3f\nz: %.3f",
-									object->x_start, object->y_start, object->x_end, object->y_end, object->z);
-
-									ImGui::NewLine();
-									ImGui::Text("Material: %s", object->material_ptr->my_name);
-									ImGui::Text("Color: r: %.3f g: %.3f b: %.3f",
-									object->material_ptr->my_color[0], object->material_ptr->my_color[1], object->material_ptr->my_color[2]);
-									ImGui::NewLine();
-									ImGui::Text("ID: %d", object->id);
-								}
-
-								if(my_objects[selected]->id == 2) {
-									std::shared_ptr<xz_rect> object = std::dynamic_pointer_cast<xz_rect>(my_objects[selected]);
-
-									ImGui::Text("Position:\nx-start: %.3f\nz-start: %.3f\nx-end: %.3f\nz-end: %.3f\ny: %.3f",
-									object->x_start, object->z_start, object->x_end, object->z_end, object->y);
-
-									ImGui::NewLine();
-									ImGui::Text("Material: %s", object->material_ptr->my_name);
-									ImGui::Text("Color: r: %.3f g: %.3f b: %.3f",
-									object->material_ptr->my_color[0], object->material_ptr->my_color[1], object->material_ptr->my_color[2]);
-									ImGui::NewLine();
-									ImGui::Text("ID: %d", object->id);
-								}
-
-								if(my_objects[selected]->id == 3) {
-									std::shared_ptr<yz_rect> object = std::dynamic_pointer_cast<yz_rect>(my_objects[selected]);
-
-									ImGui::Text("Position:\ny-start: %.3f\nz-start: %.3f\ny-end: %.3f\nz-end: %.3f\nx: %.3f",
-									object->y_start, object->z_start, object->y_end, object->z_end, object->x);
-
-									ImGui::NewLine();
-									ImGui::Text("Material: %s", object->material_ptr->my_name);
-									ImGui::Text("Color: r: %.3f g: %.3f b: %.3f",
-									object->material_ptr->my_color[0], object->material_ptr->my_color[1], object->material_ptr->my_color[2]);
-									ImGui::NewLine();
-									ImGui::Text("ID: %d", object->id);
-								}
-
-								if (my_objects[selected]->id == 4) {
-									std::shared_ptr<obj> object = std::dynamic_pointer_cast<obj>(my_objects[selected]);
-
-									// ImGui::Text("Position:\nx: %.3f y: %.3f z: %.3f",
-									// object->, my_objects[selected]->position[2]);
-
-									ImGui::NewLine();
-									ImGui::Text("Material: %s", object->material_ptr->my_name);
-									ImGui::Text("Color: r: %.3f g: %.3f b: %.3f",
-									object->material_ptr->my_color[0], object->material_ptr->my_color[1], object->material_ptr->my_color[2]);
-									ImGui::NewLine();
-									ImGui::Text("ID: %d", object->id);
-								}
-
-								if (my_objects[selected]->id == 5) {
-									std::shared_ptr<Sphere_moving> object = std::dynamic_pointer_cast<Sphere_moving>(my_objects[selected]);
-
-									ImGui::Text("C0 Position:\nx: %.3f y: %.3f z: %.3f",
-									object->center_0[0], object->center_0[1], object->center_0[2]);
-									ImGui::Text("C1 Position:\nx: %.3f y: %.3f z: %.3f",
-									object->center_1[0], object->center_1[1], object->center_1[2]);
-									ImGui::Text("Radius: %.3f", object->radius);
-
-									ImGui::NewLine();
-									ImGui::Text("Material: %s", object->material_ptr->my_name);
-									ImGui::Text("Color: r: %.3f g: %.3f b: %.3f",
-									object->material_ptr->my_color[0], object->material_ptr->my_color[1], object->material_ptr->my_color[2]);
-									ImGui::NewLine();
-									ImGui::Text("ID: %d", object->id);
-								}
-
-								if (my_objects[selected]->id == 6) {
-									std::shared_ptr<Sphere> object = std::dynamic_pointer_cast<Sphere>(my_objects[selected]);
-
-									ImGui::Text("Position:\nx: %.3f y: %.3f z: %.3f",
-									object->center[0], object->center[1], object->center[2]);
-									ImGui::Text("Radius: %.3f", object->radius);
-
-									ImGui::NewLine();
-									ImGui::Text("Material: %s", object->material_ptr->my_name);
-									ImGui::Text("Color: r: %.3f g: %.3f b: %.3f",
-									object->material_ptr->my_color[0], object->material_ptr->my_color[1], object->material_ptr->my_color[2]);
-									ImGui::NewLine();
-									ImGui::Text("ID: %d", object->id);
-								}
-								ImGui::Separator();
-								ImGui::EndTabItem();
-							}
-							ImGui::EndTabBar();
-						}
-						ImGui::EndChild();
-
-
-						if (ImGui::Button("ADD")) {
-							ImGui::OpenPopup("my_select_popup");
-						}
-						const char* objects_names[] = { "xy_rect", "xz_rect", "yz_rect", "obj", "sphere_moving", "sphere" };
-
-						if (ImGui::BeginPopup("my_select_popup")) {
-							ImGui::Text("Objects");
-							ImGui::Separator();
-
-							for (int i = 0; i < IM_ARRAYSIZE(objects_names); i++) {
-								if (ImGui::Selectable(objects_names[i])) {
-								}
-							}
-							ImGui::EndPopup();
-						}
-						ImGui::SameLine();
-						if (ImGui::Button("REMOVE")) {
-							world.remove(selected);
-						}
-						ImGui::EndGroup();
-					}
 				}
 				ImGui::End();
 			}
-
-			// ImGui::Begin("Console log");
-
-			// const std::string &msg = Logger::getDefaultLogger().str();
-
-			// ImGui::InputTextMultiline("", (char*)msg.c_str(), msg.length());
-			// ImGui::End();
 		}
 
-	private:
 		void setStyle() {
 			/* ImGui Style */
 			ImGuiStyle& style = ImGui::GetStyle();

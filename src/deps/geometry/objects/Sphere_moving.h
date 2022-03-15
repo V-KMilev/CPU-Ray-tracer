@@ -10,8 +10,7 @@ class Sphere_moving : public Hittable {
 		: center_0(center_0), center_1(center_1), s_time(s_time), e_time(e_time), radius(radius), material_ptr(material) {
 
 			object_name = "sphere-moving";
-
-			id = 5;
+			id = Object_ID::t_sphere_moving;
 		};
 
 		/*
