@@ -910,9 +910,9 @@ class MyImGui {
 					if (objects[current_object]->id == t_sphere_moving) {
 						Sphere_moving* object = static_cast<Sphere_moving*>(objects[current_object].get());
 
-						ImGui::Text("C0 Position:\nx: %.3f y: %.3f z: %.3f",
+						ImGui::Text("C0 Position:\nx: %.3f | y: %.3f | z: %.3f",
 						object->center_0[0], object->center_0[1], object->center_0[2]);
-						ImGui::Text("C1 Position:\nx: %.3f y: %.3f z: %.3f",
+						ImGui::Text("C1 Position:\nx: %.3f | y: %.3f | z: %.3f",
 						object->center_1[0], object->center_1[1], object->center_1[2]);
 						ImGui::Text("Radius: %.3f", object->radius);
 
@@ -922,7 +922,7 @@ class MyImGui {
 					if (objects[current_object]->id == t_sphere) {
 						Sphere* object = static_cast<Sphere*>(objects[current_object].get());
 
-						ImGui::Text("Position:\nx: %.3f y: %.3f z: %.3f",
+						ImGui::Text("Position:\nx: %.3f | y: %.3f | z: %.3f",
 						object->center[0], object->center[1], object->center[2]);
 						ImGui::Text("Radius: %.3f", object->radius);
 
