@@ -78,19 +78,14 @@ class MyImGui {
 			if(ImGui::MenuItem("Reset")) {
 				change_default = true;
 
-				fov        = default_fov;
-				max_depth  = default_max_depth;
-				lookfrom   = default_lookfrom;
-				lookat     = default_lookat;
-				background = default_background;
+				reset_scene();
 			} else { change_default = false; }
 
 			ImGui::SameLine(ImGui::GetWindowWidth()-199);
 			if(ImGui::MenuItem("Clear")) {
 				change_clear = true;
 
-				max_depth  = default_max_depth;
-				background = default_background;
+				clear_scene();
 			} else { change_clear = false; }
 
 			ImGui::SameLine(ImGui::GetWindowWidth()/2);
@@ -809,12 +804,14 @@ class MyImGui {
 
 					if(objects[current_object]->id == t_xy_rect) {
 						xy_rect* object = static_cast<xy_rect*>(objects[current_object].get());
-						
-						ImGui::InputFloat("Start X:", &object->x_start);
-						ImGui::InputFloat("Start Y:", &object->y_start);
-						ImGui::InputFloat("End X:", &object->x_end);
-						ImGui::InputFloat("End Y:", &object->y_end);
-						ImGui::InputFloat("z:", &object->z);
+
+						if(ImGui::InputFloat("Start X:", &object->x_start) ||
+						   ImGui::InputFloat("Start Y:", &object->y_start) ||
+						   ImGui::InputFloat("End X:", &object->x_end) ||
+						   ImGui::InputFloat("End Y:", &object->y_end) ||
+						   ImGui::InputFloat("Z:", &object->z)) {
+							change_object = true;
+						} else { change_object = false; };
 
 						ImGui::NewLine();
 					}
@@ -822,11 +819,14 @@ class MyImGui {
 					if(objects[current_object]->id == t_xz_rect) {
 						xz_rect* object = static_cast<xz_rect*>(objects[current_object].get());
 
-						ImGui::InputFloat("Start X:", &object->x_start);
-						ImGui::InputFloat("Start Z:", &object->z_start);
-						ImGui::InputFloat("End X:", &object->x_end);
-						ImGui::InputFloat("End Z:", &object->z_end);
-						ImGui::InputFloat("Y:", &object->y);
+						if(ImGui::InputFloat("Start X:", &object->x_start) ||
+						   ImGui::InputFloat("Start Z:", &object->z_start) ||
+						   ImGui::InputFloat("End X:", &object->x_end) ||
+						   ImGui::InputFloat("End Z:", &object->z_end) ||
+						   ImGui::InputFloat("Y:", &object->y)) {
+							change_object = true;
+						}
+						else { change_object = false; };
 
 						ImGui::NewLine();
 					}
@@ -834,11 +834,14 @@ class MyImGui {
 					if(objects[current_object]->id == t_yz_rect) {
 						yz_rect* object = static_cast<yz_rect*>(objects[current_object].get());
 
-						ImGui::InputFloat("Start Y:", &object->y_start);
-						ImGui::InputFloat("Start Z:", &object->z_start);
-						ImGui::InputFloat("End Y:", &object->y_end);
-						ImGui::InputFloat("End Z:", &object->z_end);
-						ImGui::InputFloat("X:", &object->x);
+						if(ImGui::InputFloat("Start Y:", &object->y_start) ||
+						   ImGui::InputFloat("Start Z:", &object->z_start) ||
+						   ImGui::InputFloat("End Y:", &object->y_end) ||
+						   ImGui::InputFloat("End Z:", &object->z_end) ||
+						   ImGui::InputFloat("X:", &object->x)) {
+							change_object = true;
+						}
+						else { change_object = false; };
 
 						ImGui::NewLine();
 					}
@@ -854,9 +857,12 @@ class MyImGui {
 					if (objects[current_object]->id == t_sphere_moving) {
 						Sphere_moving* object = static_cast<Sphere_moving*>(objects[current_object].get());
 
-						ImGui::InputFloat3("Position C0:", &object->center_0[0]);
-						ImGui::InputFloat3("Position C1:", &object->center_1[0]);
-						ImGui::InputFloat("Radius:", &object->radius);
+						if(ImGui::InputFloat3("Position C0:", &object->center_0[0]) ||
+						   ImGui::InputFloat3("Position C1:", &object->center_1[0]) ||
+						   ImGui::InputFloat("Radius:", &object->radius)) {
+							change_object = true;
+						}
+						else { change_object = false; }
 
 						ImGui::NewLine();
 					}
@@ -864,9 +870,11 @@ class MyImGui {
 					if (objects[current_object]->id == t_sphere) {
 						Sphere* object = static_cast<Sphere*>(objects[current_object].get());
 
-						ImGui::InputFloat3("Position:", &object->center[0]);
-						ImGui::InputFloat("Radius:", &object->radius);
-
+						if(ImGui::InputFloat3("Position:", &object->center[0]) ||
+						   ImGui::InputFloat("Radius:", &object->radius)) {
+							change_object = true;
+						}
+						else { change_object = false; }
 						ImGui::NewLine();
 					}
 					ImGui::Separator();
@@ -959,8 +967,9 @@ class MyImGui {
 			}
 			ImGui::SameLine();
 			if (ImGui::Button("REMOVE")) {
+				change_object_remove = true;
 				world.remove(current_object);
-			}
+			} else { change_object_remove = false; }
 			ImGui::EndGroup();
 		}
 
@@ -990,6 +999,18 @@ class MyImGui {
 				ImGui::End();
 			}
 		}
+		void reset_scene() {
+			fov        = default_fov;
+			max_depth  = default_max_depth;
+			lookfrom   = default_lookfrom;
+			lookat     = default_lookat;
+			background = default_background;
+		}
+		void clear_scene() {
+			max_depth  = default_max_depth;
+			background = default_background;
+		}
+
 
 		void setStyle() {
 			/* ImGui Style */

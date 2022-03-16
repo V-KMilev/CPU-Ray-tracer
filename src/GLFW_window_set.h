@@ -160,7 +160,9 @@ int window_setup() {
 				}
 			}
 
-			if(change_position || change_view || change_aperture || change_fov || change_bg || change_clear || change_default) {
+			if(change_position || change_view || change_aperture || change_object ||
+				change_object_remove || change_fov || change_bg || change_clear ||
+				change_default ) {
 				if(change_multithreading) {
 					pool_multithread.clear();
 				}
