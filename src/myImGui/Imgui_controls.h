@@ -50,20 +50,19 @@ class MyImGui {
 			ImGui::BeginMainMenuBar();
 
 			if(ImGui::BeginMenu("File")) {
-				ImGui::Checkbox("File edit", &show_file_edit);
-				ImGui::Checkbox("Settings", &show_settings);
-				ImGui::Checkbox("Camera", &show_camera);
-				ImGui::Checkbox("Render info", &show_render_info);
+				ImGui::MenuItem("Settings", NULL, &show_settings);
+				ImGui::MenuItem("Camera", NULL, &show_camera);
+				ImGui::MenuItem("Render info", NULL, &show_render_info);
 				ImGui::Separator();
-				ImGui::Checkbox("ImGui menu", &show_demo);
+				ImGui::MenuItem("ImGui menu", "Ctrl+D", &show_demo);
 				if(ImGui::MenuItem("Exit", "Alt+F4")) {
-					change_close_window = true;
-				}
+					show_exit = true;
+				} else { show_exit = false; }
 				ImGui::EndMenu();
 			}
 			if(ImGui::BeginMenu("Edit")) {
+				ImGui::MenuItem("File edit", NULL, &show_file_edit);
 				ImGui::EndMenu();
-				/* TODO: Object modifications */
 			}
 			ImGui::SameLine(ImGui::GetWindowWidth()-50);
 			if(ImGui::MenuItem("Run")) {
@@ -89,7 +88,7 @@ class MyImGui {
 			} else { change_clear = false; }
 
 			ImGui::SameLine(ImGui::GetWindowWidth()/2);
-			if(change_stop) { ImGui::TextColored(ImVec4(0.7f, 0.0f, 0.3f, 1.0f), "STOPPED"); }
+			if(change_stop || change_remove_stop) { ImGui::TextColored(ImVec4(0.7f, 0.0f, 0.3f, 1.0f), "STOPPED"); }
 			else { ImGui::TextColored(ImVec4(0.0f, 0.7f, 0.3f, 1.0f), "RUNNING"); }
 
 			ImGui::EndMainMenuBar();
@@ -98,6 +97,7 @@ class MyImGui {
 			settings();
 			camera_control();
 			render_info();
+			exit();
 
 			if(show_demo) { ImGui::ShowDemoWindow(); }
 
@@ -105,6 +105,33 @@ class MyImGui {
 		}
 
 	private:
+		void exit() {
+			if(show_exit)
+				ImGui::OpenPopup("Exit?");
+
+			// Always center this window when appearing
+			ImVec2 center = ImGui::GetMainViewport()->GetCenter();
+			ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
+
+			if (ImGui::BeginPopupModal("Exit?", NULL, ImGuiWindowFlags_AlwaysAutoResize))
+			{
+				ImGui::Text("Are you sure you want to exit?\nAll files will be deleted!\n\n");
+				ImGui::Separator();
+
+				ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 0));
+				ImGui::PopStyleVar();
+
+				if (ImGui::Button("OK", ImVec2(100, 0))) { change_close_window = true; }
+				ImGui::SetItemDefaultFocus();
+				ImGui::SameLine();
+				if (ImGui::Button("Cancel", ImVec2(100, 0))) {
+					show_exit = false;
+					ImGui::CloseCurrentPopup();
+				}
+				ImGui::EndPopup();
+			}
+		}
+
 		void right_low_corener_info() {
 			static int corner = 0;
 			ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_NoNav;
@@ -134,6 +161,7 @@ class MyImGui {
 				ImGui::End();
 			}
 		}
+
 		void settings() {
 			if(show_settings) {
 				ImGui::Begin("Settings");
@@ -162,7 +190,6 @@ class MyImGui {
 		void camera_control() {
 			if(show_camera) {
 				ImGui::Begin("Camera");
-
 				if(ImGui::SliderFloat3("Camera position", &lookfrom[0], -13.0f, 13.0f)) {
 					change_position = true;
 				}
@@ -966,8 +993,13 @@ class MyImGui {
 				ImGui::EndPopup();
 			}
 			ImGui::SameLine();
-			if (ImGui::Button("REMOVE")) {
+			bool remove = ImGui::Button("REMOVE");
+			if(ImGui::IsItemHovered()) { change_remove_stop = true; }
+			else { change_remove_stop = false; }
+
+			if(remove) {
 				change_object_remove = true;
+
 				world.remove(current_object);
 			} else { change_object_remove = false; }
 			ImGui::EndGroup();
@@ -1066,5 +1098,6 @@ class MyImGui {
 		bool show_render_info = false;
 		bool show_file_edit   = false;
 		bool show_demo        = false;
+		bool show_exit        = false;
 		bool show_overlay     = true;
 };

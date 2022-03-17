@@ -78,6 +78,7 @@ bool change_fov            = false;
 bool change_default        = false;
 bool change_object         = false;
 bool change_object_remove  = false;
+bool change_remove_stop    = false;
 bool change_static         = false;
 bool change_clear          = false;
 bool change_view           = false;
