@@ -128,7 +128,7 @@ class ThreadPool {
 					[=]() {
 						for(;;) {
 
-							while((change_stop || change_remove_stop) && !my_Stopping) {
+							while((change_stop || change_remove_stop || change_removeall_stop) && !my_Stopping) {
 								std::this_thread::sleep_for(std::chrono::milliseconds(100));
 							}
 

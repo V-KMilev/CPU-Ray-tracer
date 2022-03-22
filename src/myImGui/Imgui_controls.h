@@ -88,7 +88,8 @@ class MyImGui {
 			} else { change_clear = false; }
 
 			ImGui::SameLine(ImGui::GetWindowWidth()/2);
-			if(change_stop || change_remove_stop) { ImGui::TextColored(ImVec4(0.7f, 0.0f, 0.3f, 1.0f), "STOPPED"); }
+			if(change_stop || change_remove_stop ||
+			change_removeall_stop) { ImGui::TextColored(ImVec4(0.7f, 0.0f, 0.3f, 1.0f), "STOPPED"); }
 			else { ImGui::TextColored(ImVec4(0.0f, 0.7f, 0.3f, 1.0f), "RUNNING"); }
 
 			ImGui::EndMainMenuBar();
@@ -977,17 +978,44 @@ class MyImGui {
 			}
 			ImGui::EndChild();
 
-			if (ImGui::Button("ADD")) {
+			bool add = ImGui::Button("ADD");
+			if (add) {
 				ImGui::OpenPopup("my_select_popup");
 			}
 			const char* objects_names[] = { "xy_rect", "xz_rect", "yz_rect", "obj", "sphere_moving", "sphere" };
 
 			if (ImGui::BeginPopup("my_select_popup")) {
+
 				ImGui::Text("Objects");
 				ImGui::Separator();
 
 				for (int i = 0; i < IM_ARRAYSIZE(objects_names); i++) {
 					if (ImGui::Selectable(objects_names[i])) {
+
+						if(i == 0) {
+							change_object_add = true;
+							world.add(make_shared<xy_rect>(0, 0, 0, 0, 0, make_shared<Lambertian>(Color(1,1,1))));
+						}
+						if(i == 1) {
+							change_object_add = true;
+							world.add(make_shared<xz_rect>(0, 0, 0, 0, 0, make_shared<Lambertian>(Color(1,1,1))));
+						}
+						if(i == 2) {
+							change_object_add = true;
+							world.add(make_shared<yz_rect>(0, 0, 0, 0, 0, make_shared<Lambertian>(Color(1,1,1))));
+						}
+						if(i == 3) {
+							change_object_add = true;
+							// objects.push_back(make_shared<obj>(0, 0, 0, 0, 0,  make_shared<Lambertian>(Color(1,1,1))));
+						}
+						if(i == 4) {
+							change_object_add = true;
+							world.add(make_shared<Sphere_moving>(Point(0, 0, 0), Point(0, 0, 0), 0, 0, 0, make_shared<Lambertian>(Color(1,1,1))));
+						}
+						if(i == 5) {
+							change_object_add = true;
+							world.add(make_shared<Sphere>(Point(0, 0, 0), 0, make_shared<Lambertian>(Color(1,1,1))));
+						}
 					}
 				}
 				ImGui::EndPopup();
@@ -1001,6 +1029,19 @@ class MyImGui {
 				change_object_remove = true;
 
 				world.remove(current_object);
+			} else { change_object_remove = false; }
+			ImGui::SameLine();
+
+			bool remove_all = ImGui::Button("REMOVE ALL");
+			if(ImGui::IsItemHovered()) { change_removeall_stop = true; }
+			else { change_removeall_stop = false; }
+
+			if(remove_all) {
+				change_object_remove = true;
+
+				while(!world.objects.empty()) {
+					world.remove(current_object);
+				}
 			} else { change_object_remove = false; }
 			ImGui::EndGroup();
 		}
@@ -1026,7 +1067,6 @@ class MyImGui {
 					ImGui::SameLine();
 
 					object_editor(selected, my_objects);
-
 				}
 				ImGui::End();
 			}
@@ -1042,7 +1082,6 @@ class MyImGui {
 			max_depth  = default_max_depth;
 			background = default_background;
 		}
-
 
 		void setStyle() {
 			/* ImGui Style */
@@ -1100,4 +1139,6 @@ class MyImGui {
 		bool show_demo        = false;
 		bool show_exit        = false;
 		bool show_overlay     = true;
+
+		bool add_edit         = false;
 };

@@ -161,8 +161,8 @@ int window_setup() {
 			}
 
 			if(change_position || change_view || change_aperture || change_object ||
-				change_object_remove || change_fov || change_bg || change_clear ||
-				change_default ) {
+				change_object_remove || change_object_add || change_fov || change_bg ||
+				change_clear || change_default ) {
 				if(change_multithreading) {
 					pool_multithread.clear();
 				}
@@ -177,6 +177,9 @@ int window_setup() {
 
 				pixels            = empty_pixels;
 				samples_in_pixels = empty_samples_in_pixels;
+
+				change_object_add = false;
+				// TODO: FIX UI bools
 			}
 
 			#ifdef DEBUG
