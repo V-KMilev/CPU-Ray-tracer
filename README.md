@@ -1,6 +1,6 @@
 <h2 align="center"> Basic info | Ray Tracer</h2>
 <p align="center">
-    <img src="https://media.discordapp.net/attachments/710039794884935743/912607382071304192/unknown-8.png?width=720&height=251" width="720px;" alt="Kraken"/><br />
+    <img src="https://cdn.discordapp.com/attachments/841102399690768435/956269654815440896/unknown.png" width="720px;" alt="Kraken"/><br />
 
 <p align="center">
 <b>Real time ray traceing |</b> Inspired by <a href="https://raytracing.github.io">Peter Shirley</a>'s ray tracer book. </p>
