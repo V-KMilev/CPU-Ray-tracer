@@ -108,8 +108,8 @@ Hittable_list get_scene() {
 
 	// bases
 	// world.add(make_shared<xz_rect>(-5, 5, -5, 5, 0.2, material_gray));           // base in
-	world.add(make_shared<xz_rect>(-10, 10, -10, 10, 0.19, material_red));    // base out
-
+	world.add(make_shared<xz_rect>(-10, 10, -10, 10, 0.19, material_white));    // base out
+ 
 	// center sphere
 	world.add(make_shared<Sphere>(Point(0, 2, 0), 1, difflight_white));    // sphere
 

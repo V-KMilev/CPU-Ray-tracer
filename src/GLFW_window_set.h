@@ -178,8 +178,16 @@ int window_setup() {
 				pixels            = empty_pixels;
 				samples_in_pixels = empty_samples_in_pixels;
 
-				change_object_add = false;
-				// TODO: FIX UI bools
+				change_position      = false;
+				change_view          = false;
+				change_aperture      = false;
+				change_object        = false;
+				change_object_remove = false;
+				change_object_add    = false;
+				change_fov           = false;
+				change_bg            = false;
+				change_clear         = false;
+				change_default       = false;
 			}
 
 			#ifdef DEBUG

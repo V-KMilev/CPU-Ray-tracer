@@ -78,14 +78,13 @@ class MyImGui {
 				change_default = true;
 
 				reset_scene();
-			} else { change_default = false; }
-
+			}
 			ImGui::SameLine(ImGui::GetWindowWidth()-199);
 			if(ImGui::MenuItem("Clear")) {
 				change_clear = true;
 
 				clear_scene();
-			} else { change_clear = false; }
+			}
 
 			ImGui::SameLine(ImGui::GetWindowWidth()/2);
 			if(change_stop || change_remove_stop ||
@@ -170,11 +169,9 @@ class MyImGui {
 				ImGui::InputInt("Max depth", &max_depth, 0, 250);
 				ImGui::NewLine();
 
-				ImGui::SetColorEditOptions(ImGuiColorEditFlags_PickerHueWheel);
 				if(ImGui::ColorEdit3("Background color", (float*) &background)) {
 					change_bg = true;
 				}
-				else { change_bg = false; };
 				ImGui::NewLine();
 
 				ImGui::Checkbox("Multithreading", &change_multithreading);
@@ -194,22 +191,18 @@ class MyImGui {
 				if(ImGui::SliderFloat3("Camera position", &lookfrom[0], -13.0f, 13.0f)) {
 					change_position = true;
 				}
-				else { change_position = false; }
 
 				if(ImGui::SliderFloat3("Camera focus", &lookat[0], -13.0f, 13.0f)) {
 					change_view = true;
 				}
-				else { change_view = false; }
 
 				if(ImGui::InputFloat("Camera aperture ", &aperture, 0.0f, 10.0f)) {
 					change_fov = true;
 				}
-				else { change_fov = false; }
 
 				if(ImGui::InputFloat("Camera fov ", &fov, 0.0f, 180.0f)) {
 					change_aperture = true;
 				}
-				else { change_aperture = false; }
 				ImGui::NewLine();
 
 				ImGui::InputFloat("Move precision", &precision, 0, 37);
@@ -828,6 +821,7 @@ class MyImGui {
 
 			if (ImGui::BeginTabBar("##Tabs", ImGuiTabBarFlags_None)) {
 				if (ImGui::BeginTabItem("Edit")) {
+
 					ImGui::TextWrapped("Controls:");
 
 					if(objects[current_object]->id == t_xy_rect) {
@@ -839,8 +833,47 @@ class MyImGui {
 						   ImGui::InputFloat("End Y:", &object->y_end) ||
 						   ImGui::InputFloat("Z:", &object->z)) {
 							change_object = true;
-						} else { change_object = false; };
+						}
 
+						if(object->material_ptr->id == t_lambertian) {
+							Lambertian* material = static_cast<Lambertian*>(object->material_ptr.get());
+
+							if(material->albedo->id == t_solid_color) {
+								Solid_Color* texture = static_cast<Solid_Color*>(material->albedo.get());
+								ImGui::ColorEdit3("Color:", (float*) &texture->color_value);
+							}
+
+							if(material->albedo->id == t_checker_texture) {
+								Checker_Texture* texture = static_cast<Checker_Texture*>(material->albedo.get());
+								ImGui::ColorEdit3("Color 0:", (float*) &texture->odd->color_value);
+								ImGui::ColorEdit3("Color 1:", (float*) &texture->even->color_value);
+							}
+
+							if(material->albedo->id == t_image_texture) {
+								Image_Texture* texture = static_cast<Image_Texture*>(material->albedo.get());
+								ImGui::InputText("Image name/PATH:", &texture->my_file_name[0], 256);
+							}
+						}
+
+						if(object->material_ptr->id == t_diffuse_light) {
+							Diffuse_Light* material = static_cast<Diffuse_Light*>(object->material_ptr.get());
+
+							if(material->emit->id == t_solid_color) {
+								Solid_Color* texture = static_cast<Solid_Color*>(material->emit.get());
+								ImGui::ColorEdit3("Color:", (float*) &texture->color_value);
+							}
+
+							if(material->emit->id == t_checker_texture) {
+								Checker_Texture* texture = static_cast<Checker_Texture*>(material->emit.get());
+								ImGui::ColorEdit3("Color 0:", (float*) &texture->odd->color_value);
+								ImGui::ColorEdit3("Color 1:", (float*) &texture->even->color_value);
+							}
+
+							if(material->emit->id == t_image_texture) {
+								Image_Texture* texture = static_cast<Image_Texture*>(material->emit.get());
+								ImGui::InputText("Image name/PATH:", &texture->my_file_name[0], 256);
+							}
+						}
 						ImGui::NewLine();
 					}
 
@@ -854,8 +887,46 @@ class MyImGui {
 						   ImGui::InputFloat("Y:", &object->y)) {
 							change_object = true;
 						}
-						else { change_object = false; };
 
+						if(object->material_ptr->id == t_lambertian) {
+							Lambertian* material = static_cast<Lambertian*>(object->material_ptr.get());
+
+							if(material->albedo->id == t_solid_color) {
+								Solid_Color* texture = static_cast<Solid_Color*>(material->albedo.get());
+								ImGui::ColorEdit3("Color:", (float*) &texture->color_value);
+							}
+
+							if(material->albedo->id == t_checker_texture) {
+								Checker_Texture* texture = static_cast<Checker_Texture*>(material->albedo.get());
+								ImGui::ColorEdit3("Color 0:", (float*) &texture->odd->color_value);
+								ImGui::ColorEdit3("Color 1:", (float*) &texture->even->color_value);
+							}
+
+							if(material->albedo->id == t_image_texture) {
+								Image_Texture* texture = static_cast<Image_Texture*>(material->albedo.get());
+								ImGui::InputText("Image name/PATH:", &texture->my_file_name[0], 256);
+							}
+						}
+
+						if(object->material_ptr->id == t_diffuse_light) {
+							Diffuse_Light* material = static_cast<Diffuse_Light*>(object->material_ptr.get());
+
+							if(material->emit->id == t_solid_color) {
+								Solid_Color* texture = static_cast<Solid_Color*>(material->emit.get());
+								ImGui::ColorEdit3("Color:", (float*) &texture->color_value);
+							}
+
+							if(material->emit->id == t_checker_texture) {
+								Checker_Texture* texture = static_cast<Checker_Texture*>(material->emit.get());
+								ImGui::ColorEdit3("Color 0:", (float*) &texture->odd->color_value);
+								ImGui::ColorEdit3("Color 1:", (float*) &texture->even->color_value);
+							}
+
+							if(material->emit->id == t_image_texture) {
+								Image_Texture* texture = static_cast<Image_Texture*>(material->emit.get());
+								ImGui::InputText("Image name/PATH:", &texture->my_file_name[0], 256);
+							}
+						}
 						ImGui::NewLine();
 					}
 
@@ -869,8 +940,46 @@ class MyImGui {
 						   ImGui::InputFloat("X:", &object->x)) {
 							change_object = true;
 						}
-						else { change_object = false; };
 
+						if(object->material_ptr->id == t_lambertian) {
+							Lambertian* material = static_cast<Lambertian*>(object->material_ptr.get());
+
+							if(material->albedo->id == t_solid_color) {
+								Solid_Color* texture = static_cast<Solid_Color*>(material->albedo.get());
+								ImGui::ColorEdit3("Color:", (float*) &texture->color_value);
+							}
+
+							if(material->albedo->id == t_checker_texture) {
+								Checker_Texture* texture = static_cast<Checker_Texture*>(material->albedo.get());
+								ImGui::ColorEdit3("Color 0:", (float*) &texture->odd->color_value);
+								ImGui::ColorEdit3("Color 1:", (float*) &texture->even->color_value);
+							}
+
+							if(material->albedo->id == t_image_texture) {
+								Image_Texture* texture = static_cast<Image_Texture*>(material->albedo.get());
+								ImGui::InputText("Image name/PATH:", &texture->my_file_name[0], 256);
+							}
+						}
+
+						if(object->material_ptr->id == t_diffuse_light) {
+							Diffuse_Light* material = static_cast<Diffuse_Light*>(object->material_ptr.get());
+
+							if(material->emit->id == t_solid_color) {
+								Solid_Color* texture = static_cast<Solid_Color*>(material->emit.get());
+								ImGui::ColorEdit3("Color:", (float*) &texture->color_value);
+							}
+
+							if(material->emit->id == t_checker_texture) {
+								Checker_Texture* texture = static_cast<Checker_Texture*>(material->emit.get());
+								ImGui::ColorEdit3("Color 0:", (float*) &texture->odd->color_value);
+								ImGui::ColorEdit3("Color 1:", (float*) &texture->even->color_value);
+							}
+
+							if(material->emit->id == t_image_texture) {
+								Image_Texture* texture = static_cast<Image_Texture*>(material->emit.get());
+								ImGui::InputText("Image name/PATH:", &texture->my_file_name[0], 256);
+							}
+						}
 						ImGui::NewLine();
 					}
 
@@ -879,6 +988,45 @@ class MyImGui {
 
 						// ImGui::InputFloat3("Position:", &object->postion);
 
+						if(object->material_ptr->id == t_lambertian) {
+							Lambertian* material = static_cast<Lambertian*>(object->material_ptr.get());
+
+							if(material->albedo->id == t_solid_color) {
+								Solid_Color* texture = static_cast<Solid_Color*>(material->albedo.get());
+								ImGui::ColorEdit3("Color:", (float*) &texture->color_value);
+							}
+
+							if(material->albedo->id == t_checker_texture) {
+								Checker_Texture* texture = static_cast<Checker_Texture*>(material->albedo.get());
+								ImGui::ColorEdit3("Color 0:", (float*) &texture->odd->color_value);
+								ImGui::ColorEdit3("Color 1:", (float*) &texture->even->color_value);
+							}
+
+							if(material->albedo->id == t_image_texture) {
+								Image_Texture* texture = static_cast<Image_Texture*>(material->albedo.get());
+								ImGui::InputText("Image name/PATH:", &texture->my_file_name[0], 256);
+							}
+						}
+
+						if(object->material_ptr->id == t_diffuse_light) {
+							Diffuse_Light* material = static_cast<Diffuse_Light*>(object->material_ptr.get());
+
+							if(material->emit->id == t_solid_color) {
+								Solid_Color* texture = static_cast<Solid_Color*>(material->emit.get());
+								ImGui::ColorEdit3("Color:", (float*) &texture->color_value);
+							}
+
+							if(material->emit->id == t_checker_texture) {
+								Checker_Texture* texture = static_cast<Checker_Texture*>(material->emit.get());
+								ImGui::ColorEdit3("Color 0:", (float*) &texture->odd->color_value);
+								ImGui::ColorEdit3("Color 1:", (float*) &texture->even->color_value);
+							}
+
+							if(material->emit->id == t_image_texture) {
+								Image_Texture* texture = static_cast<Image_Texture*>(material->emit.get());
+								ImGui::InputText("Image name/PATH:", &texture->my_file_name[0], 256);
+							}
+						}
 						ImGui::NewLine();
 					}
 
@@ -890,8 +1038,46 @@ class MyImGui {
 						   ImGui::InputFloat("Radius:", &object->radius)) {
 							change_object = true;
 						}
-						else { change_object = false; }
 
+						if(object->material_ptr->id == t_lambertian) {
+							Lambertian* material = static_cast<Lambertian*>(object->material_ptr.get());
+
+							if(material->albedo->id == t_solid_color) {
+								Solid_Color* texture = static_cast<Solid_Color*>(material->albedo.get());
+								ImGui::ColorEdit3("Color:", (float*) &texture->color_value);
+							}
+
+							if(material->albedo->id == t_checker_texture) {
+								Checker_Texture* texture = static_cast<Checker_Texture*>(material->albedo.get());
+								ImGui::ColorEdit3("Color 0:", (float*) &texture->odd->color_value);
+								ImGui::ColorEdit3("Color 1:", (float*) &texture->even->color_value);
+							}
+
+							if(material->albedo->id == t_image_texture) {
+								Image_Texture* texture = static_cast<Image_Texture*>(material->albedo.get());
+								ImGui::InputText("Image name/PATH:", &texture->my_file_name[0], 256);
+							}
+						}
+
+						if(object->material_ptr->id == t_diffuse_light) {
+							Diffuse_Light* material = static_cast<Diffuse_Light*>(object->material_ptr.get());
+
+							if(material->emit->id == t_solid_color) {
+								Solid_Color* texture = static_cast<Solid_Color*>(material->emit.get());
+								ImGui::ColorEdit3("Color:", (float*) &texture->color_value);
+							}
+
+							if(material->emit->id == t_checker_texture) {
+								Checker_Texture* texture = static_cast<Checker_Texture*>(material->emit.get());
+								ImGui::ColorEdit3("Color 0:", (float*) &texture->odd->color_value);
+								ImGui::ColorEdit3("Color 1:", (float*) &texture->even->color_value);
+							}
+
+							if(material->emit->id == t_image_texture) {
+								Image_Texture* texture = static_cast<Image_Texture*>(material->emit.get());
+								ImGui::InputText("Image name/PATH:", &texture->my_file_name[0], 256);
+							}
+						}
 						ImGui::NewLine();
 					}
 
@@ -902,7 +1088,46 @@ class MyImGui {
 						   ImGui::InputFloat("Radius:", &object->radius)) {
 							change_object = true;
 						}
-						else { change_object = false; }
+
+						if(object->material_ptr->id == t_lambertian) {
+							Lambertian* material = static_cast<Lambertian*>(object->material_ptr.get());
+
+							if(material->albedo->id == t_solid_color) {
+								Solid_Color* texture = static_cast<Solid_Color*>(material->albedo.get());
+								ImGui::ColorEdit3("Color:", (float*) &texture->color_value);
+							}
+
+							if(material->albedo->id == t_checker_texture) {
+								Checker_Texture* texture = static_cast<Checker_Texture*>(material->albedo.get());
+								ImGui::ColorEdit3("Color 0:", (float*) &texture->odd->color_value);
+								ImGui::ColorEdit3("Color 1:", (float*) &texture->even->color_value);
+							}
+
+							if(material->albedo->id == t_image_texture) {
+								Image_Texture* texture = static_cast<Image_Texture*>(material->albedo.get());
+								ImGui::InputText("Image name/PATH:", &texture->my_file_name[0], 256);
+							}
+						}
+
+						if(object->material_ptr->id == t_diffuse_light) {
+							Diffuse_Light* material = static_cast<Diffuse_Light*>(object->material_ptr.get());
+
+							if(material->emit->id == t_solid_color) {
+								Solid_Color* texture = static_cast<Solid_Color*>(material->emit.get());
+								ImGui::ColorEdit3("Color:", (float*) &texture->color_value);
+							}
+
+							if(material->emit->id == t_checker_texture) {
+								Checker_Texture* texture = static_cast<Checker_Texture*>(material->emit.get());
+								ImGui::ColorEdit3("Color 0:", (float*) &texture->odd->color_value);
+								ImGui::ColorEdit3("Color 1:", (float*) &texture->even->color_value);
+							}
+
+							if(material->emit->id == t_image_texture) {
+								Image_Texture* texture = static_cast<Image_Texture*>(material->emit.get());
+								ImGui::InputText("Image name/PATH:", &texture->my_file_name[0], 256);
+							}
+						}
 						ImGui::NewLine();
 					}
 					ImGui::Separator();
@@ -991,7 +1216,6 @@ class MyImGui {
 
 				for (int i = 0; i < IM_ARRAYSIZE(objects_names); i++) {
 					if (ImGui::Selectable(objects_names[i])) {
-
 						if(i == 0) {
 							change_object_add = true;
 							world.add(make_shared<xy_rect>(0, 0, 0, 0, 0, make_shared<Lambertian>(Color(1,1,1))));
@@ -1029,7 +1253,7 @@ class MyImGui {
 				change_object_remove = true;
 
 				world.remove(current_object);
-			} else { change_object_remove = false; }
+			}
 			ImGui::SameLine();
 
 			bool remove_all = ImGui::Button("REMOVE ALL");
@@ -1042,7 +1266,7 @@ class MyImGui {
 				while(!world.objects.empty()) {
 					world.remove(current_object);
 				}
-			} else { change_object_remove = false; }
+			}
 			ImGui::EndGroup();
 		}
 
@@ -1089,6 +1313,8 @@ class MyImGui {
 
 			style.FrameBorderSize = 1.0f;
 			style.WindowBorderSize = 0.0f;
+
+			ImGui::SetColorEditOptions(ImGuiColorEditFlags_PickerHueWheel);
 
 			ImVec4* colors = ImGui::GetStyle().Colors;
 
@@ -1139,6 +1365,4 @@ class MyImGui {
 		bool show_demo        = false;
 		bool show_exit        = false;
 		bool show_overlay     = true;
-
-		bool add_edit         = false;
 };

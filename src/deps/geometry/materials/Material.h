@@ -16,7 +16,7 @@ enum Material_ID: unsigned int {
 	t_diffuse_light = 2
 };
 
-class Material {
+class Material {    // Interface
 	public:
 
 		/*

@@ -123,11 +123,11 @@ class Image_Texture : public Texture {
 			id = Texture_ID::t_image_texture;
 		}
 
-		Image_Texture(const char* file_name) {
+		Image_Texture(const char* file_name = "") {
 			my_name = "Image_Texture";
 			id = Texture_ID::t_image_texture;
 
-			my_file_name = file_name;
+			my_file_name = (char*) file_name;
 
 			int components_per_pixel = bytes_per_pixel;
 
@@ -178,7 +178,7 @@ class Image_Texture : public Texture {
 		}
 
 	public:
-		const char* my_file_name;
+		char* my_file_name;
 
 		unsigned char *data;
 		int width, height;
