@@ -256,7 +256,8 @@ class MyImGui {
 			}
 		}
 
-		void xy_rect_details(unsigned int &object_id,unsigned int &material_id, unsigned int &texture_id, xy_rect *object) {
+		template<class T>
+		void object_details(unsigned int &object_id,unsigned int &material_id, unsigned int &texture_id, T* object) {
 
 			object_id = object->id;
 
@@ -348,468 +349,124 @@ class MyImGui {
 				}
 			}
 		}
-
-		void xz_rect_details(unsigned int &object_id,unsigned int &material_id, unsigned int &texture_id, xz_rect *object) {
-
-			object_id = object->id;
-
+		template<class T>
+		void object_material_edit(T* object, int &current_material, bool &original_material) {
 			ImGui::NewLine();
+			if(ImGui::Combo("Material:", &current_material, materials, IM_ARRAYSIZE(materials))) {
+				original_material = object->material_ptr->id == current_material;
+				object->material_ptr->id = static_cast<Material_ID>(current_material);
+			}
 
 			if(object->material_ptr->id == t_lambertian) {
+				if(!original_material) {
+					original_material = true;
+					change_object = true;
+					object->material_ptr = make_shared<Lambertian>(Color(1,1,1));
+				}
 				Lambertian* material = static_cast<Lambertian*>(object->material_ptr.get());
 
-				material_id = material->id;
+				static int current_texture = material->albedo->id;
+				static bool original_texture = true;
 
-				ImGui::Text("Material: %s", material->my_name);
+				if(ImGui::Combo("Texture:", &current_texture, textures, IM_ARRAYSIZE(textures))) {
+					original_texture = material->albedo->id == current_texture;
+					material->albedo->id = static_cast<Texture_ID>(current_texture);
+				}
 
 				if(material->albedo->id == t_solid_color) {
+					if(!original_texture) {
+						original_texture = true;
+						change_object = true;
+						material->albedo = make_shared<Solid_Color>(Color(1,1,1));
+					}
 					Solid_Color* texture = static_cast<Solid_Color*>(material->albedo.get());
 
-					texture_id = texture->id;
-
-					ImGui::Text("Texture: %s", texture->my_name);
-					ImGui::NewLine();
-
-					ImGui::Text("Texture color:\nr: %.3f | g: %.3f | b: %.3f",
-					texture->color_value[0], texture->color_value[1], texture->color_value[2]);
+					if(ImGui::ColorEdit3("Color:", (float*) &texture->color_value)) {
+						change_object = true;
+					}
 				}
+
 				if(material->albedo->id == t_checker_texture) {
+					if(!original_texture) {
+						original_texture = true;
+						change_object = true;
+						material->albedo = make_shared<Checker_Texture>(Color(1,1,1), Color(0,0,0));
+					}
 					Checker_Texture* texture = static_cast<Checker_Texture*>(material->albedo.get());
 
-					texture_id = texture->id;
-
-					ImGui::Text("Texture: %s", texture->my_name);
-					ImGui::NewLine();
-
-					ImGui::Text("Texture color odd:\nr: %.3f | g: %.3f | b: %.3f",
-					texture->odd->color_value[0], texture->odd->color_value[1], texture->odd->color_value[2]);
-					ImGui::Text("Texture color even:\nr: %.3f | g: %.3f | b: %.3f",
-					texture->even->color_value[0], texture->even->color_value[1], texture->even->color_value[2]);
+					if(ImGui::ColorEdit3("Color 0:", (float*) &texture->odd->color_value) ||
+						ImGui::ColorEdit3("Color 1:", (float*) &texture->even->color_value)) {
+						change_object = true;
+					}
 				}
+
 				if(material->albedo->id == t_image_texture) {
+					if(!original_texture) {
+						original_texture = true;
+						change_object = true;
+						material->albedo = make_shared<Image_Texture>("name.png");
+					}
+					
 					Image_Texture* texture = static_cast<Image_Texture*>(material->albedo.get());
-
-					texture_id = texture->id;
-
-					ImGui::Text("Texture: %s", texture->my_name);
-					ImGui::NewLine();
-
-					ImGui::Text("Texture name: %s", texture->my_file_name);
+					if(ImGui::InputText("Image name/PATH:", &texture->my_file_name[0], 256)) {
+						change_object = true;
+					}
 				}
 			}
 
 			if(object->material_ptr->id == t_diffuse_light) {
+				if(!original_material) {
+					original_material = true;
+					change_object = true;
+					object->material_ptr = make_shared<Diffuse_Light>(Color(1,1,1));
+				}
 				Diffuse_Light* material = static_cast<Diffuse_Light*>(object->material_ptr.get());
 
-				material_id = material->id;
+				static int current_texture = material->emit->id;
+				static bool original_texture = true;
 
-				ImGui::Text("Material: %s", material->my_name);
+				if(ImGui::Combo("Texture:", &current_texture, textures, IM_ARRAYSIZE(textures))) {
+					original_texture = material->emit->id == current_texture;
+					material->emit->id = static_cast<Texture_ID>(current_texture);
+				}
 
 				if(material->emit->id == t_solid_color) {
+					if(!original_texture) {
+						original_texture = true;
+						change_object = true;
+						material->emit = make_shared<Solid_Color>(Color(1,1,1));
+					}
 					Solid_Color* texture = static_cast<Solid_Color*>(material->emit.get());
 
-					texture_id = texture->id;
-
-					ImGui::Text("Texture: %s", texture->my_name);
-					ImGui::NewLine();
-
-					ImGui::Text("Texture color:\nr: %.3f | g: %.3f | b: %.3f",
-					texture->color_value[0], texture->color_value[1], texture->color_value[2]);
+					if(ImGui::ColorEdit3("Color:", (float*) &texture->color_value)) {
+						change_object = true;
+					}
 				}
+
 				if(material->emit->id == t_checker_texture) {
+					if(!original_texture) {
+						original_texture = true;
+						change_object = true;
+						material->emit = make_shared<Checker_Texture>(Color(1,1,1), Color(0,0,0));
+					}
 					Checker_Texture* texture = static_cast<Checker_Texture*>(material->emit.get());
 
-					texture_id = texture->id;
-
-					ImGui::Text("Texture: %s", texture->my_name);
-					ImGui::NewLine();
-
-					ImGui::Text("Texture color odd:\nr: %.3f | g: %.3f | b: %.3f",
-					texture->odd->color_value[0], texture->odd->color_value[1], texture->odd->color_value[2]);
-					ImGui::Text("Texture color even:\nr: %.3f | g: %.3f | b: %.3f",
-					texture->even->color_value[0], texture->even->color_value[1], texture->even->color_value[2]);
+					if(ImGui::ColorEdit3("Color 0:", (float*) &texture->odd->color_value) ||
+						ImGui::ColorEdit3("Color 1:", (float*) &texture->even->color_value)) {
+						change_object = true;
+					}
 				}
+
 				if(material->emit->id == t_image_texture) {
+					if(!original_texture) {
+						original_texture = true;
+						change_object = true;
+						material->emit = make_shared<Image_Texture>("name.png");
+					}
 					Image_Texture* texture = static_cast<Image_Texture*>(material->emit.get());
-
-					texture_id = texture->id;
-
-					ImGui::Text("Texture: %s", texture->my_name);
-					ImGui::NewLine();
-
-					ImGui::Text("Texture name: %s", texture->my_file_name);
-				}
-			}
-		}
-
-		void yz_rect_details(unsigned int &object_id,unsigned int &material_id, unsigned int &texture_id, yz_rect *object) {
-
-			object_id = object->id;
-
-			ImGui::NewLine();
-
-			if(object->material_ptr->id == t_lambertian) {
-				Lambertian* material = static_cast<Lambertian*>(object->material_ptr.get());
-
-				material_id = material->id;
-
-				ImGui::Text("Material: %s", material->my_name);
-
-				if(material->albedo->id == t_solid_color) {
-					Solid_Color* texture = static_cast<Solid_Color*>(material->albedo.get());
-
-					texture_id = texture->id;
-
-					ImGui::Text("Texture: %s", texture->my_name);
-					ImGui::NewLine();
-
-					ImGui::Text("Texture color:\nr: %.3f | g: %.3f | b: %.3f",
-					texture->color_value[0], texture->color_value[1], texture->color_value[2]);
-				}
-				if(material->albedo->id == t_checker_texture) {
-					Checker_Texture* texture = static_cast<Checker_Texture*>(material->albedo.get());
-
-					texture_id = texture->id;
-
-					ImGui::Text("Texture: %s", texture->my_name);
-					ImGui::NewLine();
-
-					ImGui::Text("Texture color odd:\nr: %.3f | g: %.3f | b: %.3f",
-					texture->odd->color_value[0], texture->odd->color_value[1], texture->odd->color_value[2]);
-					ImGui::Text("Texture color even:\nr: %.3f | g: %.3f | b: %.3f",
-					texture->even->color_value[0], texture->even->color_value[1], texture->even->color_value[2]);
-				}
-				if(material->albedo->id == t_image_texture) {
-					Image_Texture* texture = static_cast<Image_Texture*>(material->albedo.get());
-
-					texture_id = texture->id;
-
-					ImGui::Text("Texture: %s", texture->my_name);
-					ImGui::NewLine();
-
-					ImGui::Text("Texture name: %s", texture->my_file_name);
-				}
-			}
-
-			if(object->material_ptr->id == t_diffuse_light) {
-				Diffuse_Light* material = static_cast<Diffuse_Light*>(object->material_ptr.get());
-
-				material_id = material->id;
-
-				ImGui::Text("Material: %s", material->my_name);
-
-				if(material->emit->id == t_solid_color) {
-					Solid_Color* texture = static_cast<Solid_Color*>(material->emit.get());
-
-					texture_id = texture->id;
-
-					ImGui::Text("Texture: %s", texture->my_name);
-					ImGui::NewLine();
-
-					ImGui::Text("Texture color:\nr: %.3f | g: %.3f | b: %.3f",
-					texture->color_value[0], texture->color_value[1], texture->color_value[2]);
-				}
-				if(material->emit->id == t_checker_texture) {
-					Checker_Texture* texture = static_cast<Checker_Texture*>(material->emit.get());
-
-					texture_id = texture->id;
-
-					ImGui::Text("Texture: %s", texture->my_name);
-					ImGui::NewLine();
-
-					ImGui::Text("Texture color odd:\nr: %.3f | g: %.3f | b: %.3f",
-					texture->odd->color_value[0], texture->odd->color_value[1], texture->odd->color_value[2]);
-					ImGui::Text("Texture color even:\nr: %.3f | g: %.3f | b: %.3f",
-					texture->even->color_value[0], texture->even->color_value[1], texture->even->color_value[2]);
-				}
-				if(material->emit->id == t_image_texture) {
-					Image_Texture* texture = static_cast<Image_Texture*>(material->emit.get());
-
-					texture_id = texture->id;
-
-					ImGui::Text("Texture: %s", texture->my_name);
-					ImGui::NewLine();
-
-					ImGui::Text("Texture name: %s", texture->my_file_name);
-				}
-			}
-		}
-
-		void obj_details(unsigned int &object_id,unsigned int &material_id, unsigned int &texture_id, Obj* object) {
-
-			object_id = object->id;
-
-			ImGui::NewLine();
-
-			if(object->material_ptr->id == t_lambertian) {
-				Lambertian* material = static_cast<Lambertian*>(object->material_ptr.get());
-
-				material_id = material->id;
-
-				ImGui::Text("Material: %s", material->my_name);
-
-				if(material->albedo->id == t_solid_color) {
-					Solid_Color* texture = static_cast<Solid_Color*>(material->albedo.get());
-
-					texture_id = texture->id;
-
-					ImGui::Text("Texture: %s", texture->my_name);
-					ImGui::NewLine();
-
-					ImGui::Text("Texture color:\nr: %.3f | g: %.3f | b: %.3f",
-					texture->color_value[0], texture->color_value[1], texture->color_value[2]);
-				}
-				if(material->albedo->id == t_checker_texture) {
-					Checker_Texture* texture = static_cast<Checker_Texture*>(material->albedo.get());
-
-					texture_id = texture->id;
-
-					ImGui::Text("Texture: %s", texture->my_name);
-					ImGui::NewLine();
-
-					ImGui::Text("Texture color odd:\nr: %.3f | g: %.3f | b: %.3f",
-					texture->odd->color_value[0], texture->odd->color_value[1], texture->odd->color_value[2]);
-					ImGui::Text("Texture color even:\nr: %.3f | g: %.3f | b: %.3f",
-					texture->even->color_value[0], texture->even->color_value[1], texture->even->color_value[2]);
-				}
-				if(material->albedo->id == t_image_texture) {
-					Image_Texture* texture = static_cast<Image_Texture*>(material->albedo.get());
-
-					texture_id = texture->id;
-
-					ImGui::Text("Texture: %s", texture->my_name);
-					ImGui::NewLine();
-
-					ImGui::Text("Texture name: %s", texture->my_file_name);
-				}
-			}
-
-			if(object->material_ptr->id == t_diffuse_light) {
-				Diffuse_Light* material = static_cast<Diffuse_Light*>(object->material_ptr.get());
-
-				material_id = material->id;
-
-				ImGui::Text("Material: %s", material->my_name);
-
-				if(material->emit->id == t_solid_color) {
-					Solid_Color* texture = static_cast<Solid_Color*>(material->emit.get());
-
-					texture_id = texture->id;
-
-					ImGui::Text("Texture: %s", texture->my_name);
-					ImGui::NewLine();
-
-					ImGui::Text("Texture color:\nr: %.3f | g: %.3f | b: %.3f",
-					texture->color_value[0], texture->color_value[1], texture->color_value[2]);
-				}
-				if(material->emit->id == t_checker_texture) {
-					Checker_Texture* texture = static_cast<Checker_Texture*>(material->emit.get());
-
-					texture_id = texture->id;
-
-					ImGui::Text("Texture: %s", texture->my_name);
-					ImGui::NewLine();
-
-					ImGui::Text("Texture color odd:\nr: %.3f | g: %.3f | b: %.3f",
-					texture->odd->color_value[0], texture->odd->color_value[1], texture->odd->color_value[2]);
-					ImGui::Text("Texture color even:\nr: %.3f | g: %.3f | b: %.3f",
-					texture->even->color_value[0], texture->even->color_value[1], texture->even->color_value[2]);
-				}
-				if(material->emit->id == t_image_texture) {
-					Image_Texture* texture = static_cast<Image_Texture*>(material->emit.get());
-
-					texture_id = texture->id;
-
-					ImGui::Text("Texture: %s", texture->my_name);
-					ImGui::NewLine();
-
-					ImGui::Text("Texture name: %s", texture->my_file_name);
-				}
-			}
-		}
-
-		void sphere_moving_details(unsigned int &object_id,unsigned int &material_id, unsigned int &texture_id, Sphere_moving *object) {
-
-			object_id = object->id;
-
-			ImGui::NewLine();
-
-			if(object->material_ptr->id == t_lambertian) {
-				Lambertian* material = static_cast<Lambertian*>(object->material_ptr.get());
-
-				material_id = material->id;
-
-				ImGui::Text("Material: %s", material->my_name);
-
-				if(material->albedo->id == t_solid_color) {
-					Solid_Color* texture = static_cast<Solid_Color*>(material->albedo.get());
-
-					texture_id = texture->id;
-
-					ImGui::Text("Texture: %s", texture->my_name);
-					ImGui::NewLine();
-
-					ImGui::Text("Texture color:\nr: %.3f | g: %.3f | b: %.3f",
-					texture->color_value[0], texture->color_value[1], texture->color_value[2]);
-				}
-				if(material->albedo->id == t_checker_texture) {
-					Checker_Texture* texture = static_cast<Checker_Texture*>(material->albedo.get());
-
-					texture_id = texture->id;
-
-					ImGui::Text("Texture: %s", texture->my_name);
-					ImGui::NewLine();
-
-					ImGui::Text("Texture color odd:\nr: %.3f | g: %.3f | b: %.3f",
-					texture->odd->color_value[0], texture->odd->color_value[1], texture->odd->color_value[2]);
-					ImGui::Text("Texture color even:\nr: %.3f | g: %.3f | b: %.3f",
-					texture->even->color_value[0], texture->even->color_value[1], texture->even->color_value[2]);
-				}
-				if(material->albedo->id == t_image_texture) {
-					Image_Texture* texture = static_cast<Image_Texture*>(material->albedo.get());
-
-					texture_id = texture->id;
-
-					ImGui::Text("Texture: %s", texture->my_name);
-					ImGui::NewLine();
-
-					ImGui::Text("Texture name: %s", texture->my_file_name);
-				}
-			}
-
-			if(object->material_ptr->id == t_diffuse_light) {
-				Diffuse_Light* material = static_cast<Diffuse_Light*>(object->material_ptr.get());
-
-				material_id = material->id;
-
-				ImGui::Text("Material: %s", material->my_name);
-
-				if(material->emit->id == t_solid_color) {
-					Solid_Color* texture = static_cast<Solid_Color*>(material->emit.get());
-
-					texture_id = texture->id;
-
-					ImGui::Text("Texture: %s", texture->my_name);
-					ImGui::NewLine();
-
-					ImGui::Text("Texture color:\nr: %.3f | g: %.3f | b: %.3f",
-					texture->color_value[0], texture->color_value[1], texture->color_value[2]);
-				}
-				if(material->emit->id == t_checker_texture) {
-					Checker_Texture* texture = static_cast<Checker_Texture*>(material->emit.get());
-
-					texture_id = texture->id;
-
-					ImGui::Text("Texture: %s", texture->my_name);
-					ImGui::NewLine();
-
-					ImGui::Text("Texture color odd:\nr: %.3f | g: %.3f | b: %.3f",
-					texture->odd->color_value[0], texture->odd->color_value[1], texture->odd->color_value[2]);
-					ImGui::Text("Texture color even:\nr: %.3f | g: %.3f | b: %.3f",
-					texture->even->color_value[0], texture->even->color_value[1], texture->even->color_value[2]);
-				}
-				if(material->emit->id == t_image_texture) {
-					Image_Texture* texture = static_cast<Image_Texture*>(material->emit.get());
-
-					texture_id = texture->id;
-
-					ImGui::Text("Texture: %s", texture->my_name);
-					ImGui::NewLine();
-
-					ImGui::Text("Texture name: %s", texture->my_file_name);
-				}
-			}
-		}
-
-		void sphere_details(unsigned int &object_id,unsigned int &material_id, unsigned int &texture_id, Sphere* object) {
-
-			object_id = object->id;
-
-			ImGui::NewLine();
-
-			if(object->material_ptr->id == t_lambertian) {
-				Lambertian* material = static_cast<Lambertian*>(object->material_ptr.get());
-
-				material_id = material->id;
-
-				ImGui::Text("Material: %s", material->my_name);
-
-				if(material->albedo->id == t_solid_color) {
-					Solid_Color* texture = static_cast<Solid_Color*>(material->albedo.get());
-
-					texture_id = texture->id;
-
-					ImGui::Text("Texture: %s", texture->my_name);
-					ImGui::NewLine();
-
-					ImGui::Text("Texture color:\nr: %.3f | g: %.3f | b: %.3f",
-					texture->color_value[0], texture->color_value[1], texture->color_value[2]);
-				}
-				if(material->albedo->id == t_checker_texture) {
-					Checker_Texture* texture = static_cast<Checker_Texture*>(material->albedo.get());
-
-					texture_id = texture->id;
-
-					ImGui::Text("Texture: %s", texture->my_name);
-					ImGui::NewLine();
-
-					ImGui::Text("Texture color odd:\nr: %.3f | g: %.3f | b: %.3f",
-					texture->odd->color_value[0], texture->odd->color_value[1], texture->odd->color_value[2]);
-					ImGui::Text("Texture color even:\nr: %.3f | g: %.3f | b: %.3f",
-					texture->even->color_value[0], texture->even->color_value[1], texture->even->color_value[2]);
-				}
-				if(material->albedo->id == t_image_texture) {
-					Image_Texture* texture = static_cast<Image_Texture*>(material->albedo.get());
-
-					texture_id = texture->id;
-
-					ImGui::Text("Texture: %s", texture->my_name);
-					ImGui::NewLine();
-
-					ImGui::Text("Texture name: %s", texture->my_file_name);
-				}
-			}
-
-			if(object->material_ptr->id == t_diffuse_light) {
-				Diffuse_Light* material = static_cast<Diffuse_Light*>(object->material_ptr.get());
-
-				material_id = material->id;
-
-				ImGui::Text("Material: %s", material->my_name);
-
-				if(material->emit->id == t_solid_color) {
-					Solid_Color* texture = static_cast<Solid_Color*>(material->emit.get());
-
-					texture_id = texture->id;
-
-					ImGui::Text("Texture: %s", texture->my_name);
-					ImGui::NewLine();
-
-					ImGui::Text("Texture color:\nr: %.3f | g: %.3f | b: %.3f",
-					texture->color_value[0], texture->color_value[1], texture->color_value[2]);
-				}
-				if(material->emit->id == t_checker_texture) {
-					Checker_Texture* texture = static_cast<Checker_Texture*>(material->emit.get());
-
-					texture_id = texture->id;
-
-					ImGui::Text("Texture: %s", texture->my_name);
-					ImGui::NewLine();
-
-					ImGui::Text("Texture color odd:\nr: %.3f | g: %.3f | b: %.3f",
-					texture->odd->color_value[0], texture->odd->color_value[1], texture->odd->color_value[2]);
-					ImGui::Text("Texture color even:\nr: %.3f | g: %.3f | b: %.3f",
-					texture->even->color_value[0], texture->even->color_value[1], texture->even->color_value[2]);
-				}
-				if(material->emit->id == t_image_texture) {
-					Image_Texture* texture = static_cast<Image_Texture*>(material->emit.get());
-
-					texture_id = texture->id;
-
-					ImGui::Text("Texture: %s", texture->my_name);
-					ImGui::NewLine();
-
-					ImGui::Text("Texture name: %s", texture->my_file_name);
+					if(ImGui::InputText("Image name/PATH:", &texture->my_file_name[0], 256)) {
+						change_object = true;
+					}
 				}
 			}
 		}
@@ -821,7 +478,6 @@ class MyImGui {
 
 			if (ImGui::BeginTabBar("##Tabs", ImGuiTabBarFlags_None)) {
 				if (ImGui::BeginTabItem("Edit")) {
-
 					ImGui::TextWrapped("Controls:");
 
 					if(objects[current_object]->id == t_xy_rect) {
@@ -835,45 +491,10 @@ class MyImGui {
 							change_object = true;
 						}
 
-						if(object->material_ptr->id == t_lambertian) {
-							Lambertian* material = static_cast<Lambertian*>(object->material_ptr.get());
+						static int current_material = object->material_ptr->id;
+						static bool original_material = true;
 
-							if(material->albedo->id == t_solid_color) {
-								Solid_Color* texture = static_cast<Solid_Color*>(material->albedo.get());
-								ImGui::ColorEdit3("Color:", (float*) &texture->color_value);
-							}
-
-							if(material->albedo->id == t_checker_texture) {
-								Checker_Texture* texture = static_cast<Checker_Texture*>(material->albedo.get());
-								ImGui::ColorEdit3("Color 0:", (float*) &texture->odd->color_value);
-								ImGui::ColorEdit3("Color 1:", (float*) &texture->even->color_value);
-							}
-
-							if(material->albedo->id == t_image_texture) {
-								Image_Texture* texture = static_cast<Image_Texture*>(material->albedo.get());
-								ImGui::InputText("Image name/PATH:", &texture->my_file_name[0], 256);
-							}
-						}
-
-						if(object->material_ptr->id == t_diffuse_light) {
-							Diffuse_Light* material = static_cast<Diffuse_Light*>(object->material_ptr.get());
-
-							if(material->emit->id == t_solid_color) {
-								Solid_Color* texture = static_cast<Solid_Color*>(material->emit.get());
-								ImGui::ColorEdit3("Color:", (float*) &texture->color_value);
-							}
-
-							if(material->emit->id == t_checker_texture) {
-								Checker_Texture* texture = static_cast<Checker_Texture*>(material->emit.get());
-								ImGui::ColorEdit3("Color 0:", (float*) &texture->odd->color_value);
-								ImGui::ColorEdit3("Color 1:", (float*) &texture->even->color_value);
-							}
-
-							if(material->emit->id == t_image_texture) {
-								Image_Texture* texture = static_cast<Image_Texture*>(material->emit.get());
-								ImGui::InputText("Image name/PATH:", &texture->my_file_name[0], 256);
-							}
-						}
+						object_material_edit<xy_rect>(object, current_material, original_material);
 						ImGui::NewLine();
 					}
 
@@ -888,45 +509,11 @@ class MyImGui {
 							change_object = true;
 						}
 
-						if(object->material_ptr->id == t_lambertian) {
-							Lambertian* material = static_cast<Lambertian*>(object->material_ptr.get());
+						static int current_material = object->material_ptr->id;
+						static bool original_material = true;
 
-							if(material->albedo->id == t_solid_color) {
-								Solid_Color* texture = static_cast<Solid_Color*>(material->albedo.get());
-								ImGui::ColorEdit3("Color:", (float*) &texture->color_value);
-							}
 
-							if(material->albedo->id == t_checker_texture) {
-								Checker_Texture* texture = static_cast<Checker_Texture*>(material->albedo.get());
-								ImGui::ColorEdit3("Color 0:", (float*) &texture->odd->color_value);
-								ImGui::ColorEdit3("Color 1:", (float*) &texture->even->color_value);
-							}
-
-							if(material->albedo->id == t_image_texture) {
-								Image_Texture* texture = static_cast<Image_Texture*>(material->albedo.get());
-								ImGui::InputText("Image name/PATH:", &texture->my_file_name[0], 256);
-							}
-						}
-
-						if(object->material_ptr->id == t_diffuse_light) {
-							Diffuse_Light* material = static_cast<Diffuse_Light*>(object->material_ptr.get());
-
-							if(material->emit->id == t_solid_color) {
-								Solid_Color* texture = static_cast<Solid_Color*>(material->emit.get());
-								ImGui::ColorEdit3("Color:", (float*) &texture->color_value);
-							}
-
-							if(material->emit->id == t_checker_texture) {
-								Checker_Texture* texture = static_cast<Checker_Texture*>(material->emit.get());
-								ImGui::ColorEdit3("Color 0:", (float*) &texture->odd->color_value);
-								ImGui::ColorEdit3("Color 1:", (float*) &texture->even->color_value);
-							}
-
-							if(material->emit->id == t_image_texture) {
-								Image_Texture* texture = static_cast<Image_Texture*>(material->emit.get());
-								ImGui::InputText("Image name/PATH:", &texture->my_file_name[0], 256);
-							}
-						}
+						object_material_edit<xz_rect>(object, current_material, original_material);
 						ImGui::NewLine();
 					}
 
@@ -941,45 +528,10 @@ class MyImGui {
 							change_object = true;
 						}
 
-						if(object->material_ptr->id == t_lambertian) {
-							Lambertian* material = static_cast<Lambertian*>(object->material_ptr.get());
+						static int current_material = object->material_ptr->id;
+						static bool original_material = true;
 
-							if(material->albedo->id == t_solid_color) {
-								Solid_Color* texture = static_cast<Solid_Color*>(material->albedo.get());
-								ImGui::ColorEdit3("Color:", (float*) &texture->color_value);
-							}
-
-							if(material->albedo->id == t_checker_texture) {
-								Checker_Texture* texture = static_cast<Checker_Texture*>(material->albedo.get());
-								ImGui::ColorEdit3("Color 0:", (float*) &texture->odd->color_value);
-								ImGui::ColorEdit3("Color 1:", (float*) &texture->even->color_value);
-							}
-
-							if(material->albedo->id == t_image_texture) {
-								Image_Texture* texture = static_cast<Image_Texture*>(material->albedo.get());
-								ImGui::InputText("Image name/PATH:", &texture->my_file_name[0], 256);
-							}
-						}
-
-						if(object->material_ptr->id == t_diffuse_light) {
-							Diffuse_Light* material = static_cast<Diffuse_Light*>(object->material_ptr.get());
-
-							if(material->emit->id == t_solid_color) {
-								Solid_Color* texture = static_cast<Solid_Color*>(material->emit.get());
-								ImGui::ColorEdit3("Color:", (float*) &texture->color_value);
-							}
-
-							if(material->emit->id == t_checker_texture) {
-								Checker_Texture* texture = static_cast<Checker_Texture*>(material->emit.get());
-								ImGui::ColorEdit3("Color 0:", (float*) &texture->odd->color_value);
-								ImGui::ColorEdit3("Color 1:", (float*) &texture->even->color_value);
-							}
-
-							if(material->emit->id == t_image_texture) {
-								Image_Texture* texture = static_cast<Image_Texture*>(material->emit.get());
-								ImGui::InputText("Image name/PATH:", &texture->my_file_name[0], 256);
-							}
-						}
+						object_material_edit<yz_rect>(object, current_material, original_material);
 						ImGui::NewLine();
 					}
 
@@ -988,45 +540,10 @@ class MyImGui {
 
 						// ImGui::InputFloat3("Position:", &object->postion);
 
-						if(object->material_ptr->id == t_lambertian) {
-							Lambertian* material = static_cast<Lambertian*>(object->material_ptr.get());
+						static int current_material = object->material_ptr->id;
+						static bool original_material = true;
 
-							if(material->albedo->id == t_solid_color) {
-								Solid_Color* texture = static_cast<Solid_Color*>(material->albedo.get());
-								ImGui::ColorEdit3("Color:", (float*) &texture->color_value);
-							}
-
-							if(material->albedo->id == t_checker_texture) {
-								Checker_Texture* texture = static_cast<Checker_Texture*>(material->albedo.get());
-								ImGui::ColorEdit3("Color 0:", (float*) &texture->odd->color_value);
-								ImGui::ColorEdit3("Color 1:", (float*) &texture->even->color_value);
-							}
-
-							if(material->albedo->id == t_image_texture) {
-								Image_Texture* texture = static_cast<Image_Texture*>(material->albedo.get());
-								ImGui::InputText("Image name/PATH:", &texture->my_file_name[0], 256);
-							}
-						}
-
-						if(object->material_ptr->id == t_diffuse_light) {
-							Diffuse_Light* material = static_cast<Diffuse_Light*>(object->material_ptr.get());
-
-							if(material->emit->id == t_solid_color) {
-								Solid_Color* texture = static_cast<Solid_Color*>(material->emit.get());
-								ImGui::ColorEdit3("Color:", (float*) &texture->color_value);
-							}
-
-							if(material->emit->id == t_checker_texture) {
-								Checker_Texture* texture = static_cast<Checker_Texture*>(material->emit.get());
-								ImGui::ColorEdit3("Color 0:", (float*) &texture->odd->color_value);
-								ImGui::ColorEdit3("Color 1:", (float*) &texture->even->color_value);
-							}
-
-							if(material->emit->id == t_image_texture) {
-								Image_Texture* texture = static_cast<Image_Texture*>(material->emit.get());
-								ImGui::InputText("Image name/PATH:", &texture->my_file_name[0], 256);
-							}
-						}
+						object_material_edit<Obj>(object, current_material, original_material);
 						ImGui::NewLine();
 					}
 
@@ -1039,45 +556,10 @@ class MyImGui {
 							change_object = true;
 						}
 
-						if(object->material_ptr->id == t_lambertian) {
-							Lambertian* material = static_cast<Lambertian*>(object->material_ptr.get());
+						static int current_material = object->material_ptr->id;
+						static bool original_material = true;
 
-							if(material->albedo->id == t_solid_color) {
-								Solid_Color* texture = static_cast<Solid_Color*>(material->albedo.get());
-								ImGui::ColorEdit3("Color:", (float*) &texture->color_value);
-							}
-
-							if(material->albedo->id == t_checker_texture) {
-								Checker_Texture* texture = static_cast<Checker_Texture*>(material->albedo.get());
-								ImGui::ColorEdit3("Color 0:", (float*) &texture->odd->color_value);
-								ImGui::ColorEdit3("Color 1:", (float*) &texture->even->color_value);
-							}
-
-							if(material->albedo->id == t_image_texture) {
-								Image_Texture* texture = static_cast<Image_Texture*>(material->albedo.get());
-								ImGui::InputText("Image name/PATH:", &texture->my_file_name[0], 256);
-							}
-						}
-
-						if(object->material_ptr->id == t_diffuse_light) {
-							Diffuse_Light* material = static_cast<Diffuse_Light*>(object->material_ptr.get());
-
-							if(material->emit->id == t_solid_color) {
-								Solid_Color* texture = static_cast<Solid_Color*>(material->emit.get());
-								ImGui::ColorEdit3("Color:", (float*) &texture->color_value);
-							}
-
-							if(material->emit->id == t_checker_texture) {
-								Checker_Texture* texture = static_cast<Checker_Texture*>(material->emit.get());
-								ImGui::ColorEdit3("Color 0:", (float*) &texture->odd->color_value);
-								ImGui::ColorEdit3("Color 1:", (float*) &texture->even->color_value);
-							}
-
-							if(material->emit->id == t_image_texture) {
-								Image_Texture* texture = static_cast<Image_Texture*>(material->emit.get());
-								ImGui::InputText("Image name/PATH:", &texture->my_file_name[0], 256);
-							}
-						}
+						object_material_edit<Sphere_moving>(object, current_material, original_material);
 						ImGui::NewLine();
 					}
 
@@ -1089,45 +571,10 @@ class MyImGui {
 							change_object = true;
 						}
 
-						if(object->material_ptr->id == t_lambertian) {
-							Lambertian* material = static_cast<Lambertian*>(object->material_ptr.get());
+						static int current_material = object->material_ptr->id;
+						static bool original_material = true;
 
-							if(material->albedo->id == t_solid_color) {
-								Solid_Color* texture = static_cast<Solid_Color*>(material->albedo.get());
-								ImGui::ColorEdit3("Color:", (float*) &texture->color_value);
-							}
-
-							if(material->albedo->id == t_checker_texture) {
-								Checker_Texture* texture = static_cast<Checker_Texture*>(material->albedo.get());
-								ImGui::ColorEdit3("Color 0:", (float*) &texture->odd->color_value);
-								ImGui::ColorEdit3("Color 1:", (float*) &texture->even->color_value);
-							}
-
-							if(material->albedo->id == t_image_texture) {
-								Image_Texture* texture = static_cast<Image_Texture*>(material->albedo.get());
-								ImGui::InputText("Image name/PATH:", &texture->my_file_name[0], 256);
-							}
-						}
-
-						if(object->material_ptr->id == t_diffuse_light) {
-							Diffuse_Light* material = static_cast<Diffuse_Light*>(object->material_ptr.get());
-
-							if(material->emit->id == t_solid_color) {
-								Solid_Color* texture = static_cast<Solid_Color*>(material->emit.get());
-								ImGui::ColorEdit3("Color:", (float*) &texture->color_value);
-							}
-
-							if(material->emit->id == t_checker_texture) {
-								Checker_Texture* texture = static_cast<Checker_Texture*>(material->emit.get());
-								ImGui::ColorEdit3("Color 0:", (float*) &texture->odd->color_value);
-								ImGui::ColorEdit3("Color 1:", (float*) &texture->even->color_value);
-							}
-
-							if(material->emit->id == t_image_texture) {
-								Image_Texture* texture = static_cast<Image_Texture*>(material->emit.get());
-								ImGui::InputText("Image name/PATH:", &texture->my_file_name[0], 256);
-							}
-						}
+						object_material_edit<Sphere>(object, current_material, original_material);
 						ImGui::NewLine();
 					}
 					ImGui::Separator();
@@ -1144,7 +591,7 @@ class MyImGui {
 						ImGui::Text("Position:\nx-start: %.3f\ny-start: %.3f\nx-end: %.3f\ny-end: %.3f\nz: %.3f",
 						object->x_start, object->y_start, object->x_end, object->y_end, object->z);
 
-						xy_rect_details(object_id, material_id, texture_id, object);
+						object_details<xy_rect>(object_id, material_id, texture_id, object);
 					}
 					if(objects[current_object]->id == t_xz_rect) {
 						xz_rect* object = static_cast<xz_rect*>(objects[current_object].get());
@@ -1152,7 +599,7 @@ class MyImGui {
 						ImGui::Text("Position:\nx-start: %.3f\nz-start: %.3f\nx-end: %.3f\nz-end: %.3f\ny: %.3f",
 						object->x_start, object->z_start, object->x_end, object->z_end, object->y);
 
-						xz_rect_details(object_id, material_id, texture_id, object);
+						object_details<xz_rect>(object_id, material_id, texture_id, object);
 					}
 					if(objects[current_object]->id == t_yz_rect) {
 						yz_rect* object = static_cast<yz_rect*>(objects[current_object].get());
@@ -1160,12 +607,13 @@ class MyImGui {
 						ImGui::Text("Position:\ny-start: %.3f\nz-start: %.3f\ny-end: %.3f\nz-end: %.3f\nx: %.3f",
 						object->y_start, object->z_start, object->y_end, object->z_end, object->x);
 
-						yz_rect_details(object_id, material_id, texture_id, object);
+						object_details<yz_rect>(object_id, material_id, texture_id, object);
 					}
 
 					if (objects[current_object]->id == t_obj) {
 						Obj* object = static_cast<Obj*>(objects[current_object].get());
-						obj_details(object_id, material_id, texture_id, object);
+
+						object_details<Obj>(object_id, material_id, texture_id, object);
 					}
 
 					if (objects[current_object]->id == t_sphere_moving) {
@@ -1177,7 +625,7 @@ class MyImGui {
 						object->center_1[0], object->center_1[1], object->center_1[2]);
 						ImGui::Text("Radius: %.3f", object->radius);
 
-						sphere_moving_details(object_id, material_id, texture_id, object);
+						object_details<Sphere_moving>(object_id, material_id, texture_id, object);
 					}
 
 					if (objects[current_object]->id == t_sphere) {
@@ -1187,7 +635,7 @@ class MyImGui {
 						object->center[0], object->center[1], object->center[2]);
 						ImGui::Text("Radius: %.3f", object->radius);
 
-						sphere_details(object_id, material_id, texture_id, object);
+						object_details<Sphere>(object_id, material_id, texture_id, object);
 					}
 					ImGui::NewLine();
 					ImGui::Separator();
@@ -1358,6 +806,9 @@ class MyImGui {
 			colors[ImGuiCol_TextSelectedBg]       = ImVec4(0.3f, 0.0f, 0.1f, 1.0f);
 		}
 	private:
+		const char* materials[3] = { "None", "Lambertian", "Diffuse-Light" };
+		const char* textures[4] = { "None", "Solid-Color", "Checker-Texture", "Image-Texture" };
+
 		bool show_settings    = false;
 		bool show_camera      = false;
 		bool show_render_info = false;
