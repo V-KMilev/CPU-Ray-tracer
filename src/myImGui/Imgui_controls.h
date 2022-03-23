@@ -352,7 +352,7 @@ class MyImGui {
 		template<class T>
 		void object_material_edit(T* object, int &current_material, bool &original_material) {
 			ImGui::NewLine();
-			if(ImGui::Combo("Material:", &current_material, materials, IM_ARRAYSIZE(materials))) {
+			if(ImGui::Combo("Material", &current_material, materials, IM_ARRAYSIZE(materials))) {
 				original_material = object->material_ptr->id == current_material;
 				object->material_ptr->id = static_cast<Material_ID>(current_material);
 			}
@@ -368,7 +368,7 @@ class MyImGui {
 				static int current_texture = material->albedo->id;
 				static bool original_texture = true;
 
-				if(ImGui::Combo("Texture:", &current_texture, textures, IM_ARRAYSIZE(textures))) {
+				if(ImGui::Combo("Texture", &current_texture, textures, IM_ARRAYSIZE(textures))) {
 					original_texture = material->albedo->id == current_texture;
 					material->albedo->id = static_cast<Texture_ID>(current_texture);
 				}
@@ -381,7 +381,11 @@ class MyImGui {
 					}
 					Solid_Color* texture = static_cast<Solid_Color*>(material->albedo.get());
 
-					if(ImGui::ColorEdit3("Color:", (float*) &texture->color_value)) {
+					ImGui::NewLine();
+					if(ImGui::ColorEdit3("Color", (float*) &texture->color_value)) {
+						change_object = true;
+					}
+					if(ImGui::InputFloat3("Color", (float*) &texture->color_value)) {
 						change_object = true;
 					}
 				}
@@ -394,8 +398,13 @@ class MyImGui {
 					}
 					Checker_Texture* texture = static_cast<Checker_Texture*>(material->albedo.get());
 
-					if(ImGui::ColorEdit3("Color 0:", (float*) &texture->odd->color_value) ||
-						ImGui::ColorEdit3("Color 1:", (float*) &texture->even->color_value)) {
+					ImGui::NewLine();
+					if(ImGui::ColorEdit3("Color 0", (float*) &texture->odd->color_value) ||
+					   ImGui::ColorEdit3("Color 1", (float*) &texture->even->color_value)) {
+						change_object = true;
+					}
+					if(ImGui::InputFloat3("Color 0", (float*) &texture->odd->color_value) ||
+					   ImGui::InputFloat3("Color 1", (float*) &texture->even->color_value)) {
 						change_object = true;
 					}
 				}
@@ -408,7 +417,7 @@ class MyImGui {
 					}
 					
 					Image_Texture* texture = static_cast<Image_Texture*>(material->albedo.get());
-					if(ImGui::InputText("Image name/PATH:", &texture->my_file_name[0], 256)) {
+					if(ImGui::InputText("Image name/PATH", &texture->my_file_name[0], 256)) {
 						change_object = true;
 					}
 				}
@@ -425,7 +434,7 @@ class MyImGui {
 				static int current_texture = material->emit->id;
 				static bool original_texture = true;
 
-				if(ImGui::Combo("Texture:", &current_texture, textures, IM_ARRAYSIZE(textures))) {
+				if(ImGui::Combo("Texture", &current_texture, textures, IM_ARRAYSIZE(textures))) {
 					original_texture = material->emit->id == current_texture;
 					material->emit->id = static_cast<Texture_ID>(current_texture);
 				}
@@ -438,7 +447,11 @@ class MyImGui {
 					}
 					Solid_Color* texture = static_cast<Solid_Color*>(material->emit.get());
 
-					if(ImGui::ColorEdit3("Color:", (float*) &texture->color_value)) {
+					ImGui::NewLine();
+					if(ImGui::ColorEdit3("Color", (float*) &texture->color_value)) {
+						change_object = true;
+					}
+					if(ImGui::InputFloat3("Color", (float*) &texture->color_value)) {
 						change_object = true;
 					}
 				}
@@ -451,8 +464,13 @@ class MyImGui {
 					}
 					Checker_Texture* texture = static_cast<Checker_Texture*>(material->emit.get());
 
-					if(ImGui::ColorEdit3("Color 0:", (float*) &texture->odd->color_value) ||
-						ImGui::ColorEdit3("Color 1:", (float*) &texture->even->color_value)) {
+					ImGui::NewLine();
+					if(ImGui::ColorEdit3("Color 0", (float*) &texture->odd->color_value) ||
+					   ImGui::ColorEdit3("Color 1", (float*) &texture->even->color_value)) {
+						change_object = true;
+					}
+					if(ImGui::InputFloat3("Color 0", (float*) &texture->odd->color_value) ||
+					   ImGui::InputFloat3("Color 1", (float*) &texture->even->color_value)) {
 						change_object = true;
 					}
 				}
@@ -464,7 +482,7 @@ class MyImGui {
 						material->emit = make_shared<Image_Texture>("name.png");
 					}
 					Image_Texture* texture = static_cast<Image_Texture*>(material->emit.get());
-					if(ImGui::InputText("Image name/PATH:", &texture->my_file_name[0], 256)) {
+					if(ImGui::InputText("Image name/PATH", &texture->my_file_name[0], 256)) {
 						change_object = true;
 					}
 				}
@@ -483,11 +501,11 @@ class MyImGui {
 					if(objects[current_object]->id == t_xy_rect) {
 						xy_rect* object = static_cast<xy_rect*>(objects[current_object].get());
 
-						if(ImGui::InputFloat("Start X:", &object->x_start) ||
-						   ImGui::InputFloat("Start Y:", &object->y_start) ||
-						   ImGui::InputFloat("End X:", &object->x_end) ||
-						   ImGui::InputFloat("End Y:", &object->y_end) ||
-						   ImGui::InputFloat("Z:", &object->z)) {
+						if(ImGui::InputFloat("Start X", &object->x_start) ||
+						   ImGui::InputFloat("Start Y", &object->y_start) ||
+						   ImGui::InputFloat("End X", &object->x_end) ||
+						   ImGui::InputFloat("End Y", &object->y_end) ||
+						   ImGui::InputFloat("Z", &object->z)) {
 							change_object = true;
 						}
 
@@ -501,11 +519,11 @@ class MyImGui {
 					if(objects[current_object]->id == t_xz_rect) {
 						xz_rect* object = static_cast<xz_rect*>(objects[current_object].get());
 
-						if(ImGui::InputFloat("Start X:", &object->x_start) ||
-						   ImGui::InputFloat("Start Z:", &object->z_start) ||
-						   ImGui::InputFloat("End X:", &object->x_end) ||
-						   ImGui::InputFloat("End Z:", &object->z_end) ||
-						   ImGui::InputFloat("Y:", &object->y)) {
+						if(ImGui::InputFloat("Start X", &object->x_start) ||
+						   ImGui::InputFloat("Start Z", &object->z_start) ||
+						   ImGui::InputFloat("End X", &object->x_end) ||
+						   ImGui::InputFloat("End Z", &object->z_end) ||
+						   ImGui::InputFloat("Y", &object->y)) {
 							change_object = true;
 						}
 
@@ -520,11 +538,11 @@ class MyImGui {
 					if(objects[current_object]->id == t_yz_rect) {
 						yz_rect* object = static_cast<yz_rect*>(objects[current_object].get());
 
-						if(ImGui::InputFloat("Start Y:", &object->y_start) ||
-						   ImGui::InputFloat("Start Z:", &object->z_start) ||
-						   ImGui::InputFloat("End Y:", &object->y_end) ||
-						   ImGui::InputFloat("End Z:", &object->z_end) ||
-						   ImGui::InputFloat("X:", &object->x)) {
+						if(ImGui::InputFloat("Start Y", &object->y_start) ||
+						   ImGui::InputFloat("Start Z", &object->z_start) ||
+						   ImGui::InputFloat("End Y", &object->y_end) ||
+						   ImGui::InputFloat("End Z", &object->z_end) ||
+						   ImGui::InputFloat("X", &object->x)) {
 							change_object = true;
 						}
 
@@ -550,9 +568,9 @@ class MyImGui {
 					if (objects[current_object]->id == t_sphere_moving) {
 						Sphere_moving* object = static_cast<Sphere_moving*>(objects[current_object].get());
 
-						if(ImGui::InputFloat3("Position C0:", &object->center_0[0]) ||
-						   ImGui::InputFloat3("Position C1:", &object->center_1[0]) ||
-						   ImGui::InputFloat("Radius:", &object->radius)) {
+						if(ImGui::InputFloat3("Position C0", &object->center_0[0]) ||
+						   ImGui::InputFloat3("Position C1", &object->center_1[0]) ||
+						   ImGui::InputFloat("Radius", &object->radius)) {
 							change_object = true;
 						}
 
@@ -566,8 +584,8 @@ class MyImGui {
 					if (objects[current_object]->id == t_sphere) {
 						Sphere* object = static_cast<Sphere*>(objects[current_object].get());
 
-						if(ImGui::InputFloat3("Position:", &object->center[0]) ||
-						   ImGui::InputFloat("Radius:", &object->radius)) {
+						if(ImGui::InputFloat3("Position", &object->center[0]) ||
+						   ImGui::InputFloat("Radius", &object->radius)) {
 							change_object = true;
 						}
 
@@ -692,8 +710,17 @@ class MyImGui {
 				}
 				ImGui::EndPopup();
 			}
+
+			ImGui::SameLine();
+			bool copy = ImGui::Button("COPY");
+
+			if(copy) {
+				// TODO: Add copy function
+			}
+
 			ImGui::SameLine();
 			bool remove = ImGui::Button("REMOVE");
+
 			if(ImGui::IsItemHovered()) { change_remove_stop = true; }
 			else { change_remove_stop = false; }
 
