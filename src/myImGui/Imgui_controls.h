@@ -64,27 +64,47 @@ class MyImGui {
 				ImGui::MenuItem("File edit", NULL, &show_file_edit);
 				ImGui::EndMenu();
 			}
-			ImGui::SameLine(ImGui::GetWindowWidth()-50);
-			if(ImGui::MenuItem("Run")) {
-				change_force_stop = false;
-			}
-			ImGui::SameLine(ImGui::GetWindowWidth()-95);
-			if(ImGui::MenuItem("Stop")) {
-				change_force_stop = true;
-			}
 
-			ImGui::SameLine(ImGui::GetWindowWidth()-147);
-			if(ImGui::MenuItem("Reset")) {
-				change_default = true;
+			const float ItemSpacing = ImGui::GetStyle().ItemSpacing.x;
 
-				reset_scene();
-			}
-			ImGui::SameLine(ImGui::GetWindowWidth()-199);
+			static float clear_width = 100.0f; //The 100.0f is just a guess size for the first frame.
+			float pos = clear_width + ItemSpacing;
+			ImGui::SameLine(ImGui::GetWindowWidth() - pos);
 			if(ImGui::MenuItem("Clear")) {
 				change_clear = true;
 
 				clear_scene();
 			}
+			clear_width = ImGui::GetItemRectSize().x; //Get the actual width for next frame.
+
+			static float reset_width = 100.0f;
+			pos += reset_width + ItemSpacing;
+			ImGui::SameLine(ImGui::GetWindowWidth() - pos);
+			if(ImGui::MenuItem("Reset")) {
+				change_default = true;
+
+				reset_scene();
+			}
+			reset_width = ImGui::GetItemRectSize().x; //Get the actual width for next frame.
+
+			static float stop_width = 100.0f;
+			pos += stop_width + ItemSpacing;
+			ImGui::SameLine(ImGui::GetWindowWidth() - pos);
+			if(ImGui::MenuItem("Stop")) {
+				change_force_stop = true;
+			}
+			stop_width = ImGui::GetItemRectSize().x; //Get the actual width for next frame.
+
+
+			static float run_width = 100.0f;
+			pos += run_width + ItemSpacing;
+			ImGui::SameLine(ImGui::GetWindowWidth() - pos);
+			if(ImGui::MenuItem("Run")) {
+				change_force_stop = false;
+			}
+			run_width = ImGui::GetItemRectSize().x; //Get the actual width for next frame.
+
+
 
 			ImGui::SameLine(ImGui::GetWindowWidth()/2);
 			if(change_force_stop || change_edit_stop) { ImGui::TextColored(ImVec4(0.7f, 0.0f, 0.3f, 1.0f), "STOPPED"); }
@@ -765,9 +785,9 @@ class MyImGui {
 				// TODO: Add copy function
 			}
 
-			ImGui::SameLine();
+			static float remove_width = 100.0f;
+			ImGui::SameLine(ImGui::GetWindowContentRegionWidth() - ImGui::CalcItemWidth() + 115 - remove_width);
 			bool remove = ImGui::Button("REMOVE");
-
 			if(ImGui::IsItemActive()) { change_edit_stop = true; }
 
 			if(remove) {
@@ -775,8 +795,10 @@ class MyImGui {
 
 				world.remove(current_object);
 			}
-			ImGui::SameLine();
+			remove_width = ImGui::GetItemRectSize().x; //Get the actual width for next frame.
 
+			static float remove_all_width = 100.0f;
+			ImGui::SameLine(ImGui::GetWindowContentRegionWidth() - ImGui::CalcItemWidth() + 200 - remove_all_width);
 			bool remove_all = ImGui::Button("REMOVE ALL");
 			if(ImGui::IsItemActive()) { change_edit_stop = true; }
 
@@ -787,6 +809,7 @@ class MyImGui {
 					world.remove(current_object);
 				}
 			}
+			remove_all_width = ImGui::GetItemRectSize().x; //Get the actual width for next frame.
 			ImGui::EndGroup();
 		}
 
