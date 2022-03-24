@@ -38,7 +38,8 @@ class MyGlfw {
 			int state = glfwGetKey(window, GLFW_KEY_W) || glfwGetKey(window, GLFW_KEY_UP);
 
 			if (state == GLFW_PRESS) {
-				change_position = true;
+				change_camera = true;
+				change_edit_stop = true;
 
 				lookfrom[0] += precision;
 				glfwWaitEventsTimeout(0.7);
@@ -49,7 +50,8 @@ class MyGlfw {
 			int state = glfwGetKey(window, GLFW_KEY_S) || glfwGetKey(window, GLFW_KEY_DOWN);
 
 			if (state == GLFW_PRESS) {
-				change_position = true;
+				change_camera = true;
+				change_edit_stop = true;
 
 				lookfrom[0] += -precision;
 				glfwWaitEventsTimeout(0.7);
@@ -60,7 +62,8 @@ class MyGlfw {
 			int state = glfwGetKey(window, GLFW_KEY_Q);
 
 			if (state == GLFW_PRESS) {
-				change_position = true;
+				change_camera = true;
+				change_edit_stop = true;
 
 				lookfrom[1] += precision;
 				glfwWaitEventsTimeout(0.7);
@@ -71,7 +74,8 @@ class MyGlfw {
 			int state = glfwGetKey(window, GLFW_KEY_E);
 
 			if (state == GLFW_PRESS) {
-				change_position = true;
+				change_camera = true;
+				change_edit_stop = true;
 
 				lookfrom[1] += -precision;
 				glfwWaitEventsTimeout(0.7);
@@ -82,7 +86,8 @@ class MyGlfw {
 			int state = glfwGetKey(window, GLFW_KEY_A) || glfwGetKey(window, GLFW_KEY_LEFT);
 
 			if (state == GLFW_PRESS) {
-				change_position = true;
+				change_camera = true;
+				change_edit_stop = true;
 
 				lookfrom[2] += precision;
 				glfwWaitEventsTimeout(0.7);
@@ -93,7 +98,8 @@ class MyGlfw {
 			int state = glfwGetKey(window, GLFW_KEY_D) || glfwGetKey(window, GLFW_KEY_RIGHT);
 
 			if (state == GLFW_PRESS) {
-				change_position = true;
+				change_camera = true;
+				change_edit_stop = true;
 
 				lookfrom[2] += -precision;
 				glfwWaitEventsTimeout(0.7);

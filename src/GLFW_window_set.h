@@ -160,9 +160,8 @@ int window_setup() {
 				}
 			}
 
-			if(change_position || change_view || change_aperture || change_object ||
-				change_object_remove || change_object_add || change_fov || change_bg ||
-				change_clear || change_default ) {
+			if(change_camera || change_scene || change_object || change_object_list ||
+				change_clear || change_default) {
 				if(change_multithreading) {
 					pool_multithread.clear();
 				}
@@ -178,16 +177,13 @@ int window_setup() {
 				pixels            = empty_pixels;
 				samples_in_pixels = empty_samples_in_pixels;
 
-				change_position      = false;
-				change_view          = false;
-				change_aperture      = false;
+				change_object_list   = false;
 				change_object        = false;
-				change_object_remove = false;
-				change_object_add    = false;
-				change_fov           = false;
-				change_bg            = false;
+				change_camera        = false;
+				change_scene         = false;
 				change_clear         = false;
 				change_default       = false;
+				change_edit_stop     = false;
 			}
 
 			#ifdef DEBUG

@@ -72,21 +72,16 @@ std::atomic<int> samples_in_counter = {0};
 
 /* Event flags */
 bool change_multithreading = false;
-bool change_position       = false;
-bool change_aperture       = false;
-bool change_fov            = false;
-bool change_default        = false;
-bool change_object         = false;
-bool change_object_remove  = false;
-bool change_object_add     = false;
-bool change_removeall_stop = false;
-bool change_remove_stop    = false;
 bool change_static         = false;
-bool change_clear          = false;
-bool change_view           = false;
-bool change_bg             = false;
 bool change_close_window   = false;
-bool change_stop           = true;
+bool change_object_list    = false;
+bool change_object         = false;
+bool change_scene          = false;
+bool change_camera         = false;
+bool change_clear          = false;
+bool change_default        = false;
+bool change_edit_stop      = false;
+bool change_force_stop     = true;
 
 //////////////////////////////////////////////////////////////
 

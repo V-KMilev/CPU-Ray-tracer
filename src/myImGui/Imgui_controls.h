@@ -66,11 +66,11 @@ class MyImGui {
 			}
 			ImGui::SameLine(ImGui::GetWindowWidth()-50);
 			if(ImGui::MenuItem("Run")) {
-				change_stop = false;
+				change_force_stop = false;
 			}
 			ImGui::SameLine(ImGui::GetWindowWidth()-95);
 			if(ImGui::MenuItem("Stop")) {
-				change_stop = true;
+				change_force_stop = true;
 			}
 
 			ImGui::SameLine(ImGui::GetWindowWidth()-147);
@@ -87,8 +87,7 @@ class MyImGui {
 			}
 
 			ImGui::SameLine(ImGui::GetWindowWidth()/2);
-			if(change_stop || change_remove_stop ||
-			change_removeall_stop) { ImGui::TextColored(ImVec4(0.7f, 0.0f, 0.3f, 1.0f), "STOPPED"); }
+			if(change_force_stop || change_edit_stop) { ImGui::TextColored(ImVec4(0.7f, 0.0f, 0.3f, 1.0f), "STOPPED"); }
 			else { ImGui::TextColored(ImVec4(0.0f, 0.7f, 0.3f, 1.0f), "RUNNING"); }
 
 			ImGui::EndMainMenuBar();
@@ -170,7 +169,8 @@ class MyImGui {
 				ImGui::NewLine();
 
 				if(ImGui::ColorEdit3("Background color", (float*) &background)) {
-					change_bg = true;
+					change_scene = true;
+					change_edit_stop = true;
 				}
 				ImGui::NewLine();
 
@@ -189,19 +189,23 @@ class MyImGui {
 			if(show_camera) {
 				ImGui::Begin("Camera");
 				if(ImGui::SliderFloat3("Camera position", &lookfrom[0], -13.0f, 13.0f)) {
-					change_position = true;
+					change_camera = true;
+					change_edit_stop = true;
 				}
 
-				if(ImGui::SliderFloat3("Camera focus", &lookat[0], -13.0f, 13.0f)) {
-					change_view = true;
+				if(ImGui::SliderFloat3("Camera focus", &lookat[0], -13.0f, 13.0f)) { 
+					change_camera = true;
+					change_edit_stop = true;
 				}
 
 				if(ImGui::InputFloat("Camera aperture ", &aperture, 0.0f, 10.0f)) {
-					change_fov = true;
+					change_camera = true;
+					change_edit_stop = true;
 				}
 
 				if(ImGui::InputFloat("Camera fov ", &fov, 0.0f, 180.0f)) {
-					change_aperture = true;
+					change_camera = true;
+					change_edit_stop = true;
 				}
 				ImGui::NewLine();
 
@@ -353,14 +357,18 @@ class MyImGui {
 		void object_material_edit(T* object, int &current_material, bool &original_material) {
 			ImGui::NewLine();
 			if(ImGui::Combo("Material", &current_material, materials, IM_ARRAYSIZE(materials))) {
+				change_edit_stop = true;
+
 				original_material = object->material_ptr->id == current_material;
 				object->material_ptr->id = static_cast<Material_ID>(current_material);
 			}
 
 			if(object->material_ptr->id == t_lambertian) {
 				if(!original_material) {
-					original_material = true;
 					change_object = true;
+					change_edit_stop = true;
+
+					original_material = true;
 					object->material_ptr = make_shared<Lambertian>(Color(1,1,1));
 				}
 				Lambertian* material = static_cast<Lambertian*>(object->material_ptr.get());
@@ -369,14 +377,18 @@ class MyImGui {
 				static bool original_texture = true;
 
 				if(ImGui::Combo("Texture", &current_texture, textures, IM_ARRAYSIZE(textures))) {
+					change_edit_stop = true;
+
 					original_texture = material->albedo->id == current_texture;
 					material->albedo->id = static_cast<Texture_ID>(current_texture);
 				}
 
 				if(material->albedo->id == t_solid_color) {
 					if(!original_texture) {
-						original_texture = true;
 						change_object = true;
+						change_edit_stop = true;
+
+						original_texture = true;
 						material->albedo = make_shared<Solid_Color>(Color(1,1,1));
 					}
 					Solid_Color* texture = static_cast<Solid_Color*>(material->albedo.get());
@@ -384,16 +396,20 @@ class MyImGui {
 					ImGui::NewLine();
 					if(ImGui::ColorEdit3("Color", (float*) &texture->color_value)) {
 						change_object = true;
+						change_edit_stop = true;
 					}
 					if(ImGui::InputFloat3("Color", (float*) &texture->color_value)) {
 						change_object = true;
+						change_edit_stop = true;
 					}
 				}
 
 				if(material->albedo->id == t_checker_texture) {
 					if(!original_texture) {
-						original_texture = true;
 						change_object = true;
+						change_edit_stop = true;
+
+						original_texture = true;
 						material->albedo = make_shared<Checker_Texture>(Color(1,1,1), Color(0,0,0));
 					}
 					Checker_Texture* texture = static_cast<Checker_Texture*>(material->albedo.get());
@@ -402,31 +418,38 @@ class MyImGui {
 					if(ImGui::ColorEdit3("Color 0", (float*) &texture->odd->color_value) ||
 					   ImGui::ColorEdit3("Color 1", (float*) &texture->even->color_value)) {
 						change_object = true;
+						change_edit_stop = true;
 					}
 					if(ImGui::InputFloat3("Color 0", (float*) &texture->odd->color_value) ||
 					   ImGui::InputFloat3("Color 1", (float*) &texture->even->color_value)) {
 						change_object = true;
+						change_edit_stop = true;
 					}
 				}
 
 				if(material->albedo->id == t_image_texture) {
 					if(!original_texture) {
-						original_texture = true;
 						change_object = true;
+						change_edit_stop = true;
+
+						original_texture = true;
 						material->albedo = make_shared<Image_Texture>("name.png");
 					}
 					
 					Image_Texture* texture = static_cast<Image_Texture*>(material->albedo.get());
 					if(ImGui::InputText("Image name/PATH", &texture->my_file_name[0], 256)) {
 						change_object = true;
+						change_edit_stop = true;
 					}
 				}
 			}
 
 			if(object->material_ptr->id == t_diffuse_light) {
 				if(!original_material) {
-					original_material = true;
 					change_object = true;
+					change_edit_stop = true;
+
+					original_material = true;
 					object->material_ptr = make_shared<Diffuse_Light>(Color(1,1,1));
 				}
 				Diffuse_Light* material = static_cast<Diffuse_Light*>(object->material_ptr.get());
@@ -435,14 +458,18 @@ class MyImGui {
 				static bool original_texture = true;
 
 				if(ImGui::Combo("Texture", &current_texture, textures, IM_ARRAYSIZE(textures))) {
+					change_edit_stop = true;
+
 					original_texture = material->emit->id == current_texture;
 					material->emit->id = static_cast<Texture_ID>(current_texture);
 				}
 
 				if(material->emit->id == t_solid_color) {
 					if(!original_texture) {
-						original_texture = true;
 						change_object = true;
+						change_edit_stop = true;
+
+						original_texture = true;
 						material->emit = make_shared<Solid_Color>(Color(1,1,1));
 					}
 					Solid_Color* texture = static_cast<Solid_Color*>(material->emit.get());
@@ -450,16 +477,20 @@ class MyImGui {
 					ImGui::NewLine();
 					if(ImGui::ColorEdit3("Color", (float*) &texture->color_value)) {
 						change_object = true;
+						change_edit_stop = true;
 					}
 					if(ImGui::InputFloat3("Color", (float*) &texture->color_value)) {
 						change_object = true;
+						change_edit_stop = true;
 					}
 				}
 
 				if(material->emit->id == t_checker_texture) {
 					if(!original_texture) {
-						original_texture = true;
 						change_object = true;
+						change_edit_stop = true;
+
+						original_texture = true;
 						material->emit = make_shared<Checker_Texture>(Color(1,1,1), Color(0,0,0));
 					}
 					Checker_Texture* texture = static_cast<Checker_Texture*>(material->emit.get());
@@ -468,22 +499,27 @@ class MyImGui {
 					if(ImGui::ColorEdit3("Color 0", (float*) &texture->odd->color_value) ||
 					   ImGui::ColorEdit3("Color 1", (float*) &texture->even->color_value)) {
 						change_object = true;
+						change_edit_stop = true;
 					}
 					if(ImGui::InputFloat3("Color 0", (float*) &texture->odd->color_value) ||
 					   ImGui::InputFloat3("Color 1", (float*) &texture->even->color_value)) {
 						change_object = true;
+						change_edit_stop = true;
 					}
 				}
 
 				if(material->emit->id == t_image_texture) {
 					if(!original_texture) {
-						original_texture = true;
 						change_object = true;
+						change_edit_stop = true;
+
+						original_texture = true;
 						material->emit = make_shared<Image_Texture>("name.png");
 					}
 					Image_Texture* texture = static_cast<Image_Texture*>(material->emit.get());
 					if(ImGui::InputText("Image name/PATH", &texture->my_file_name[0], 256)) {
 						change_object = true;
+						change_edit_stop = true;
 					}
 				}
 			}
@@ -507,6 +543,7 @@ class MyImGui {
 						   ImGui::InputFloat("End Y", &object->y_end) ||
 						   ImGui::InputFloat("Z", &object->z)) {
 							change_object = true;
+							change_edit_stop = true;
 						}
 
 						static int current_material = object->material_ptr->id;
@@ -525,6 +562,7 @@ class MyImGui {
 						   ImGui::InputFloat("End Z", &object->z_end) ||
 						   ImGui::InputFloat("Y", &object->y)) {
 							change_object = true;
+							change_edit_stop = true;
 						}
 
 						static int current_material = object->material_ptr->id;
@@ -544,6 +582,7 @@ class MyImGui {
 						   ImGui::InputFloat("End Z", &object->z_end) ||
 						   ImGui::InputFloat("X", &object->x)) {
 							change_object = true;
+							change_edit_stop = true;
 						}
 
 						static int current_material = object->material_ptr->id;
@@ -572,6 +611,7 @@ class MyImGui {
 						   ImGui::InputFloat3("Position C1", &object->center_1[0]) ||
 						   ImGui::InputFloat("Radius", &object->radius)) {
 							change_object = true;
+							change_edit_stop = true;
 						}
 
 						static int current_material = object->material_ptr->id;
@@ -587,6 +627,7 @@ class MyImGui {
 						if(ImGui::InputFloat3("Position", &object->center[0]) ||
 						   ImGui::InputFloat("Radius", &object->radius)) {
 							change_object = true;
+							change_edit_stop = true;
 						}
 
 						static int current_material = object->material_ptr->id;
@@ -683,27 +724,33 @@ class MyImGui {
 				for (int i = 0; i < IM_ARRAYSIZE(objects_names); i++) {
 					if (ImGui::Selectable(objects_names[i])) {
 						if(i == 0) {
-							change_object_add = true;
+							change_object_list = true;
+							change_edit_stop = true;
 							world.add(make_shared<xy_rect>(0, 0, 0, 0, 0, make_shared<Lambertian>(Color(1,1,1))));
 						}
 						if(i == 1) {
-							change_object_add = true;
+							change_object_list = true;
+							change_edit_stop = true;
 							world.add(make_shared<xz_rect>(0, 0, 0, 0, 0, make_shared<Lambertian>(Color(1,1,1))));
 						}
 						if(i == 2) {
-							change_object_add = true;
+							change_object_list = true;
+							change_edit_stop = true;
 							world.add(make_shared<yz_rect>(0, 0, 0, 0, 0, make_shared<Lambertian>(Color(1,1,1))));
 						}
 						if(i == 3) {
-							change_object_add = true;
+							change_object_list = true;
+							change_edit_stop = true;
 							// objects.push_back(make_shared<obj>(0, 0, 0, 0, 0,  make_shared<Lambertian>(Color(1,1,1))));
 						}
 						if(i == 4) {
-							change_object_add = true;
+							change_object_list = true;
+							change_edit_stop = true;
 							world.add(make_shared<Sphere_moving>(Point(0, 0, 0), Point(0, 0, 0), 0, 0, 0, make_shared<Lambertian>(Color(1,1,1))));
 						}
 						if(i == 5) {
-							change_object_add = true;
+							change_object_list = true;
+							change_edit_stop = true;
 							world.add(make_shared<Sphere>(Point(0, 0, 0), 0, make_shared<Lambertian>(Color(1,1,1))));
 						}
 					}
@@ -721,22 +768,20 @@ class MyImGui {
 			ImGui::SameLine();
 			bool remove = ImGui::Button("REMOVE");
 
-			if(ImGui::IsItemHovered()) { change_remove_stop = true; }
-			else { change_remove_stop = false; }
+			if(ImGui::IsItemActive()) { change_edit_stop = true; }
 
 			if(remove) {
-				change_object_remove = true;
+				change_object_list = true;
 
 				world.remove(current_object);
 			}
 			ImGui::SameLine();
 
 			bool remove_all = ImGui::Button("REMOVE ALL");
-			if(ImGui::IsItemHovered()) { change_removeall_stop = true; }
-			else { change_removeall_stop = false; }
+			if(ImGui::IsItemActive()) { change_edit_stop = true; }
 
 			if(remove_all) {
-				change_object_remove = true;
+				change_object_list = true;
 
 				while(!world.objects.empty()) {
 					world.remove(current_object);
