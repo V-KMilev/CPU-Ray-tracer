@@ -124,12 +124,24 @@ void render(const Bucket &my_bucket) {
 	}
 
 	/* Update samples if the image is finished */
-	if(++samples_in_counter == total_buckets) {
+	/* total_buckets + 1 - so we start with (samples_per_pixel + 2) 
+	 * on the next scene not on the last bucket.
+	 */
+	if(++samples_in_counter == total_buckets + 1) {
 
 		if(!change_static) {
 			samples_per_pixel += 2;
+			scenes_in_counter++;
 		}
 		samples_in_counter.store(0);
+	}
+
+	/* Update bucket_in if the bucket is finished */
+	buckets_in_counter++;
+
+	if(change_clear || change_default) {
+		buckets_in_counter.store(0);
+		scenes_in_counter.store(0);
 	}
 
 	Logger::getDefaultLogger() << "\n\rEnd   Bucket: " << std::this_thread::get_id() << " -> - " << my_bucket.bucket_id;

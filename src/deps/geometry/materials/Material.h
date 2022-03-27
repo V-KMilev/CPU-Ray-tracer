@@ -11,7 +11,7 @@
 /* Forward declaration */
 struct hit_record;
 
-enum Material_ID: unsigned int {
+enum Material_ID : unsigned int {
 	t_lambertian    = 1,
 	t_diffuse_light = 2
 };

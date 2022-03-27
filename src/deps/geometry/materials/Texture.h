@@ -8,7 +8,7 @@
 
 #include "RT_stb_image.h"
 
-enum Texture_ID: unsigned int {
+enum Texture_ID : unsigned int {
 	t_solid_color     = 1,
 	t_checker_texture = 2,
 	t_image_texture   = 3
@@ -127,14 +127,14 @@ class Image_Texture : public Texture {
 			my_name = "Image_Texture";
 			id = Texture_ID::t_image_texture;
 
-			my_file_name = (char*) file_name;
+			strcpy(my_file_name, file_name);
 
 			int components_per_pixel = bytes_per_pixel;
 
-			data = stbi_load(my_file_name, &width, &height, &components_per_pixel, components_per_pixel);
+			data = stbi_load(file_name, &width, &height, &components_per_pixel, components_per_pixel);
 
 			if (!data) {
-				std::cerr << "WARNING: Could not load texture image file " << my_file_name << "\n STB Reason: " << stbi_failure_reason() << "\n";
+				std::cerr << "WARNING: Could not load texture image file " << file_name << "\n STB Reason: " << stbi_failure_reason() << "\n";
 				width  = 0;
 				height = 0;
 			}
@@ -178,7 +178,7 @@ class Image_Texture : public Texture {
 		}
 
 	public:
-		char* my_file_name;
+		char my_file_name[255];
 
 		unsigned char *data;
 		int width, height;

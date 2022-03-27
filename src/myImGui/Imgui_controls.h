@@ -8,6 +8,15 @@
 #include "Render.h"
 #include "Log.h"
 
+enum Resolution_ID : unsigned int {
+	t_default   = 1,
+	t_test      = 2,
+	t_hd        = 3,
+	t_full_hd   = 4,
+	t_2k        = 5,
+	t_4k        = 6
+};
+
 class MyImGui {
 	public:
 		MyImGui() {}
@@ -64,6 +73,10 @@ class MyImGui {
 				ImGui::MenuItem("File edit", NULL, &show_file_edit);
 				ImGui::EndMenu();
 			}
+			if(ImGui::BeginMenu("Debug")) {
+				ImGui::MenuItem("Debug", NULL, &show_debug);
+				ImGui::EndMenu();
+			}
 
 			const float ItemSpacing = ImGui::GetStyle().ItemSpacing.x;
 
@@ -95,7 +108,6 @@ class MyImGui {
 			}
 			stop_width = ImGui::GetItemRectSize().x; //Get the actual width for next frame.
 
-
 			static float run_width = 100.0f;
 			pos += run_width + ItemSpacing;
 			ImGui::SameLine(ImGui::GetWindowWidth() - pos);
@@ -103,8 +115,6 @@ class MyImGui {
 				change_force_stop = false;
 			}
 			run_width = ImGui::GetItemRectSize().x; //Get the actual width for next frame.
-
-
 
 			ImGui::SameLine(ImGui::GetWindowWidth()/2);
 			if(change_force_stop || change_edit_stop) { ImGui::TextColored(ImVec4(0.7f, 0.0f, 0.3f, 1.0f), "STOPPED"); }
@@ -118,6 +128,7 @@ class MyImGui {
 			render_info();
 			exit();
 
+			debug();
 			if(show_demo) { ImGui::ShowDemoWindow(); }
 
 			right_low_corener_info();
@@ -435,29 +446,44 @@ class MyImGui {
 					Checker_Texture* texture = static_cast<Checker_Texture*>(material->albedo.get());
 
 					ImGui::NewLine();
-					if(ImGui::ColorEdit3("Color 0", (float*) &texture->odd->color_value) ||
-					   ImGui::ColorEdit3("Color 1", (float*) &texture->even->color_value)) {
+					if(ImGui::ColorEdit3("Color 0", (float*) &texture->odd->color_value)) {
 						change_object = true;
 						change_edit_stop = true;
 					}
-					if(ImGui::InputFloat3("Color 0", (float*) &texture->odd->color_value) ||
-					   ImGui::InputFloat3("Color 1", (float*) &texture->even->color_value)) {
+					if(ImGui::ColorEdit3("Color 1", (float*) &texture->even->color_value)) {
+						change_object = true;
+						change_edit_stop = true;
+					}
+
+					if(ImGui::InputFloat3("Color 0", (float*) &texture->odd->color_value)) {
+						change_object = true;
+						change_edit_stop = true;
+					}
+					if(ImGui::InputFloat3("Color 1", (float*) &texture->even->color_value)) {
 						change_object = true;
 						change_edit_stop = true;
 					}
 				}
 
 				if(material->albedo->id == t_image_texture) {
-					if(!original_texture) {
+					char name[255] = "";
+
+					if(original_texture) {
 						change_object = true;
 						change_edit_stop = true;
 
 						original_texture = true;
-						material->albedo = make_shared<Image_Texture>("name.png");
+
+						Image_Texture* texture = static_cast<Image_Texture*>(material->albedo.get());
+
+						strcpy(name, texture->my_file_name);
 					}
-					
-					Image_Texture* texture = static_cast<Image_Texture*>(material->albedo.get());
-					if(ImGui::InputText("Image name/PATH", &texture->my_file_name[0], 256)) {
+
+					ImGui::NewLine();
+					if(ImGui::InputText("Image name/PATH", &name[0], 256) && !ImGui::IsItemActive()) {
+						if(!original_texture) {
+							material->albedo = make_shared<Image_Texture>(name);
+						}
 						change_object = true;
 						change_edit_stop = true;
 					}
@@ -516,28 +542,44 @@ class MyImGui {
 					Checker_Texture* texture = static_cast<Checker_Texture*>(material->emit.get());
 
 					ImGui::NewLine();
-					if(ImGui::ColorEdit3("Color 0", (float*) &texture->odd->color_value) ||
-					   ImGui::ColorEdit3("Color 1", (float*) &texture->even->color_value)) {
+					if(ImGui::ColorEdit3("Color 0", (float*) &texture->odd->color_value)) {
 						change_object = true;
 						change_edit_stop = true;
 					}
-					if(ImGui::InputFloat3("Color 0", (float*) &texture->odd->color_value) ||
-					   ImGui::InputFloat3("Color 1", (float*) &texture->even->color_value)) {
+					if(ImGui::ColorEdit3("Color 1", (float*) &texture->even->color_value)) {
+						change_object = true;
+						change_edit_stop = true;
+					}
+
+					if(ImGui::InputFloat3("Color 0", (float*) &texture->odd->color_value)) {
+						change_object = true;
+						change_edit_stop = true;
+					}
+					if(ImGui::InputFloat3("Color 1", (float*) &texture->even->color_value)) {
 						change_object = true;
 						change_edit_stop = true;
 					}
 				}
 
 				if(material->emit->id == t_image_texture) {
-					if(!original_texture) {
+					char name[255] = "";
+
+					if(original_texture) {
 						change_object = true;
 						change_edit_stop = true;
 
 						original_texture = true;
-						material->emit = make_shared<Image_Texture>("name.png");
+
+						Image_Texture* texture = static_cast<Image_Texture*>(material->emit.get());
+
+						strcpy(name, texture->my_file_name);
 					}
-					Image_Texture* texture = static_cast<Image_Texture*>(material->emit.get());
-					if(ImGui::InputText("Image name/PATH", &texture->my_file_name[0], 256)) {
+
+					ImGui::NewLine();
+					if(ImGui::InputText("Image name/PATH", &name[0], 256) && !ImGui::IsItemActive()) {
+						if(!original_texture) {
+							material->emit = make_shared<Image_Texture>(name);
+						}
 						change_object = true;
 						change_edit_stop = true;
 					}
@@ -557,11 +599,23 @@ class MyImGui {
 					if(objects[current_object]->id == t_xy_rect) {
 						xy_rect* object = static_cast<xy_rect*>(objects[current_object].get());
 
-						if(ImGui::InputFloat("Start X", &object->x_start) ||
-						   ImGui::InputFloat("Start Y", &object->y_start) ||
-						   ImGui::InputFloat("End X", &object->x_end) ||
-						   ImGui::InputFloat("End Y", &object->y_end) ||
-						   ImGui::InputFloat("Z", &object->z)) {
+						if(ImGui::InputFloat("Start X", &object->x_start)) {
+							change_object = true;
+							change_edit_stop = true;
+						}
+						if(ImGui::InputFloat("Start Y", &object->y_start)) {
+							change_object = true;
+							change_edit_stop = true;
+						}
+						if(ImGui::InputFloat("End X", &object->x_end)) {
+							change_object = true;
+							change_edit_stop = true;
+						}
+						if(ImGui::InputFloat("End Y", &object->y_end)) {
+							change_object = true;
+							change_edit_stop = true;
+						}
+						if(ImGui::InputFloat("Z", &object->z)) {
 							change_object = true;
 							change_edit_stop = true;
 						}
@@ -576,11 +630,22 @@ class MyImGui {
 					if(objects[current_object]->id == t_xz_rect) {
 						xz_rect* object = static_cast<xz_rect*>(objects[current_object].get());
 
-						if(ImGui::InputFloat("Start X", &object->x_start) ||
-						   ImGui::InputFloat("Start Z", &object->z_start) ||
-						   ImGui::InputFloat("End X", &object->x_end) ||
-						   ImGui::InputFloat("End Z", &object->z_end) ||
-						   ImGui::InputFloat("Y", &object->y)) {
+						if(ImGui::InputFloat("Start X", &object->x_start)) {
+
+						}
+						if(ImGui::InputFloat("Start Z", &object->z_start)) {
+							change_object = true;
+							change_edit_stop = true;
+						}
+						if(ImGui::InputFloat("End X", &object->x_end)) {
+							change_object = true;
+							change_edit_stop = true;
+						}
+						if(ImGui::InputFloat("End Z", &object->z_end)) {
+							change_object = true;
+							change_edit_stop = true;
+						}
+						if(ImGui::InputFloat("Y", &object->y)) {
 							change_object = true;
 							change_edit_stop = true;
 						}
@@ -596,11 +661,23 @@ class MyImGui {
 					if(objects[current_object]->id == t_yz_rect) {
 						yz_rect* object = static_cast<yz_rect*>(objects[current_object].get());
 
-						if(ImGui::InputFloat("Start Y", &object->y_start) ||
-						   ImGui::InputFloat("Start Z", &object->z_start) ||
-						   ImGui::InputFloat("End Y", &object->y_end) ||
-						   ImGui::InputFloat("End Z", &object->z_end) ||
-						   ImGui::InputFloat("X", &object->x)) {
+						if(ImGui::InputFloat("Start Y", &object->y_start)) {
+							change_object = true;
+							change_edit_stop = true;
+						}
+						if(ImGui::InputFloat("Start Z", &object->z_start)) {
+							change_object = true;
+							change_edit_stop = true;
+						}
+						if(ImGui::InputFloat("End Y", &object->y_end)) {
+							change_object = true;
+							change_edit_stop = true;
+						}
+						if(ImGui::InputFloat("End Z", &object->z_end)) {
+							change_object = true;
+							change_edit_stop = true;
+						}
+						if(ImGui::InputFloat("X", &object->x)) {
 							change_object = true;
 							change_edit_stop = true;
 						}
@@ -627,9 +704,15 @@ class MyImGui {
 					if (objects[current_object]->id == t_sphere_moving) {
 						Sphere_moving* object = static_cast<Sphere_moving*>(objects[current_object].get());
 
-						if(ImGui::InputFloat3("Position C0", &object->center_0[0]) ||
-						   ImGui::InputFloat3("Position C1", &object->center_1[0]) ||
-						   ImGui::InputFloat("Radius", &object->radius)) {
+						if(ImGui::InputFloat3("Position C0", &object->center_0[0])) {
+							change_object = true;
+							change_edit_stop = true;
+						}
+						if(ImGui::InputFloat3("Position C1", &object->center_1[0])) {
+							change_object = true;
+							change_edit_stop = true;
+						}
+						if(ImGui::InputFloat("Radius", &object->radius)) {
 							change_object = true;
 							change_edit_stop = true;
 						}
@@ -644,8 +727,11 @@ class MyImGui {
 					if (objects[current_object]->id == t_sphere) {
 						Sphere* object = static_cast<Sphere*>(objects[current_object].get());
 
-						if(ImGui::InputFloat3("Position", &object->center[0]) ||
-						   ImGui::InputFloat("Radius", &object->radius)) {
+						if(ImGui::InputFloat3("Position", &object->center[0])) {
+							change_object = true;
+							change_edit_stop = true;
+						}
+						if(ImGui::InputFloat("Radius", &object->radius)) {
 							change_object = true;
 							change_edit_stop = true;
 						}
@@ -838,6 +924,65 @@ class MyImGui {
 				ImGui::End();
 			}
 		}
+
+		void debug() {
+			if(show_debug) {
+				ImGui::Begin("Debug menu");
+				
+				ImGui::Separator();
+				ImGui::TextColored(ImVec4(0.7f, 0.0f, 0.3f, 1.0f), "ImGui Bools:");
+
+				ImGui::Text("show_settings:    %s", show_settings ? "true" : "false");
+				ImGui::Text("show_camera:      %s", show_camera ? "true" : "false");
+				ImGui::Text("show_render_info: %s", show_render_info ? "true" : "false");
+				ImGui::Text("show_file_edit:   %s", show_file_edit ? "true" : "false");
+				ImGui::Text("show_debug:       %s", show_debug ? "true" : "false");
+				ImGui::Text("show_demo:        %s", show_demo ? "true" : "false");
+				ImGui::Text("show_exit:        %s", show_exit ? "true" : "false");
+				ImGui::Text("show_overlay:     %s", show_overlay ? "true" : "false");
+
+				ImGui::NewLine();
+				ImGui::TextColored(ImVec4(0.7f, 0.0f, 0.3f, 1.0f), "Render Bools:");
+
+				ImGui::Text("change_multithreading: %s", change_multithreading ? "true" : "false");
+				ImGui::Text("change_close_window:   %s", change_close_window ? "true" : "false");
+				ImGui::Text("change_object_list:    %s", change_object_list ? "true" : "false");
+				ImGui::Text("change_object:         %s", change_object ? "true" : "false");
+				ImGui::Text("change_static:         %s", change_static ? "true" : "false");
+				ImGui::Text("change_scene:          %s", change_scene ? "true" : "false");
+				ImGui::Text("change_camera:         %s", change_camera ? "true" : "false");
+				ImGui::Text("change_clear:          %s", change_clear ? "true" : "false");
+				ImGui::Text("change_default:        %s", change_default ? "true" : "false");
+				ImGui::Text("change_edit_stop:      %s", change_edit_stop ? "true" : "false");
+				ImGui::Text("change_force_stop:     %s", change_force_stop ? "true" : "false");
+
+				ImGui::NewLine();
+				ImGui::TextColored(ImVec4(0.7f, 0.0f, 0.3f, 1.0f), "Object count:");
+				ImGui::Text("Object count: %d", world.objects.size());
+
+				ImGui::NewLine();
+				ImGui::TextColored(ImVec4(0.7f, 0.0f, 0.3f, 1.0f), "Threads:");
+				ImGui::Text("Max Threads: %d", MAX_NUMBER_OF_THREADS);
+				ImGui::Text("Working Threads: %d", change_multithreading ? MAX_NUMBER_OF_THREADS : 1);
+
+				ImGui::NewLine();
+				ImGui::TextColored(ImVec4(0.7f, 0.0f, 0.3f, 1.0f), "Buckets:");
+				ImGui::Text("Total buckets: %d", total_buckets);
+				ImGui::Text("Bucket size: %d", bucket_size);
+				ImGui::TextColored(ImVec4(0.5f, 0.0f, 0.3f, 1.0f), "Buckets in: %d", buckets_in_counter.load());
+
+				ImGui::NewLine();
+				ImGui::TextColored(ImVec4(0.7f, 0.0f, 0.3f, 1.0f), "Scene:");
+				ImGui::Text("Scene aspect ratio: %f", aspect_ratio);
+				ImGui::Text("Scene width: %d", image_width);
+				ImGui::Text("Scene height: %d", image_height);
+				ImGui::TextColored(ImVec4(0.5f, 0.0f, 0.3f, 1.0f), "Scenes in: %d", scenes_in_counter.load());
+
+				ImGui::Separator();
+				ImGui::End();
+			}
+
+		}
 		void reset_scene() {
 			fov        = default_fov;
 			max_depth  = default_max_depth;
@@ -908,6 +1053,7 @@ class MyImGui {
 		bool show_camera      = false;
 		bool show_render_info = false;
 		bool show_file_edit   = false;
+		bool show_debug       = false;
 		bool show_demo        = false;
 		bool show_exit        = false;
 		bool show_overlay     = true;

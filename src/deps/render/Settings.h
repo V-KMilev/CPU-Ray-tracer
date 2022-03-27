@@ -7,40 +7,51 @@
 #include <atomic>
 #include <thread>
 
-#define RES_DEFAULT 400
-
-#define RES_TEST 800
-
-#define RES_HD 1080
 #define RES_FULL_HD 1920
-#define RES_2K 2048
-#define RES_4K 3840
 
 /* Basic parameters | Default settings */
+//////////////////////////////////////////////////////////////
+
+/* Threadpool parameters */
 const int MAX_NUMBER_OF_THREADS = std::thread::hardware_concurrency(); // max number of threads
 
-const int bucket_size = {64};                                          // bucket size x by y
+//////////////////////////////////////////////////////////////
 
-const float aspect_ratio = {16.0 / 9.0};                               // Image: aspect ratio: resolution
+/* Scene parameters */
+const float aspect_ratio = {16.0 / 9.0};                               // Scene aspect ratio: resolution
 
-int image_width = {RES_FULL_HD};                                            // Image: width
-int image_height = {static_cast<int>(image_width / aspect_ratio)};     // Image: height
+int image_width = {RES_FULL_HD};                                       // Scene width
+int image_height = {static_cast<int>(image_width / aspect_ratio)};     // Scene height
 
+std::atomic<int> scenes_in_counter = {0};                              // currently renderd scenes
+
+//////////////////////////////////////////////////////////////
+
+/* Render parameters */
 int samples_per_pixel = {1};                                           // rays per pixel
 int max_depth = {2};                                                   // ray bounce limit per pixel
 
-int total_buckets = {0};                                               // total amount of buckets
+std::atomic<int> samples_in_counter = {0};                             //
+
+//////////////////////////////////////////////////////////////
 
 MyEmbree embree;
 
 //////////////////////////////////////////////////////////////
 
-/* Image pixels*/
-std::vector<Color> pixels(image_width * image_height);                 // Image: output pixels
-std::vector<int> samples_in_pixels(image_width * image_height);        // Image: samples in pixel
+/* Bucket parameters */
+const int bucket_size = {64};                                          // bucket size x by y
+int total_buckets = {0};                                               // total amount of buckets
+std::atomic<int> buckets_in_counter = {0};                             // currently renderd buckets
 
-std::vector<Color> empty_pixels(image_width * image_height);           // Image: output pixels = (0.0f ,0.0f ,0.0f)
-std::vector<int> empty_samples_in_pixels(image_width * image_height);  // Image: samples in pixel = 0 ... 0
+//////////////////////////////////////////////////////////////
+
+/* Image pixels */
+std::vector<Color> pixels(image_width * image_height);                 // Scene output pixels
+std::vector<int> samples_in_pixels(image_width * image_height);        // Scene samples in pixel
+
+std::vector<Color> empty_pixels(image_width * image_height);           // Scene output pixels = (0.0f ,0.0f ,0.0f)
+std::vector<int> empty_samples_in_pixels(image_width * image_height);  // Scene samples in pixel = 0 ... 0
 
 //////////////////////////////////////////////////////////////
 
@@ -62,11 +73,6 @@ float dist_to_focus = 3.5f;
 
 /* Move parameters */
 float precision = {0.1f};
-
-//////////////////////////////////////////////////////////////
-
-/* Render parameters */
-std::atomic<int> samples_in_counter = {0};
 
 //////////////////////////////////////////////////////////////
 
