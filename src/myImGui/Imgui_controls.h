@@ -219,15 +219,16 @@ class MyImGui {
 		void camera_control() {
 			if(show_camera) {
 				ImGui::Begin("Camera");
-				if(ImGui::SliderFloat3("Camera position", &lookfrom[0], -13.0f, 13.0f)) {
+				if(ImGui::InputFloat3("Camera position", &lookfrom[0])) {
+					change_camera = true;
+					change_edit_stop = true;
+				}
+				if(ImGui::InputFloat3("Camera focus", &lookat[0])) { 
 					change_camera = true;
 					change_edit_stop = true;
 				}
 
-				if(ImGui::SliderFloat3("Camera focus", &lookat[0], -13.0f, 13.0f)) { 
-					change_camera = true;
-					change_edit_stop = true;
-				}
+				ImGui::NewLine();
 
 				if(ImGui::InputFloat("Camera aperture ", &aperture, 0.0f, 10.0f)) {
 					change_camera = true;
@@ -247,7 +248,7 @@ class MyImGui {
 				ImGui::End();
 			}
 		}
-		
+
 		void render_info() {
 			if(show_render_info) {
 				ImGui::Begin("INFO");
