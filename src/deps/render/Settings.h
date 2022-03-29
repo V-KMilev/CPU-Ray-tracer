@@ -78,6 +78,7 @@ float precision = {0.1f};
 
 /* Event flags */
 bool change_multithreading = false;
+bool change_single_cast    = false;
 bool change_static         = false;
 bool change_close_window   = false;
 bool change_object_list    = false;

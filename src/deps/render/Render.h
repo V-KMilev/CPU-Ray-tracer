@@ -52,6 +52,11 @@ Color tracer(const Ray &ray, const Color &background, const Hittable &world, int
 		return emitted;
 	}
 
+	/* If return true color is set, return it. */
+	if(change_single_cast) {
+		return attenuation;
+	}
+
 	/* If we hit non lightsource-able object return object materials value. */
 	return emitted + attenuation * tracer(scattered, background, world, depth-1);
 }
@@ -138,11 +143,6 @@ void render(const Bucket &my_bucket) {
 
 	/* Update bucket_in if the bucket is finished */
 	buckets_in_counter++;
-
-	if(change_clear || change_default) {
-		buckets_in_counter.store(0);
-		scenes_in_counter.store(0);
-	}
 
 	Logger::getDefaultLogger() << "\n\rEnd   Bucket: " << std::this_thread::get_id() << " -> - " << my_bucket.bucket_id;
 

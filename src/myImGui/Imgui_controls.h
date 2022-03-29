@@ -209,6 +209,12 @@ class MyImGui {
 				ImGui::SameLine();
 
 				ImGui::Checkbox("Static render", &change_static);
+				ImGui::SameLine();
+
+				if(ImGui::Checkbox("Single cast", &change_single_cast)) {
+					change_scene = true;
+					change_edit_stop = true;
+				}
 				ImGui::NewLine();
 
 				ImGui::Separator();
@@ -946,6 +952,7 @@ class MyImGui {
 				ImGui::TextColored(ImVec4(0.7f, 0.0f, 0.3f, 1.0f), "Render Bools:");
 
 				ImGui::Text("change_multithreading: %s", change_multithreading ? "true" : "false");
+				ImGui::Text("change_single_cast:    %s", change_single_cast ? "true" : "false");
 				ImGui::Text("change_close_window:   %s", change_close_window ? "true" : "false");
 				ImGui::Text("change_object_list:    %s", change_object_list ? "true" : "false");
 				ImGui::Text("change_object:         %s", change_object ? "true" : "false");

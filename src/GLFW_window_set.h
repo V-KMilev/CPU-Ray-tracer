@@ -172,6 +172,12 @@ int window_setup() {
 				/* Reset Render samples counter */
 				samples_in_counter.store(0);
 
+				/* Reset bucket counter counter */
+				buckets_in_counter.store(0);
+
+				/* Reset scene counter */
+				scenes_in_counter.store(0);
+
 				samples_per_pixel = default_samples_per_pixel;
 
 				pixels            = empty_pixels;
