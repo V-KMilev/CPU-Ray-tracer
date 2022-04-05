@@ -90,6 +90,8 @@ bool change_default        = false;
 bool change_edit_stop      = false;
 bool change_force_stop     = true;
 
+bool edit_allowed          = false;
+
 //////////////////////////////////////////////////////////////
 
 /* Default settings */

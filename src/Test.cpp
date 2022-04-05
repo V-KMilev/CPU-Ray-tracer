@@ -7,6 +7,8 @@
 
 #include "Matrices.h"
 
+#define EMBREE_IGNORE_INVALID_RAYS
+
 std::stringstream* Logger::log = nullptr;
 
 int main(int argc, char **argv) {

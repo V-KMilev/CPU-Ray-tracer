@@ -129,8 +129,10 @@ class ThreadPool {
 						for(;;) {
 
 							while((change_edit_stop || change_force_stop) && !my_Stopping) {
-								std::this_thread::sleep_for(std::chrono::milliseconds(100));
+								edit_allowed = true;
+								std::this_thread::sleep_for(std::chrono::milliseconds(300));
 							}
+							edit_allowed = false;
 
 							Bucket task;
 							{

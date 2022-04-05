@@ -81,7 +81,7 @@ void render(const Bucket &my_bucket) {
 	/* CAMERA: */
 	Camera camera(lookfrom, lookat, view_up, fov, aspect_ratio, aperture, dist_to_focus, 0.0, 1.0);
 
-	Logger::getDefaultLogger() << "\n\rStart Bucket: " << std::this_thread::get_id() << " -> + " << my_bucket.bucket_id;
+	// Logger::getDefaultLogger() << "\n\rStart Bucket: " << std::this_thread::get_id() << " -> + " << my_bucket.bucket_id;
 
 	#ifdef DEBUG
 		std::cerr << "\n\rStart Bucket: " << std::this_thread::get_id() << " -> + " << my_bucket.bucket_id;
@@ -134,17 +134,17 @@ void render(const Bucket &my_bucket) {
 	 */
 	if(++samples_in_counter == total_buckets + 1) {
 
-		if(!change_static) {
+		if(!change_static && !change_single_cast) {
 			samples_per_pixel += 2;
-			scenes_in_counter++;
 		}
+		scenes_in_counter++;
 		samples_in_counter.store(0);
 	}
 
 	/* Update bucket_in if the bucket is finished */
 	buckets_in_counter++;
 
-	Logger::getDefaultLogger() << "\n\rEnd   Bucket: " << std::this_thread::get_id() << " -> - " << my_bucket.bucket_id;
+	// Logger::getDefaultLogger() << "\n\rEnd   Bucket: " << std::this_thread::get_id() << " -> - " << my_bucket.bucket_id;
 
 	#ifdef DEBUG
 		std::cerr << "\n\rEnd   Bucket: " << std::this_thread::get_id() << " -> - " << my_bucket.bucket_id;

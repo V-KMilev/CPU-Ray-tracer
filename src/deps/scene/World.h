@@ -185,7 +185,7 @@ Hittable_list get_scene() {
 
 	world.add(make_shared<Obj>(embree, "../../src/models/parvati_statue_low_poly.obj", "../../materials/", material_red));
 
-	world.add(make_shared<xy_rect>(-2.5, 2.5, 0, 3.2, 5, random_img_m));
+	world.add(make_shared<xy_rect>(-2.5, 2.5, 0, 3.2, 5, make_shared<Lambertian>(make_shared<Image_Texture>(""))));
 
 ////////////////////////////////////////////////////////////////////////////
 
