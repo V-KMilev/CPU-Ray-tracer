@@ -68,6 +68,9 @@ class MyImGui {
 			}
 			if(ImGui::BeginMenu("Edit")) {
 				ImGui::MenuItem("File edit", NULL, &show_file_edit);
+				ImGui::MenuItem("Settings", NULL, &show_render);
+				ImGui::MenuItem("Camera", NULL, &show_camera);
+				ImGui::MenuItem("Details", NULL, &show_details);
 				ImGui::EndMenu();
 			}
 			if(ImGui::BeginMenu("Debug")) {
@@ -119,6 +122,13 @@ class MyImGui {
 
 			ImGui::EndMainMenuBar();
 
+			settings();
+			camera_control();
+			file_edit();
+			render_info();
+
+			exit();
+
 			ImGuiWindowFlags my_window_flags = ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoFocusOnAppearing;
 
 			const float PAD = 100.0f;
@@ -126,25 +136,6 @@ class MyImGui {
 
 			ImVec2 work_pos = viewport->WorkPos; // Use work area to avoid menu-bar/task-bar, if any!
 			ImVec2 work_size = viewport->WorkSize;
-			ImVec2 window_pos, window_pos_pivot;
-
-			window_pos.x = work_pos.x;
-			window_pos.y = work_pos.y;
-
-			ImGui::SetNextWindowPos(window_pos, ImGuiCond_Always, window_pos_pivot);
-			
-			if(show_file_edit) {
-				ImGui::SetNextWindowSize(ImVec2(450, work_size.y), ImGuiCond_FirstUseEver);
-				ImGui::SetNextWindowBgAlpha(0.47f); // Transparent background
-				ImGui::Begin("Settings", &show_file_edit, my_window_flags);
-					settings();
-					camera_control();
-					file_edit();
-					// render_info();
-				ImGui::End();
-			}
-
-			exit();
 
 			ImVec2 debug_window_pos, debug_window_pos_pivot;
 
@@ -156,7 +147,6 @@ class MyImGui {
 			debug(my_window_flags);
 
 			if(show_demo) { ImGui::ShowDemoWindow(); }
-
 
 			right_low_corener_info();
 		}
@@ -219,99 +209,107 @@ class MyImGui {
 		}
 
 		void settings() {
-			ImGui::Separator();
-			ImGui::TextColored(ImVec4(0.7f, 0.0f, 0.3f, 1.0f), "Scene settings:");
-			ImGui::InputInt("Samples per pixel", &samples_per_pixel, 0, 1337);
-			ImGui::InputInt("Max depth", &max_depth, 0, 250);
-			ImGui::NewLine();
+			if(show_render) {
+				ImGui::Begin("Settings", &show_render);
+					ImGui::Separator();
+					ImGui::InputInt("Samples per pixel", &samples_per_pixel, 0, 1337);
+					ImGui::InputInt("Max depth", &max_depth, 0, 250);
+					ImGui::NewLine();
 
-			if(ImGui::ColorEdit3("Background color", (float*) &background)) {
-				change_scene = true;
-				change_edit_stop = true;
+					if(ImGui::ColorEdit3("Background color", (float*) &background)) {
+						change_scene = true;
+						change_edit_stop = true;
+					}
+					ImGui::NewLine();
+
+					ImGui::Checkbox("Multithreading", &change_multithreading);
+					ImGui::SameLine();
+
+					ImGui::Checkbox("Static render", &change_static);
+					ImGui::SameLine();
+
+					if(ImGui::Checkbox("Single cast", &change_single_cast)) {
+						change_scene = true;
+						change_edit_stop = true;
+					}
+					ImGui::NewLine();
+
+					ImGui::Separator();
+				ImGui::End();
 			}
-			ImGui::NewLine();
-
-			ImGui::Checkbox("Multithreading", &change_multithreading);
-			ImGui::SameLine();
-
-			ImGui::Checkbox("Static render", &change_static);
-			ImGui::SameLine();
-
-			if(ImGui::Checkbox("Single cast", &change_single_cast)) {
-				change_scene = true;
-				change_edit_stop = true;
-			}
-			ImGui::NewLine();
-
-			ImGui::Separator();
 		}
 
 		void camera_control() {
-			ImGui::TextColored(ImVec4(0.7f, 0.0f, 0.3f, 1.0f), "Camera settings:");
-			if(ImGui::InputFloat3("Camera position", &lookfrom[0])) {
-				change_camera = true;
-				change_edit_stop = true;
+			if(show_camera) {
+				ImGui::Begin("Camera", &show_camera);
+					ImGui::Separator();
+					if(ImGui::InputFloat3("Camera position", &lookfrom[0])) {
+						change_camera = true;
+						change_edit_stop = true;
+					}
+					if(ImGui::InputFloat3("Camera focus", &lookat[0])) { 
+						change_camera = true;
+						change_edit_stop = true;
+					}
+					ImGui::NewLine();
+
+					if(ImGui::InputFloat("Camera aperture ", &aperture, 0.0f, 10.0f)) {
+						change_camera = true;
+						change_edit_stop = true;
+					}
+
+					if(ImGui::InputFloat("Camera fov ", &fov, 0.0f, 180.0f)) {
+						change_camera = true;
+						change_edit_stop = true;
+					}
+					ImGui::NewLine();
+
+					ImGui::InputFloat("Move precision", &precision, 0, 37);
+					ImGui::NewLine();
+
+					ImGui::Separator();
+				ImGui::End();
 			}
-			if(ImGui::InputFloat3("Camera focus", &lookat[0])) { 
-				change_camera = true;
-				change_edit_stop = true;
-			}
-
-			ImGui::NewLine();
-
-			if(ImGui::InputFloat("Camera aperture ", &aperture, 0.0f, 10.0f)) {
-				change_camera = true;
-				change_edit_stop = true;
-			}
-
-			if(ImGui::InputFloat("Camera fov ", &fov, 0.0f, 180.0f)) {
-				change_camera = true;
-				change_edit_stop = true;
-			}
-			ImGui::NewLine();
-
-			ImGui::InputFloat("Move precision", &precision, 0, 37);
-			ImGui::NewLine();
-
-			ImGui::Separator();
 		}
 
 		void render_info() {
-			ImGui::Separator();
-			ImGui::TextColored(ImVec4(0.7f, 0.0f, 0.3f, 1.0f), "Render info:");
-			ImGui::NewLine();
+			if(show_details) {
+				ImGui::Begin("Details", &show_details);
+					ImGui::Separator();
+					ImGui::NewLine();
 
-			ImGui::Text("Total buckets: %d", total_buckets);
+					ImGui::Text("Total buckets: %d", total_buckets);
 
-			ImGui::Text("Bucket size: %d", bucket_size);
+					ImGui::Text("Bucket size: %d", bucket_size);
 
-			ImGui::Text("Max Threads: %d", MAX_NUMBER_OF_THREADS);
-			ImGui::NewLine();
+					ImGui::Text("Max Threads: %d", MAX_NUMBER_OF_THREADS);
+					ImGui::NewLine();
 
-			static float values[120] = {};
-			static int values_offset = 0;
-			static double refresh_time = 0.0;
+					static float values[120] = {};
+					static int values_offset = 0;
+					static double refresh_time = 0.0;
 
-			// Create data at fixed 60 Hz rate for the demo
-			while (refresh_time < ImGui::GetTime()) {
-				values[values_offset] = ImGui::GetIO().Framerate;
-				values_offset = (values_offset + 1) % IM_ARRAYSIZE(values);
-				refresh_time += 1.0f / 60.0f;
+					// Create data at fixed 60 Hz rate for the demo
+					while (refresh_time < ImGui::GetTime()) {
+						values[values_offset] = ImGui::GetIO().Framerate;
+						values_offset = (values_offset + 1) % IM_ARRAYSIZE(values);
+						refresh_time += 1.0f / 60.0f;
+					}
+
+					// Plots can display overlay texts
+					// (in this example, we will display an average value)
+					{
+						float average = 0.0f;
+						for (int n = 0; n < IM_ARRAYSIZE(values); n++)
+							average += values[n];
+						average /= (float)IM_ARRAYSIZE(values);
+						char overlay[32];
+						sprintf(overlay, "avg %.3f", average);
+						ImGui::PlotLines("FPS", values, IM_ARRAYSIZE(values), values_offset, overlay);
+					}
+					ImGui::Separator();
+				ImGui::End();
 			}
-
-			// Plots can display overlay texts
-			// (in this example, we will display an average value)
-			{
-				float average = 0.0f;
-				for (int n = 0; n < IM_ARRAYSIZE(values); n++)
-					average += values[n];
-				average /= (float)IM_ARRAYSIZE(values);
-				char overlay[32];
-				sprintf(overlay, "avg %.3f", average);
-				ImGui::PlotLines("FPS", values, IM_ARRAYSIZE(values), values_offset, overlay);
-			}
-
-			ImGui::Separator();
 		}
 
 		template<class T>
@@ -896,8 +894,7 @@ class MyImGui {
 				// TODO: Add copy function
 			}
 
-			static float remove_width = 100.0f;
-			ImGui::SameLine(140);
+			ImGui::SameLine(180);
 			bool remove = ImGui::Button("REMOVE");
 			if(ImGui::IsItemActive()) { change_edit_stop = true; }
 
@@ -907,10 +904,8 @@ class MyImGui {
 					world.remove(current_object);
 				}
 			}
-			remove_width = ImGui::GetItemRectSize().x; //Get the actual width for next frame.
 
-			static float remove_all_width = 100.0f;
-			ImGui::SameLine(200);
+			ImGui::SameLine(240);
 			bool remove_all = ImGui::Button("REMOVE ALL");
 			if(ImGui::IsItemActive()) { change_edit_stop = true; }
 
@@ -923,28 +918,30 @@ class MyImGui {
 					}
 				}
 			}
-			remove_all_width = ImGui::GetItemRectSize().x; //Get the actual width for next frame.
 			ImGui::EndGroup();
 		}
 
 		void file_edit() {
-			ImGui::TextColored(ImVec4(0.7f, 0.0f, 0.3f, 1.0f), "Object settings:");
-			static int selected = 0;
-			static std::vector<shared_ptr<Hittable>> &my_objects = world.objects;
-			{
-				ImGui::BeginChild("left pane", ImVec2(150, 0), true);
-				for (int i = 0; i < my_objects.size(); i++){
+			if(show_file_edit) {
+				ImGui::Begin("Object edit", &show_file_edit);
+					static int selected = 0;
+					static std::vector<shared_ptr<Hittable>> &my_objects = world.objects;
+					{
+						ImGui::BeginChild("left pane", ImVec2(150, 0), true);
+						for (int i = 0; i < my_objects.size(); i++){
 
-					char label[128];
+							char label[128];
 
-					sprintf(label, "%d | %s", i, my_objects[i]->object_name);
-					if (ImGui::Selectable(label, selected == i)) { selected = i; }
-				}
-				ImGui::EndChild();
+							sprintf(label, "%d | %s", i, my_objects[i]->object_name);
+							if (ImGui::Selectable(label, selected == i)) { selected = i; }
+						}
+						ImGui::EndChild();
+					}
+					ImGui::SameLine();
+
+					object_editor(selected, my_objects);
+				ImGui::End();
 			}
-			ImGui::SameLine();
-
-			object_editor(selected, my_objects);
 		}
 
 		void debug(ImGuiWindowFlags &window_flags) {
@@ -954,6 +951,9 @@ class MyImGui {
 					ImGui::TextColored(ImVec4(0.7f, 0.0f, 0.3f, 1.0f), "ImGui Bools:");
 
 					ImGui::Text("show_file_edit:   %s", show_file_edit ? "true" : "false");
+					ImGui::Text("show_details:     %s", show_details ? "true" : "false");
+					ImGui::Text("show_camera:      %s", show_camera ? "true" : "false");
+					ImGui::Text("show_render:      %s", show_render ? "true" : "false");
 					ImGui::Text("show_debug:       %s", show_debug ? "true" : "false");
 					ImGui::Text("show_demo:        %s", show_demo ? "true" : "false");
 					ImGui::Text("show_exit:        %s", show_exit ? "true" : "false");
@@ -1070,8 +1070,10 @@ class MyImGui {
 		const char* materials[3] = { "None", "Lambertian", "Diffuse-Light" };
 		const char* textures[4] = { "None", "Solid-Color", "Checker-Texture", "Image-Texture" };
 
-		bool show_file_settings = false;
 		bool show_file_edit     = false;
+		bool show_details       = false;
+		bool show_camera        = false;
+		bool show_render        = false;
 		bool show_debug         = false;
 		bool show_demo          = false;
 		bool show_exit          = false;

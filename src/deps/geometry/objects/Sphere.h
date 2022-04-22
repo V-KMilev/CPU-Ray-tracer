@@ -76,18 +76,18 @@ class Sphere : public Hittable {
 bool Sphere::hit(const Ray &ray, float distance_min, float distance_max, hit_record &record) const {
 	// quadratic equation: simplified
 	// normal quadratic equation in case:
-	// -(2 * (oc * ray.dir)) +- root(sqrt(os * ray.dir) - 4 * (ray.dir * sqrt(length)) * (oc.sqrt(length) - sqrt(radius))) / 2 * (ray.dir * sqrt(length))
+	// -(2 * (oc . ray.dir)) +- root(sqrt(os . ray.dir) - 4 * (ray.dir.v_sqrt(length)) * (oc.v_sqrt(length) - sqrt(radius))) / 2 * (ray.dir.v_sqrt(length))
 	// represented: -b +- root(sqrt(b) - 4 * a * c) / 2 * a
 	//
 	// simplified quadratic equation in case: divide all by 2
-	// -(oc * ray.dir) +- root(sqrt(os * ray.dir) - (ray.dir * sqrt(length)) * (oc.sqrt(length) - sqrt(radius))) / (ray.dir * sqrt(length))
+	// -(oc . ray.dir) +- root(sqrt(os . ray.dir) - (ray.dir.v_sqrt(length)) * (oc.v_sqrt(length) - sqrt(radius))) / (ray.dir.v_sqrt(length))
 	// represented: -h +- root(sqrt(h) - a * c) / a where h = b / 2
 
 	Vec oc = ray.get_origin() - center;                                      // Vec OC: camera to center
 
-	float a = ray.get_direction().length_squared();                          // Discriminant: a: ray.dir * sqrt(length)
-	float b = dot(oc, ray.get_direction());                                  // Discriminant: b: oc * ray.dir
-	float c = oc.length_squared() - radius * radius;                         // Discriminant: c: oc.sqrt(length) - sqrt(radius)
+	float a = ray.get_direction().length_squared();                          // Discriminant: a: ray.dir.v_sqrt(length)
+	float b = dot(oc, ray.get_direction());                                  // Discriminant: b: oc . ray.dir
+	float c = oc.length_squared() - radius * radius;                         // Discriminant: c: oc.v_sqrt(length) - sqrt(radius)
 
 	float discriminant = b * b - a * c;                                      // Discriminant
 

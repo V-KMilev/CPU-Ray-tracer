@@ -43,7 +43,7 @@ class xy_rect : public Hittable {
 
 			float x = ray.get_origin().getX() + distance * ray.get_direction().getX();
 			float y = ray.get_origin().getY() + distance * ray.get_direction().getY();
-			
+
 			if (x < x_start || x > x_end || y < y_start || y > y_end) {
 				return false;
 			}
@@ -51,7 +51,7 @@ class xy_rect : public Hittable {
 			record.u = (x - x_start) / (x_end - x_start);
 			record.v = (y - y_start) / (y_end - y_start);
 
-			Vec outward_normal = Vec(0, 0, 1);    // Ray: Z
+			Vec outward_normal = Vec(0, 0, 1);    // Z
 
 			record.set_face_normal(ray, outward_normal);
 			record.material_ptr = material_ptr;
@@ -105,7 +105,7 @@ class xz_rect : public Hittable {
 
 			float x = ray.get_origin().getX() + distance * ray.get_direction().getX();
 			float z = ray.get_origin().getZ() + distance * ray.get_direction().getZ();
-			
+
 			if (x < x_start || x > x_end || z < z_start || z > z_end) {
 				return false;
 			}
@@ -113,7 +113,7 @@ class xz_rect : public Hittable {
 			record.u = (x - x_start) / (x_end - x_start);
 			record.v = (z - z_start) / (z_end - z_start);
 
-			Vec outward_normal = Vec(0, 1, 0);    // Ray: Y
+			Vec outward_normal = Vec(0, 1, 0);    // Y
 
 			record.set_face_normal(ray, outward_normal);
 			record.material_ptr = material_ptr;
@@ -167,7 +167,7 @@ class yz_rect : public Hittable {
 
 			float y = ray.get_origin().getY() + distance * ray.get_direction().getY();
 			float z = ray.get_origin().getZ() + distance * ray.get_direction().getZ();
-			
+
 			if (y < y_start || y > y_end || z < z_start || z > z_end) {
 				return false;
 			}
@@ -175,7 +175,7 @@ class yz_rect : public Hittable {
 			record.u = (y - y_start) / (y_end - y_start);
 			record.v = (z - z_start) / (z_end - z_start);
 
-			Vec outward_normal = Vec(1, 0, 0);    // Ray: X
+			Vec outward_normal = Vec(1, 0, 0);    // X
 
 			record.set_face_normal(ray, outward_normal);
 			record.material_ptr = material_ptr; 
