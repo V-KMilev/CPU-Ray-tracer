@@ -5,8 +5,6 @@
 #include "GLFW_window_set.h"
 #include "Log.h"
 
-#define EMBREE_IGNORE_INVALID_RAYS
-
 std::stringstream* Logger::log = nullptr;
 
 int main(int argc, char **argv) {
