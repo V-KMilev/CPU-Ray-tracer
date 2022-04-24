@@ -9,9 +9,10 @@ enum Object_ID: unsigned int {
 	t_xy_rect       = 1,
 	t_xz_rect       = 2,
 	t_yz_rect       = 3,
-	t_obj           = 4,
-	t_sphere_moving = 5,
-	t_sphere        = 6
+	t_box           = 4,
+	t_obj           = 5,
+	t_sphere_moving = 6,
+	t_sphere        = 7
 };
 
 struct hit_record {

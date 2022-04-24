@@ -19,6 +19,7 @@
 #include "Sphere.h"
 #include "AArect.h"
 #include "Obj.h"
+#include "Box.h"
 
 /*
  * Function - image_material
@@ -128,10 +129,7 @@ Hittable_list get_scene() {
 
 
 	// t1
-	world.add(make_shared<xy_rect>(6, 10, 0, 6, 10, material_gray));                 // turret wall
-	world.add(make_shared<xy_rect>(6, 10, 0, 6, 6, material_gray));                  // turret wall
-	world.add(make_shared<yz_rect>(0, 6, 6, 10, 6, material_gray));                  // turret wall
-	world.add(make_shared<yz_rect>(0, 6, 6, 10, 10, material_gray));                 // turret wall
+	world.add(make_shared<Box>(Point(6,0,6), Point(10,6,10), material_gray));
 	world.add(make_shared<xz_rect>(4, 10, 4, 10, 6, material_gray));                 // turret roof
 
 	// t1 lamps
@@ -142,10 +140,7 @@ Hittable_list get_scene() {
 
 
 	// t2
-	world.add(make_shared<xy_rect>(6, 10, 0, 6, -10, material_gray));                  // turret wall
-	world.add(make_shared<xy_rect>(6, 10, 0, 6, -6, material_gray));                   // turret wall
-	world.add(make_shared<yz_rect>(0, 6, -10, -6, 6, material_gray));                  // turret wall
-	world.add(make_shared<yz_rect>(0, 6, -10, -6, 10, material_gray));                 // turret wall
+	world.add(make_shared<Box>(Point(6,0,-10), Point(10,6,-6), material_gray));
 	world.add(make_shared<xz_rect>(4, 10, -10, -4, 6, material_gray));                 // turret roof
 
 	// t2 lamps
@@ -156,10 +151,7 @@ Hittable_list get_scene() {
 
 
 	// t3
-	world.add(make_shared<xy_rect>(-10, -6, 0, 6, 10, material_gray));                 // turret wall
-	world.add(make_shared<xy_rect>(-10, -6, 0, 6, 6, material_gray));                  // turret wall
-	world.add(make_shared<yz_rect>(0, 6, 6, 10, -6, material_gray));                   // turret wall
-	world.add(make_shared<yz_rect>(0, 6, 6, 10, -10, material_gray));                  // turret wall
+	world.add(make_shared<Box>(Point(-10,0,6), Point(-6,6,10), material_gray));
 	world.add(make_shared<xz_rect>(-10, -4, 4, 10, 6, material_gray));                 // turret roof
 
 	// t3 lamps
@@ -170,10 +162,7 @@ Hittable_list get_scene() {
 
 
 	// t4
-	world.add(make_shared<xy_rect>(-10, -6, 0, 6, -10, material_gray));                  // turret wall
-	world.add(make_shared<xy_rect>(-10, -6, 0, 6, -6, material_gray));                   // turret wall
-	world.add(make_shared<yz_rect>(0, 6, -10, -6, -6, material_gray));                   // turret wall
-	world.add(make_shared<yz_rect>(0, 6, -10, -6, -10, material_gray));                  // turret wall
+	world.add(make_shared<Box>(Point(-10,0,-10), Point(-6,6,-6), material_gray));
 	world.add(make_shared<xz_rect>(-10, -4, -10, -4, 6, material_gray));                 // turret roof
 
 	// t4 lamps

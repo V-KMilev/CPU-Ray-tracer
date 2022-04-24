@@ -31,6 +31,7 @@ Hittable_list world = get_scene();
 Color tracer(const Ray &ray, const Color &background, const Hittable &world, int depth) {
 
 	hit_record record;
+
 	/* If we've exceeded the ray bounce limit, no more light is gathered. */
 	if (depth <= 0) {
 		return Color(0, 0, 0);    // Set current pixel value to black
@@ -58,7 +59,7 @@ Color tracer(const Ray &ray, const Color &background, const Hittable &world, int
 	}
 
 	/* If we hit non lightsource-able object return object materials value. */
-	return emitted + attenuation * tracer(scattered, background, world, depth-1);
+	return attenuation * tracer(scattered, background, world, depth-1);
 }
 
 /*
@@ -111,7 +112,7 @@ void render(const Bucket &my_bucket) {
 
 				Ray ray = camera.get_ray(u, v);
 
-				/* Set current pixel Color value. An avg. of all samples on it. */
+				/* Set current pixel Color value. A sum of all samples on it. */
 				current_pixel += tracer(ray, background, world, max_depth);
 			}
 

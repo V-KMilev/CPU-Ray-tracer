@@ -406,7 +406,7 @@ class MyImGui {
 			}
 		}
 		template<class T>
-		void object_material_edit(T* object, int &current_material, bool &original_material) {
+		bool object_material_edit(T* object, int &current_material, bool &original_material) {
 			ImGui::NewLine();
 			if(ImGui::Combo("Material", &current_material, materials, IM_ARRAYSIZE(materials))) {
 				change_edit_stop = true;
@@ -422,6 +422,8 @@ class MyImGui {
 
 					original_material = true;
 					object->material_ptr = make_shared<Lambertian>(Color(1,1,1));
+
+					return true;
 				}
 				Lambertian* material = static_cast<Lambertian*>(object->material_ptr.get());
 
@@ -442,6 +444,8 @@ class MyImGui {
 
 						original_texture = true;
 						material->albedo = make_shared<Solid_Color>(Color(1,1,1));
+
+						return true;
 					}
 					Solid_Color* texture = static_cast<Solid_Color*>(material->albedo.get());
 
@@ -449,10 +453,14 @@ class MyImGui {
 					if(ImGui::ColorEdit3("Color", (float*) &texture->color_value)) {
 						change_object = true;
 						change_edit_stop = true;
+
+						return true;
 					}
 					if(ImGui::InputFloat3("Color", (float*) &texture->color_value)) {
 						change_object = true;
 						change_edit_stop = true;
+
+						return true;
 					}
 				}
 
@@ -463,6 +471,8 @@ class MyImGui {
 
 						original_texture = true;
 						material->albedo = make_shared<Checker_Texture>(Color(1,1,1), Color(0,0,0));
+
+						return true;
 					}
 					Checker_Texture* texture = static_cast<Checker_Texture*>(material->albedo.get());
 
@@ -470,19 +480,27 @@ class MyImGui {
 					if(ImGui::ColorEdit3("Color 0", (float*) &texture->odd->color_value)) {
 						change_object = true;
 						change_edit_stop = true;
+
+						return true;
 					}
 					if(ImGui::ColorEdit3("Color 1", (float*) &texture->even->color_value)) {
 						change_object = true;
 						change_edit_stop = true;
+
+						return true;
 					}
 
 					if(ImGui::InputFloat3("Color 0", (float*) &texture->odd->color_value)) {
 						change_object = true;
 						change_edit_stop = true;
+
+						return true;
 					}
 					if(ImGui::InputFloat3("Color 1", (float*) &texture->even->color_value)) {
 						change_object = true;
 						change_edit_stop = true;
+
+						return true;
 					}
 				}
 
@@ -507,6 +525,8 @@ class MyImGui {
 
 						if(!original_texture) {
 							material->albedo = make_shared<Image_Texture>(name);
+
+							return true;
 						}
 					}
 				}
@@ -519,6 +539,8 @@ class MyImGui {
 
 					original_material = true;
 					object->material_ptr = make_shared<Diffuse_Light>(Color(1,1,1));
+
+					return true;
 				}
 				Diffuse_Light* material = static_cast<Diffuse_Light*>(object->material_ptr.get());
 
@@ -539,6 +561,8 @@ class MyImGui {
 
 						original_texture = true;
 						material->emit = make_shared<Solid_Color>(Color(1,1,1));
+
+						return true;
 					}
 					Solid_Color* texture = static_cast<Solid_Color*>(material->emit.get());
 
@@ -546,10 +570,14 @@ class MyImGui {
 					if(ImGui::ColorEdit3("Color", (float*) &texture->color_value)) {
 						change_object = true;
 						change_edit_stop = true;
+
+						return true;
 					}
 					if(ImGui::InputFloat3("Color", (float*) &texture->color_value)) {
 						change_object = true;
 						change_edit_stop = true;
+
+						return true;
 					}
 				}
 
@@ -560,6 +588,8 @@ class MyImGui {
 
 						original_texture = true;
 						material->emit = make_shared<Checker_Texture>(Color(1,1,1), Color(0,0,0));
+
+						return true;
 					}
 					Checker_Texture* texture = static_cast<Checker_Texture*>(material->emit.get());
 
@@ -567,19 +597,27 @@ class MyImGui {
 					if(ImGui::ColorEdit3("Color 0", (float*) &texture->odd->color_value)) {
 						change_object = true;
 						change_edit_stop = true;
+
+						return true;
 					}
 					if(ImGui::ColorEdit3("Color 1", (float*) &texture->even->color_value)) {
 						change_object = true;
 						change_edit_stop = true;
+
+						return true;
 					}
 
 					if(ImGui::InputFloat3("Color 0", (float*) &texture->odd->color_value)) {
 						change_object = true;
 						change_edit_stop = true;
+
+						return true;
 					}
 					if(ImGui::InputFloat3("Color 1", (float*) &texture->even->color_value)) {
 						change_object = true;
 						change_edit_stop = true;
+
+						return true;
 					}
 				}
 
@@ -604,10 +642,13 @@ class MyImGui {
 
 						if(!original_texture) {
 							material->emit = make_shared<Image_Texture>(name);
+
+							return true;
 						}
 					}
 				}
 			}
+			return false;
 		}
 
 		void object_editor(unsigned int current_object, std::vector<std::shared_ptr<Hittable>>& objects) {
@@ -712,6 +753,36 @@ class MyImGui {
 						ImGui::NewLine();
 					}
 
+					if (objects[current_object]->id == t_box) {
+						Box* object = static_cast<Box*>(objects[current_object].get());
+
+						if(ImGui::InputFloat3("Start Position", &object->start[0])) {
+							change_object = true;
+							change_edit_stop = true;
+
+							if(change_object && change_edit_stop) {
+								object->update();
+							}
+						}
+						if(ImGui::InputFloat3("End Position", &object->end[0])) {
+							change_object = true;
+							change_edit_stop = true;
+
+							if(change_object && change_edit_stop) {
+								object->update();
+							}
+						}
+
+						static int current_material = object->material_ptr->id;
+						static bool original_material = true;
+
+						if(object_material_edit<Box>(object, current_material, original_material)) {
+							if(change_object && change_edit_stop) {
+								object->update();
+							}
+						}
+					}
+
 					if (objects[current_object]->id == t_obj) {
 						Obj* object = static_cast<Obj*>(objects[current_object].get());
 
@@ -798,6 +869,17 @@ class MyImGui {
 						object_details<yz_rect>(object_id, material_id, texture_id, object);
 					}
 
+					if (objects[current_object]->id == t_box) {
+						Box* object = static_cast<Box*>(objects[current_object].get());
+
+						ImGui::Text("Start Position:\nx: %.3f | y: %.3f | z: %.3f",
+						object->start[0], object->start[1], object->start[2]);
+						ImGui::Text("End Position:\nx: %.3f | y: %.3f | z: %.3f",
+						object->end[0], object->end[1], object->end[2]);
+
+						object_details<Box>(object_id, material_id, texture_id, object);
+					}
+
 					if (objects[current_object]->id == t_obj) {
 						Obj* object = static_cast<Obj*>(objects[current_object].get());
 
@@ -843,7 +925,7 @@ class MyImGui {
 			if (add) {
 				ImGui::OpenPopup("my_select_popup");
 			}
-			const char* objects_names[] = { "xy_rect", "xz_rect", "yz_rect", "obj", "sphere_moving", "sphere" };
+			const char* objects_names[] = { "Rect-xy", "Rect-xz", "Rect-yz", "Box", "Obj", "Moving-sphere", "Sphere" };
 
 			if (ImGui::BeginPopup("my_select_popup")) {
 
@@ -870,14 +952,19 @@ class MyImGui {
 						if(i == 3) {
 							change_object_list = true;
 							change_edit_stop = true;
-							world.add(make_shared<Obj>(embree, "", "", make_shared<Lambertian>(Color(1,1,1))));
+							world.add(make_shared<Box>(Point(0, 0, 0), Point(0, 0, 0), make_shared<Lambertian>(Color(1,1,1))));
 						}
 						if(i == 4) {
 							change_object_list = true;
 							change_edit_stop = true;
-							world.add(make_shared<Sphere_moving>(Point(0, 0, 0), Point(0, 0, 0), 0, 0, 0, make_shared<Lambertian>(Color(1,1,1))));
+							world.add(make_shared<Obj>(embree, "", "", make_shared<Lambertian>(Color(1,1,1))));
 						}
 						if(i == 5) {
+							change_object_list = true;
+							change_edit_stop = true;
+							world.add(make_shared<Sphere_moving>(Point(0, 0, 0), Point(0, 0, 0), 0, 0, 0, make_shared<Lambertian>(Color(1,1,1))));
+						}
+						if(i == 6) {
 							change_object_list = true;
 							change_edit_stop = true;
 							world.add(make_shared<Sphere>(Point(0, 0, 0), 0, make_shared<Lambertian>(Color(1,1,1))));
