@@ -24,14 +24,14 @@ class Obj : public Hittable {
 			float* vertexbuffer = (float*) rtcSetNewGeometryBuffer(
 					embree.geom, RTC_BUFFER_TYPE_VERTEX, 0, RTC_FORMAT_FLOAT3, 3 * sizeof(float), v_size);
 
-			for(int i = 0; i < v_size; i++) {
-				vertexbuffer[i] = myTOL.attrib.vertices[i];
+			for(int v = 0; v < v_size; v++) {
+				vertexbuffer[v] = myTOL.attrib.vertices[v];
 			}
 
 			int numTriangles = 0;
-			for (int i = 0; i < myTOL.shapes.size(); i++) {
+			for (int s = 0; s < myTOL.shapes.size(); s++) {
 
-				const tinyobj::shape_t &shape = myTOL.shapes[i];
+				const tinyobj::shape_t &shape = myTOL.shapes[s];
 
 				numTriangles += shape.mesh.num_face_vertices.size();
 			}

@@ -26,22 +26,22 @@ class MyTOL {
 		 */
 
 		bool myLoadObj(const char* file_name, const char* material_path = NULL, bool triangulate = true) {
-			std::cout << "Loading " << file_name << std::endl;
+			std::cout << "[OBJ][LOADING] myLoadObj - [ " << file_name << " ]\n";
 
 			std::string warn;
 			std::string err;
 			bool ret = tinyobj::LoadObj(&attrib, &shapes, &materials, &warn, &err, file_name, material_path, triangulate);
 
 			if (!warn.empty()) {
-				std::cout << "WARN: " << warn << std::endl;
+				std::cout << "[OBJ][WARRNING] myLoadObj - [ " << warn << " ]\n";
 			}
 
 			if (!err.empty()) {
-				std::cerr << "ERR: " << err << std::endl;
+				std::cerr << "[OBJ][ERROR] myLoadObj - [" << err << " ]\n";
 			}
 
 			if (!ret) {
-				std::cerr << "Failed to load/parse .obj.\n";
+				std::cerr << "[OBJ][FAIL] myLoadObj - [ Failed to load/parse .obj. ]\n";
 				return false;
 			}
 

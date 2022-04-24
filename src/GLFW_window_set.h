@@ -30,7 +30,6 @@
 #include "File_write.h"
 #include "Render.h"
 
-
 const char* gl_version = "#version 330";
 
 // Sets: (left, right, bottom, top, -, -)
