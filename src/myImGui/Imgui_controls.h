@@ -4,17 +4,18 @@
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
 
+#include "File_write.h"
 #include "Settings.h"
 #include "Render.h"
 #include "Log.h"
 
 enum Resolution_ID : unsigned int {
-	t_default   = 1,
-	t_test      = 2,
-	t_hd        = 3,
-	t_full_hd   = 4,
-	t_2k        = 5,
-	t_4k        = 6
+	T_DEFAULT   = 1,
+	T_TEST      = 2,
+	T_HD        = 3,
+	T_FULL_HD   = 4,
+	T_2K        = 5,
+	T_4K        = 6
 };
 
 class MyImGui {
@@ -59,6 +60,9 @@ class MyImGui {
 			ImGui::BeginMainMenuBar();
 
 			if(ImGui::BeginMenu("File")) {
+				if(ImGui::MenuItem("Save", "Ctrl+S", &show_save)) {
+					change_force_stop = true;
+				}
 				ImGui::Separator();
 				ImGui::MenuItem("ImGui menu", "Ctrl+D", &show_demo);
 				if(ImGui::MenuItem("Exit", "Alt+F4")) {
@@ -127,6 +131,7 @@ class MyImGui {
 			file_edit();
 			render_info();
 
+			save();
 			exit();
 
 			ImGuiWindowFlags my_window_flags = ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoFocusOnAppearing;
@@ -160,9 +165,8 @@ class MyImGui {
 			ImVec2 center = ImGui::GetMainViewport()->GetCenter();
 			ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
 
-			if (ImGui::BeginPopupModal("Exit?", NULL, ImGuiWindowFlags_AlwaysAutoResize))
-			{
-				ImGui::Text("Are you sure you want to exit?\nAll files will be deleted!\n\n");
+			if (ImGui::BeginPopupModal("Exit?", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
+				ImGui::Text("Are you sure you want to exit?\n  All files will be deleted!\n");
 				ImGui::Separator();
 
 				ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 0));
@@ -173,6 +177,47 @@ class MyImGui {
 				ImGui::SameLine();
 				if (ImGui::Button("Cancel", ImVec2(100, 0))) {
 					show_exit = false;
+					ImGui::CloseCurrentPopup();
+				}
+				ImGui::EndPopup();
+			}
+		}
+
+		void save() {
+			if(show_save)
+				ImGui::OpenPopup("Save");
+
+				static char save_path_name[512] = {};
+				static char save_file_name[256] = {};
+
+			// Always center this window when appearing
+			ImVec2 center = ImGui::GetMainViewport()->GetCenter();
+			ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
+
+			if (ImGui::BeginPopupModal("Save", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
+
+				ImGui::Text("Are you sure you want to save this file?");
+				ImGui::InputText("Path name", save_path_name, 512);
+				ImGui::InputText("File name", save_file_name, 256);
+				ImGui::Separator();
+
+				std::string file_name = std::string(save_path_name) + std::string(save_file_name);
+
+				ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 0));
+				ImGui::PopStyleVar();
+
+				if (ImGui::Button("SAVE", ImVec2(135, 0)) && save_file_name != '\0' && save_path_name != '\0') {
+						std::ofstream out(file_name);
+
+						file_write(out, pixels, image_width, image_height);
+
+						out.close();
+				}
+				ImGui::SetItemDefaultFocus();
+				ImGui::SameLine();
+				if (ImGui::Button("Cancel", ImVec2(135, 0))) {
+					show_save = false;
+
 					ImGui::CloseCurrentPopup();
 				}
 				ImGui::EndPopup();
@@ -201,7 +246,7 @@ class MyImGui {
 
 			ImGui::SetNextWindowBgAlpha(0.35f); // Transparent background
 			if (ImGui::Begin("Info overlay", &show_overlay, window_flags)) {
-					ImGui::Text("Benchmark - Ray-tracer v1.00");
+					ImGui::Text("Benchmark - Ray-tracer v1.01");
 					ImGui::Separator();
 					ImGui::Text("%.3f ms/frame | %.1f FPS", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 				ImGui::End();
@@ -456,12 +501,6 @@ class MyImGui {
 
 						return true;
 					}
-					if(ImGui::InputFloat3("Color", (float*) &texture->color_value)) {
-						change_object = true;
-						change_edit_stop = true;
-
-						return true;
-					}
 				}
 
 				if(material->albedo->id == t_checker_texture) {
@@ -484,19 +523,6 @@ class MyImGui {
 						return true;
 					}
 					if(ImGui::ColorEdit3("Color 1", (float*) &texture->even->color_value)) {
-						change_object = true;
-						change_edit_stop = true;
-
-						return true;
-					}
-
-					if(ImGui::InputFloat3("Color 0", (float*) &texture->odd->color_value)) {
-						change_object = true;
-						change_edit_stop = true;
-
-						return true;
-					}
-					if(ImGui::InputFloat3("Color 1", (float*) &texture->even->color_value)) {
 						change_object = true;
 						change_edit_stop = true;
 
@@ -573,12 +599,6 @@ class MyImGui {
 
 						return true;
 					}
-					if(ImGui::InputFloat3("Color", (float*) &texture->color_value)) {
-						change_object = true;
-						change_edit_stop = true;
-
-						return true;
-					}
 				}
 
 				if(material->emit->id == t_checker_texture) {
@@ -601,19 +621,6 @@ class MyImGui {
 						return true;
 					}
 					if(ImGui::ColorEdit3("Color 1", (float*) &texture->even->color_value)) {
-						change_object = true;
-						change_edit_stop = true;
-
-						return true;
-					}
-
-					if(ImGui::InputFloat3("Color 0", (float*) &texture->odd->color_value)) {
-						change_object = true;
-						change_edit_stop = true;
-
-						return true;
-					}
-					if(ImGui::InputFloat3("Color 1", (float*) &texture->even->color_value)) {
 						change_object = true;
 						change_edit_stop = true;
 
@@ -1100,7 +1107,6 @@ class MyImGui {
 		}
 		void clear_scene() {
 			max_depth  = default_max_depth;
-			background = default_background;
 		}
 
 		void setStyle() {
@@ -1164,5 +1170,6 @@ class MyImGui {
 		bool show_debug         = false;
 		bool show_demo          = false;
 		bool show_exit          = false;
+		bool show_save          = false;
 		bool show_overlay       = true;
 };

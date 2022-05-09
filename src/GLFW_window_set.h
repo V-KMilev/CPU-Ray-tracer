@@ -43,7 +43,7 @@ glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(0, 0, 0));
 glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(0, 0, 0));
 glm::mat4 mvp = projection * view * model;
 
-int frameNum = 0;
+int frame_number = 0;
 
 int window_setup() {
 
@@ -189,24 +189,32 @@ int window_setup() {
 				change_clear         = false;
 				change_default       = false;
 				change_edit_stop     = false;
+
+				frame_number = 0;
 			}
 
 			#ifdef DEBUG
+			{
 				char fileName[256] = {0};
 
 				#ifdef _WIN32
-					sprintf(fileName, "../../src/textures/debug/RTout%d.ppm", frameNum);
+					sprintf(fileName, "../../src/textures/debug/ppm_img/RTout%d.ppm", frame_number);
 				#endif
 
 				#ifdef __linux__
-					sprintf(fileName, "../src/textures/debug/RTout%d.ppm", frameNum);
+					sprintf(fileName, "../src/textures/debug/ppm_img/RTout%d.ppm", frame_number);
 				#endif
 
-				std::ofstream out(fileName);
+				if(samples_per_pixel % 3 == 0) {
+					std::ofstream out(fileName);
 
-				file_write(out, pixels, image_width, image_height);
+					file_write(out, pixels, image_width, image_height);
 
-				frameNum++;
+					out.close();
+
+					frame_number++;
+				}
+			}
 			#endif
 
 			{
