@@ -258,7 +258,12 @@ class MyImGui {
 				ImGui::Begin("Settings", &show_render);
 					ImGui::Separator();
 					ImGui::InputInt("Samples per pixel", &samples_per_pixel, 0, 1337);
-					ImGui::InputInt("Max depth", &max_depth, 0, 250);
+
+					if(ImGui::InputInt("Max depth", &max_depth, 0, 250)) {
+						change_scene = true;
+						change_edit_stop = true;
+					}
+
 					ImGui::NewLine();
 
 					if(ImGui::ColorEdit3("Background color", (float*) &background)) {
