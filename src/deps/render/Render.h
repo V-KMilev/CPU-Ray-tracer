@@ -33,13 +33,13 @@ Color tracer(const Ray &ray, const Color &background, const Hittable &world, int
 	hit_record record;
 
 	/* If we've exceeded the ray bounce limit, no more light is gathered. */
-	if (depth <= 0) {
+	if(depth <= 0) {
 		return Color(0, 0, 0);    // Set current pixel value to black
 	}
 
 	/* If the ray hits nothing, return the background Color. */
 	/* 0.001 to fix the shadow problem */
-	if (!world.hit(ray, 0.001, infinity, record)) {
+	if(!world.hit(ray, 0.001, infinity, record)) {
 		return background;
 	}
 
@@ -49,7 +49,7 @@ Color tracer(const Ray &ray, const Color &background, const Hittable &world, int
 
 	/* If the material we hit is not scatterable, return emitted value. */
 	/* (If we hit lightsource return its Color value.) */
-	if (!record.material_ptr->scatter(ray, record, attenuation, scattered)) {
+	if(!record.material_ptr->scatter(ray, record, attenuation, scattered)) {
 		return emitted;
 	}
 

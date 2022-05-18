@@ -37,14 +37,14 @@ class xy_rect : public Hittable {
 
 			float distance = (z - ray.get_origin().getZ()) / ray.get_direction().getZ();
 
-			if (distance < distance_min || distance > distance_max) {
+			if(distance < distance_min || distance > distance_max) {
 				return false;
 			}
 
 			float x = ray.get_origin().getX() + distance * ray.get_direction().getX();
 			float y = ray.get_origin().getY() + distance * ray.get_direction().getY();
 
-			if (x < x_start || x > x_end || y < y_start || y > y_end) {
+			if(x < x_start || x > x_end || y < y_start || y > y_end) {
 				return false;
 			}
 
@@ -99,14 +99,14 @@ class xz_rect : public Hittable {
 
 			float distance = (y - ray.get_origin().getY()) / ray.get_direction().getY();
 
-			if (distance < distance_min || distance > distance_max) {
+			if(distance < distance_min || distance > distance_max) {
 				return false;
 			}
 
 			float x = ray.get_origin().getX() + distance * ray.get_direction().getX();
 			float z = ray.get_origin().getZ() + distance * ray.get_direction().getZ();
 
-			if (x < x_start || x > x_end || z < z_start || z > z_end) {
+			if(x < x_start || x > x_end || z < z_start || z > z_end) {
 				return false;
 			}
 
@@ -161,14 +161,14 @@ class yz_rect : public Hittable {
 
 			float distance = (x - ray.get_origin().getX()) / ray.get_direction().getX();
 
-			if (distance < distance_min || distance > distance_max) {
+			if(distance < distance_min || distance > distance_max) {
 				return false;
 			}
 
 			float y = ray.get_origin().getY() + distance * ray.get_direction().getY();
 			float z = ray.get_origin().getZ() + distance * ray.get_direction().getZ();
 
-			if (y < y_start || y > y_end || z < z_start || z > z_end) {
+			if(y < y_start || y > y_end || z < z_start || z > z_end) {
 				return false;
 			}
 

@@ -54,7 +54,7 @@ std::vector<Bucket> bucket_segmentation(const int image_width, const int image_h
 			my_buckets[bucket_idx].start_x = x;
 			my_buckets[bucket_idx].start_y = y;
 
-			if (bucket_idx == row_idx * columns + (columns - 1)) {
+			if(bucket_idx == row_idx * columns + (columns - 1)) {
 				my_buckets[bucket_idx].end_x = x + bucket_size + leftover_column;
 			} else {
 				my_buckets[bucket_idx].end_x = x + bucket_size;

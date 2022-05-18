@@ -91,17 +91,17 @@ bool Sphere::hit(const Ray &ray, float distance_min, float distance_max, hit_rec
 
 	float discriminant = b * b - a * c;                                      // Discriminant
 
-	if (discriminant < 0) { return false; }                                  // Hit: fail: The sphere was not hit
+	if(discriminant < 0) { return false; }                                  // Hit: fail: The sphere was not hit
 
 	float sqrt_discriminant = sqrt(discriminant);
 
 	/* Find the nearest root that lies in the acceptable range. */
 	float root = (-b - sqrt_discriminant) / a;                               // Quadratic equation: - version: first hit point
 
-	if (root < distance_min || distance_max < root) {                        // Hit: if fist point out of range
+	if(root < distance_min || distance_max < root) {                        // Hit: if fist point out of range
 		root = (-b + sqrt_discriminant) / a;                                 // Quadratic equation: + version: second hit point
 
-		if (root < distance_min || distance_max < root) { return false; }    // Hit: fail: second hit point out of range
+		if(root < distance_min || distance_max < root) { return false; }    // Hit: fail: second hit point out of range
 	}
 
 	record.distance = root;                               // Set -> override of the distance

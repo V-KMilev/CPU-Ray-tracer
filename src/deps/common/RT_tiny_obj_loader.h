@@ -32,15 +32,15 @@ class MyTOL {
 			std::string err;
 			bool ret = tinyobj::LoadObj(&attrib, &shapes, &materials, &warn, &err, file_name, material_path, triangulate);
 
-			if (!warn.empty()) {
+			if(!warn.empty()) {
 				std::cout << "[OBJ][WARRNING] myLoadObj - [ " << warn << " ]\n";
 			}
 
-			if (!err.empty()) {
+			if(!err.empty()) {
 				std::cerr << "[OBJ][ERROR] myLoadObj - [" << err << " ]\n";
 			}
 
-			if (!ret) {
+			if(!ret) {
 				std::cerr << "[OBJ][FAIL] myLoadObj - [ Failed to load/parse .obj. ]\n";
 				return false;
 			}

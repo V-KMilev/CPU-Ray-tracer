@@ -95,7 +95,7 @@ bool Hittable_list::hit(const Ray &ray, float distance_min, float distance_max, 
 
 	for (const shared_ptr<Hittable> &object : objects) {
 
-		if (object->hit(ray, distance_min, closest_so_far, temp_record)) {
+		if(object->hit(ray, distance_min, closest_so_far, temp_record)) {
 
 			hit_anything = true;
 			closest_so_far = temp_record.distance;

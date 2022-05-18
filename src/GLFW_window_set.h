@@ -50,7 +50,7 @@ int window_setup() {
 	GLFWwindow* window;
 
 	/* Initialize the library */
-	if (!glfwInit()) {
+	if(!glfwInit()) {
 		return -1;
 	}
 
@@ -67,7 +67,7 @@ int window_setup() {
 		nullptr
 	);
 
-	if (!window) { glfwTerminate(); return -1; }
+	if(!window) { glfwTerminate(); return -1; }
 
 	/* Make the window's context current */
 	glfwMakeContextCurrent(window);

@@ -29,7 +29,7 @@ class MyGlfw {
 		void setCtrl() {
 			int state = glfwGetKey(window, GLFW_KEY_LEFT_CONTROL);
 
-			if (state == GLFW_PRESS) {
+			if(state == GLFW_PRESS) {
 
 			}
 		}
@@ -37,7 +37,7 @@ class MyGlfw {
 		void setXp(float precision) {
 			int state = glfwGetKey(window, GLFW_KEY_W) || glfwGetKey(window, GLFW_KEY_UP);
 
-			if (state == GLFW_PRESS) {
+			if(state == GLFW_PRESS) {
 				change_camera = true;
 				change_edit_stop = true;
 
@@ -49,7 +49,7 @@ class MyGlfw {
 		void setXn(float precision) {
 			int state = glfwGetKey(window, GLFW_KEY_S) || glfwGetKey(window, GLFW_KEY_DOWN);
 
-			if (state == GLFW_PRESS) {
+			if(state == GLFW_PRESS) {
 				change_camera = true;
 				change_edit_stop = true;
 
@@ -61,7 +61,7 @@ class MyGlfw {
 		void setYp(float precision) {
 			int state = glfwGetKey(window, GLFW_KEY_Q);
 
-			if (state == GLFW_PRESS) {
+			if(state == GLFW_PRESS) {
 				change_camera = true;
 				change_edit_stop = true;
 
@@ -73,7 +73,7 @@ class MyGlfw {
 		void setYn(float precision) {
 			int state = glfwGetKey(window, GLFW_KEY_E);
 
-			if (state == GLFW_PRESS) {
+			if(state == GLFW_PRESS) {
 				change_camera = true;
 				change_edit_stop = true;
 
@@ -85,7 +85,7 @@ class MyGlfw {
 		void setZp(float precision) {
 			int state = glfwGetKey(window, GLFW_KEY_A) || glfwGetKey(window, GLFW_KEY_LEFT);
 
-			if (state == GLFW_PRESS) {
+			if(state == GLFW_PRESS) {
 				change_camera = true;
 				change_edit_stop = true;
 
@@ -97,7 +97,7 @@ class MyGlfw {
 		void setZn(float precision) {
 			int state = glfwGetKey(window, GLFW_KEY_D) || glfwGetKey(window, GLFW_KEY_RIGHT);
 
-			if (state == GLFW_PRESS) {
+			if(state == GLFW_PRESS) {
 				change_camera = true;
 				change_edit_stop = true;
 

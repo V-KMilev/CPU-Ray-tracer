@@ -142,7 +142,7 @@ class ThreadPool {
 								my_Event_Var.wait(lock, [=]() { return my_Stopping || !my_Tasks.empty(); });
 
 								/* If stop has been called all work is stopped and left. */
-								if (my_Stopping) { break; }
+								if(my_Stopping) { break; }
 
 								/* Set current task first element in queue. */
 								task = std::move(my_Tasks.front());
@@ -154,7 +154,7 @@ class ThreadPool {
 							render(task);
 
 							/* If there is no more tasks left, notify and release master thread. */
-							if (--counter == 0) {
+							if(--counter == 0) {
 								my_Done = true;
 								my_Release_Master.notify_one();
 							}

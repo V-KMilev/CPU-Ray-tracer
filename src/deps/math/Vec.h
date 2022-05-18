@@ -276,7 +276,7 @@ Point random_in_unit_sphere() {
 	for(;;) {
 		Vec point = Vec::random(-1, 1);
 
-		if (point.length_squared() >= 1) { continue; }
+		if(point.length_squared() >= 1) { continue; }
 
 		return point;
 	}
@@ -307,7 +307,7 @@ Vec random_in_unit_disk() {
 	for(;;) {
 		Vec point = Vec(random_float(-1.0 ,1.0), random_float(-1.0 ,1.0), 0.0);
 
-		if (point.length_squared() >= 1.0) { continue; }
+		if(point.length_squared() >= 1.0) { continue; }
 
 		return point;
 	}

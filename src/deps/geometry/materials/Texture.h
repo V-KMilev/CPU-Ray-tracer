@@ -105,7 +105,7 @@ class Checker_Texture : public Texture {
 				sin(10 * point.getY()) *
 				sin(10 * point.getZ());
 
-			if (sines < 0) { return odd->value(u, v, point); }
+			if(sines < 0) { return odd->value(u, v, point); }
 			else { return even->value(u, v, point); }
 		}
 
@@ -133,7 +133,7 @@ class Image_Texture : public Texture {
 
 			data = stbi_load(file_name, &width, &height, &components_per_pixel, components_per_pixel);
 
-			if (!data) {
+			if(!data) {
 				std::cerr << "WARNING: Could not load texture image file " << file_name << "\n STB Reason: " << stbi_failure_reason() << "\n";
 				width  = 0;
 				height = 0;
@@ -148,7 +148,7 @@ class Image_Texture : public Texture {
 
 		virtual Color value(float u, float v, const Point &point)  const override {
 			// If we have no texture data, then return solid cyan as a debugging aid.
-			if (data == nullptr) {
+			if(data == nullptr) {
 				return Color(1,0,0);
 			}
 
@@ -160,10 +160,10 @@ class Image_Texture : public Texture {
 			int j = static_cast<int>(v * height);
 
 			// Clamp integer mapping, since actual coordinates should be less than 1.0
-			if (i >= width) {
+			if(i >= width) {
 				i = width - 1;
 			}
-			if (j >= height) {
+			if(j >= height) {
 				j = height - 1;
 			}
 

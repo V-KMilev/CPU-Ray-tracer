@@ -165,17 +165,17 @@ class MyImGui {
 			ImVec2 center = ImGui::GetMainViewport()->GetCenter();
 			ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
 
-			if (ImGui::BeginPopupModal("Exit?", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
+			if(ImGui::BeginPopupModal("Exit?", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
 				ImGui::Text("Are you sure you want to exit?\n  All files will be deleted!\n");
 				ImGui::Separator();
 
 				ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 0));
 				ImGui::PopStyleVar();
 
-				if (ImGui::Button("OK", ImVec2(100, 0))) { change_close_window = true; }
+				if(ImGui::Button("OK", ImVec2(100, 0))) { change_close_window = true; }
 				ImGui::SetItemDefaultFocus();
 				ImGui::SameLine();
-				if (ImGui::Button("Cancel", ImVec2(100, 0))) {
+				if(ImGui::Button("Cancel", ImVec2(100, 0))) {
 					show_exit = false;
 					ImGui::CloseCurrentPopup();
 				}
@@ -194,7 +194,7 @@ class MyImGui {
 			ImVec2 center = ImGui::GetMainViewport()->GetCenter();
 			ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
 
-			if (ImGui::BeginPopupModal("Save", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
+			if(ImGui::BeginPopupModal("Save", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
 
 				ImGui::Text("Are you sure you want to save this file?");
 				ImGui::InputText("Path name", save_path_name, 512);
@@ -206,7 +206,7 @@ class MyImGui {
 				ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 0));
 				ImGui::PopStyleVar();
 
-				if (ImGui::Button("SAVE", ImVec2(135, 0)) && save_file_name != '\0' && save_path_name != '\0') {
+				if(ImGui::Button("SAVE", ImVec2(135, 0)) && save_file_name != '\0' && save_path_name != '\0') {
 						std::ofstream out(file_name);
 
 						file_write(out, pixels, image_width, image_height);
@@ -215,7 +215,7 @@ class MyImGui {
 				}
 				ImGui::SetItemDefaultFocus();
 				ImGui::SameLine();
-				if (ImGui::Button("Cancel", ImVec2(135, 0))) {
+				if(ImGui::Button("Cancel", ImVec2(135, 0))) {
 					show_save = false;
 
 					ImGui::CloseCurrentPopup();
@@ -228,7 +228,7 @@ class MyImGui {
 			static int corner = 0;
 			ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_NoNav;
 
-			if (corner != -1) {
+			if(corner != -1) {
 				const float PAD = 10.0f;
 				const ImGuiViewport* viewport = ImGui::GetMainViewport();
 
@@ -245,7 +245,7 @@ class MyImGui {
 			}
 
 			ImGui::SetNextWindowBgAlpha(0.35f); // Transparent background
-			if (ImGui::Begin("Info overlay", &show_overlay, window_flags)) {
+			if(ImGui::Begin("Info overlay", &show_overlay, window_flags)) {
 					ImGui::Text("Benchmark - Ray-tracer v1.01");
 					ImGui::Separator();
 					ImGui::Text("%.3f ms/frame | %.1f FPS", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
@@ -668,8 +668,8 @@ class MyImGui {
 			ImGui::BeginChild("item view", ImVec2(0, -ImGui::GetFrameHeightWithSpacing())); // Leave room for 1 line below us
 			ImGui::Text("%d | %s", current_object,  objects[current_object]->object_name);
 
-			if (ImGui::BeginTabBar("##Tabs", ImGuiTabBarFlags_None)) {
-				if (ImGui::BeginTabItem("Edit")) {
+			if(ImGui::BeginTabBar("##Tabs", ImGuiTabBarFlags_None)) {
+				if(ImGui::BeginTabItem("Edit")) {
 					ImGui::TextWrapped("Controls:");
 
 					if(objects[current_object]->id == t_xy_rect) {
@@ -765,7 +765,7 @@ class MyImGui {
 						ImGui::NewLine();
 					}
 
-					if (objects[current_object]->id == t_box) {
+					if(objects[current_object]->id == t_box) {
 						Box* object = static_cast<Box*>(objects[current_object].get());
 
 						if(ImGui::InputFloat3("Start Position", &object->start[0])) {
@@ -795,7 +795,7 @@ class MyImGui {
 						}
 					}
 
-					if (objects[current_object]->id == t_obj) {
+					if(objects[current_object]->id == t_obj) {
 						Obj* object = static_cast<Obj*>(objects[current_object].get());
 
 						// ImGui::InputFloat3("Position:", &object->postion);
@@ -807,7 +807,7 @@ class MyImGui {
 						ImGui::NewLine();
 					}
 
-					if (objects[current_object]->id == t_sphere_moving) {
+					if(objects[current_object]->id == t_sphere_moving) {
 						Sphere_moving* object = static_cast<Sphere_moving*>(objects[current_object].get());
 
 						if(ImGui::InputFloat3("Position C0", &object->center_0[0])) {
@@ -830,7 +830,7 @@ class MyImGui {
 						ImGui::NewLine();
 					}
 
-					if (objects[current_object]->id == t_sphere) {
+					if(objects[current_object]->id == t_sphere) {
 						Sphere* object = static_cast<Sphere*>(objects[current_object].get());
 
 						if(ImGui::InputFloat3("Position", &object->center[0])) {
@@ -851,7 +851,7 @@ class MyImGui {
 					ImGui::Separator();
 					ImGui::EndTabItem();
 				}
-				if (ImGui::BeginTabItem("Details")) {
+				if(ImGui::BeginTabItem("Details")) {
 					unsigned int object_id   = 0;
 					unsigned int material_id = 0;
 					unsigned int texture_id  = 0;
@@ -881,7 +881,7 @@ class MyImGui {
 						object_details<yz_rect>(object_id, material_id, texture_id, object);
 					}
 
-					if (objects[current_object]->id == t_box) {
+					if(objects[current_object]->id == t_box) {
 						Box* object = static_cast<Box*>(objects[current_object].get());
 
 						ImGui::Text("Start Position:\nx: %.3f | y: %.3f | z: %.3f",
@@ -892,13 +892,13 @@ class MyImGui {
 						object_details<Box>(object_id, material_id, texture_id, object);
 					}
 
-					if (objects[current_object]->id == t_obj) {
+					if(objects[current_object]->id == t_obj) {
 						Obj* object = static_cast<Obj*>(objects[current_object].get());
 
 						object_details<Obj>(object_id, material_id, texture_id, object);
 					}
 
-					if (objects[current_object]->id == t_sphere_moving) {
+					if(objects[current_object]->id == t_sphere_moving) {
 						Sphere_moving* object = static_cast<Sphere_moving*>(objects[current_object].get());
 
 						ImGui::Text("C0 Position:\nx: %.3f | y: %.3f | z: %.3f",
@@ -910,7 +910,7 @@ class MyImGui {
 						object_details<Sphere_moving>(object_id, material_id, texture_id, object);
 					}
 
-					if (objects[current_object]->id == t_sphere) {
+					if(objects[current_object]->id == t_sphere) {
 						Sphere* object = static_cast<Sphere*>(objects[current_object].get());
 
 						ImGui::Text("Position:\nx: %.3f | y: %.3f | z: %.3f",
@@ -932,20 +932,74 @@ class MyImGui {
 				ImGui::EndTabBar();
 			}
 			ImGui::EndChild();
+		}
 
+		template<class T>
+		void object_add_copy(unsigned int current_object, std::vector<std::shared_ptr<Hittable>>& objects) {
+			// TODO: Too many copies. Can be optimized
+			T copy = *static_cast<T*>(objects[current_object].get());
+
+			world.add(make_shared<T>(copy));
+		}
+
+		void object_copy(unsigned int current_object, std::vector<std::shared_ptr<Hittable>>& objects) {
+			ImGui::SameLine();
+			bool copy = ImGui::Button("COPY");
+
+			if(copy) {
+				// TODO: Make proper obj mesh copy
+				if(objects[current_object]->id == t_xy_rect)       { object_add_copy<xy_rect>(current_object, objects); }
+				if(objects[current_object]->id == t_xz_rect)       { object_add_copy<xz_rect>(current_object, objects); }
+				if(objects[current_object]->id == t_yz_rect)       { object_add_copy<yz_rect>(current_object, objects); }
+				if(objects[current_object]->id == t_box)           { object_add_copy<Box>(current_object, objects); }
+				// if(objects[current_object]->id == t_obj)           { object_add_copy<Obj>(current_object, objects); }
+				if(objects[current_object]->id == t_sphere_moving) { object_add_copy<Sphere_moving>(current_object, objects); }
+				if(objects[current_object]->id == t_sphere)        { object_add_copy<Sphere>(current_object, objects); }
+			}
+		}
+
+		void object_remove(unsigned int current_object, std::vector<std::shared_ptr<Hittable>>& objects) {
+			ImGui::SameLine(180);
+			bool remove = ImGui::Button("REMOVE");
+			if(ImGui::IsItemActive()) { change_edit_stop = true; }
+
+			if(remove) {
+				change_object_list = true;
+				if(edit_allowed) {
+					world.remove(current_object);
+				}
+			}
+
+			ImGui::SameLine(240);
+			bool remove_all = ImGui::Button("REMOVE ALL");
+			if(ImGui::IsItemActive()) { change_edit_stop = true; }
+
+			if(remove_all) {
+				change_object_list = true;
+
+				if(edit_allowed) {
+					while(!world.objects.empty()) {
+						world.remove(current_object);
+					}
+				}
+			}
+			ImGui::EndGroup();
+		}
+
+		void object_add(unsigned int current_object, std::vector<std::shared_ptr<Hittable>>& objects) {
 			bool add = ImGui::Button("ADD");
-			if (add) {
+			if(add) {
 				ImGui::OpenPopup("my_select_popup");
 			}
 			const char* objects_names[] = { "Rect-xy", "Rect-xz", "Rect-yz", "Box", "Obj", "Moving-sphere", "Sphere" };
 
-			if (ImGui::BeginPopup("my_select_popup")) {
+			if(ImGui::BeginPopup("my_select_popup")) {
 
 				ImGui::Text("Objects");
 				ImGui::Separator();
 
 				for (int i = 0; i < IM_ARRAYSIZE(objects_names); i++) {
-					if (ImGui::Selectable(objects_names[i])) {
+					if(ImGui::Selectable(objects_names[i])) {
 						if(i == 0) {
 							change_object_list = true;
 							change_edit_stop = true;
@@ -985,39 +1039,6 @@ class MyImGui {
 				}
 				ImGui::EndPopup();
 			}
-
-			ImGui::SameLine();
-			bool copy = ImGui::Button("COPY");
-
-			if(copy) {
-				// TODO: Add copy function
-			}
-
-			ImGui::SameLine(180);
-			bool remove = ImGui::Button("REMOVE");
-			if(ImGui::IsItemActive()) { change_edit_stop = true; }
-
-			if(remove) {
-				change_object_list = true;
-				if(edit_allowed) {
-					world.remove(current_object);
-				}
-			}
-
-			ImGui::SameLine(240);
-			bool remove_all = ImGui::Button("REMOVE ALL");
-			if(ImGui::IsItemActive()) { change_edit_stop = true; }
-
-			if(remove_all) {
-				change_object_list = true;
-
-				if(edit_allowed) {
-					while(!world.objects.empty()) {
-						world.remove(current_object);
-					}
-				}
-			}
-			ImGui::EndGroup();
 		}
 
 		void file_edit() {
@@ -1032,13 +1053,16 @@ class MyImGui {
 							char label[128];
 
 							sprintf(label, "%d | %s", i, my_objects[i]->object_name);
-							if (ImGui::Selectable(label, selected == i)) { selected = i; }
+							if(ImGui::Selectable(label, selected == i)) { selected = i; }
 						}
 						ImGui::EndChild();
 					}
 					ImGui::SameLine();
 
 					object_editor(selected, my_objects);
+					object_add(selected, my_objects);
+					object_copy(selected, my_objects);
+					object_remove(selected, my_objects);
 				ImGui::End();
 			}
 		}

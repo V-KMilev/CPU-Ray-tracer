@@ -6,6 +6,8 @@
 
 class Box : public Hittable {
 	public:
+		Box() {}
+
 		Box(const Point &start, const Point &end, shared_ptr<Material> material) : start(start), end(end), material_ptr(material) {
 
 			object_name = "Box";
