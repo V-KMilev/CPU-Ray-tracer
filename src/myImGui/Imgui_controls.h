@@ -753,6 +753,7 @@ class MyImGui {
 		void object_editor(unsigned int current_object, std::vector<std::shared_ptr<Hittable>>& objects) {
 			ImGui::BeginGroup();
 			ImGui::BeginChild("item view", ImVec2(0, -ImGui::GetFrameHeightWithSpacing())); // Leave room for 1 line below us
+
 			ImGui::Text("%d | %s", current_object,  objects[current_object]->object_name);
 
 			if(ImGui::BeginTabBar("##Tabs", ImGuiTabBarFlags_None)) {
@@ -1045,7 +1046,7 @@ class MyImGui {
 			}
 		}
 
-		void object_remove(unsigned int current_object, std::vector<std::shared_ptr<Hittable>>& objects) {
+		void object_remove(unsigned int &current_object, std::vector<std::shared_ptr<Hittable>>& objects) {
 			ImGui::SameLine(180);
 			bool remove = ImGui::Button("REMOVE");
 			if(ImGui::IsItemActive()) { change_edit_stop = true; }
@@ -1054,6 +1055,8 @@ class MyImGui {
 				change_object_list = true;
 				if(edit_allowed) {
 					world.remove(current_object);
+
+					if(current_object != 0){ current_object -=1; }
 				}
 			}
 
@@ -1061,13 +1064,11 @@ class MyImGui {
 			bool remove_all = ImGui::Button("REMOVE ALL");
 			if(ImGui::IsItemActive()) { change_edit_stop = true; }
 
-
-			// TODO: Fix remove all button
 			if(remove_all) {
 				change_object_list = true;
 
 				if(edit_allowed) {
-						world.objects.clear();
+					world.objects.clear();
 				}
 			}
 			ImGui::EndGroup();
@@ -1131,10 +1132,11 @@ class MyImGui {
 		void file_edit() {
 			if(show_file_edit) {
 				ImGui::Begin("Object edit", &show_file_edit);
-					static int selected = 0;
+					static unsigned int selected = 0;
 					static std::vector<shared_ptr<Hittable>> &my_objects = world.objects;
 					{
 						ImGui::BeginChild("left pane", ImVec2(150, 0), true);
+
 						for (int i = 0; i < my_objects.size(); i++){
 
 							char label[128];
@@ -1146,10 +1148,15 @@ class MyImGui {
 					}
 					ImGui::SameLine();
 
-					object_editor(selected, my_objects);
-					object_add(selected, my_objects);
-					object_copy(selected, my_objects);
-					object_remove(selected, my_objects);
+					if(my_objects.empty()) {
+						object_add(selected, my_objects);
+					}
+					if(!my_objects.empty()) {
+						object_editor(selected, my_objects);
+						object_add(selected, my_objects);
+						object_copy(selected, my_objects);
+						object_remove(selected, my_objects);
+					}
 				ImGui::End();
 			}
 		}
@@ -1160,7 +1167,10 @@ class MyImGui {
 					ImGui::Separator();
 					ImGui::TextColored(ImVec4(0.7f, 0.0f, 0.3f, 1.0f), "ImGui Bools:");
 
+					ImGui::Text("show_scene_save:  %s", show_scene_save ? "true" : "false");
+					ImGui::Text("show_scene_load:  %s", show_scene_load ? "true" : "false");
 					ImGui::Text("show_file_edit:   %s", show_file_edit ? "true" : "false");
+					ImGui::Text("show_img_save:    %s", show_img_save ? "true" : "false");
 					ImGui::Text("show_details:     %s", show_details ? "true" : "false");
 					ImGui::Text("show_camera:      %s", show_camera ? "true" : "false");
 					ImGui::Text("show_render:      %s", show_render ? "true" : "false");
