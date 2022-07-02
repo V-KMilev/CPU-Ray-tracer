@@ -60,9 +60,16 @@ class MyImGui {
 			ImGui::BeginMainMenuBar();
 
 			if(ImGui::BeginMenu("File")) {
-				if(ImGui::MenuItem("Save", "Ctrl+S", &show_save)) {
-					change_force_stop = true;
+				if(ImGui::BeginMenu("Save")) {
+					if(ImGui::MenuItem("Scene", "Ctrl+S+C", &show_scene_save)) {
+						change_force_stop = true;
+					}
+					if(ImGui::MenuItem("Image", "Ctrl+S+I", &show_img_save)) {
+						change_force_stop = true;
+					}
+					ImGui::EndMenu();
 				}
+				ImGui::MenuItem("Open File...", "Ctrl+O", &show_scene_load);
 				ImGui::Separator();
 				ImGui::MenuItem("ImGui menu", "Ctrl+D", &show_demo);
 				if(ImGui::MenuItem("Exit", "Alt+F4")) {
@@ -131,7 +138,9 @@ class MyImGui {
 			file_edit();
 			render_info();
 
-			save();
+			image_save();
+			scene_save();
+			scene_load();
 			exit();
 
 			ImGuiWindowFlags my_window_flags = ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoFocusOnAppearing;
@@ -183,9 +192,9 @@ class MyImGui {
 			}
 		}
 
-		void save() {
-			if(show_save)
-				ImGui::OpenPopup("Save");
+		void image_save() {
+			if(show_img_save)
+				ImGui::OpenPopup("Save Image");
 
 				static char save_path_name[512] = {};
 				static char save_file_name[256] = {};
@@ -194,7 +203,7 @@ class MyImGui {
 			ImVec2 center = ImGui::GetMainViewport()->GetCenter();
 			ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
 
-			if(ImGui::BeginPopupModal("Save", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
+			if(ImGui::BeginPopupModal("Save Image", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
 
 				ImGui::Text("Are you sure you want to save this file?");
 				ImGui::InputText("Path name", save_path_name, 512);
@@ -206,17 +215,95 @@ class MyImGui {
 				ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 0));
 				ImGui::PopStyleVar();
 
-				if(ImGui::Button("SAVE", ImVec2(135, 0)) && save_file_name != '\0' && save_path_name != '\0') {
-						std::ofstream out(file_name);
+				if(ImGui::Button("SAVE IMAGE", ImVec2(135, 0)) && save_file_name != '\0' && save_path_name != '\0') {
+					std::ofstream out(file_name);
 
-						file_write(out, pixels, image_width, image_height);
+					image_file_write(out, pixels, image_width, image_height);
 
-						out.close();
+					out.close();
 				}
 				ImGui::SetItemDefaultFocus();
 				ImGui::SameLine();
 				if(ImGui::Button("Cancel", ImVec2(135, 0))) {
-					show_save = false;
+					show_img_save = false;
+
+					ImGui::CloseCurrentPopup();
+				}
+				ImGui::EndPopup();
+			}
+		}
+
+		void scene_save() {
+			if(show_scene_save)
+				ImGui::OpenPopup("Save scene");
+
+				static char save_path_name[512] = {};
+				static char save_file_name[256] = {};
+
+			// Always center this window when appearing
+			ImVec2 center = ImGui::GetMainViewport()->GetCenter();
+			ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
+
+			if(ImGui::BeginPopupModal("Save scene", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
+
+				ImGui::Text("Are you sure you want to save this file?");
+				ImGui::InputText("Path name", save_path_name, 512);
+				ImGui::InputText("File name", save_file_name, 256);
+				ImGui::Separator();
+
+				std::string file_name = std::string(save_path_name) + std::string(save_file_name);
+
+				ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 0));
+				ImGui::PopStyleVar();
+
+				if(ImGui::Button("SAVE SCENE", ImVec2(135, 0)) && save_file_name != '\0' && save_path_name != '\0') {
+					std::ofstream out(file_name);
+
+					scene_file_write(out);
+
+					out.close();
+				}
+				ImGui::SetItemDefaultFocus();
+				ImGui::SameLine();
+				if(ImGui::Button("Cancel", ImVec2(135, 0))) {
+					show_scene_save = false;
+
+					ImGui::CloseCurrentPopup();
+				}
+				ImGui::EndPopup();
+			}
+		}
+
+		void scene_load() {
+			if(show_scene_load)
+				ImGui::OpenPopup("Load File");
+
+				static char save_path_name[512] = {};
+				static char save_file_name[256] = {};
+
+			// Always center this window when appearing
+			ImVec2 center = ImGui::GetMainViewport()->GetCenter();
+			ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
+
+			if(ImGui::BeginPopupModal("Load File", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
+
+				ImGui::Text("Are you sure you want to open this file?");
+				ImGui::InputText("Path name", save_path_name, 512);
+				ImGui::InputText("File name", save_file_name, 256);
+				ImGui::Separator();
+
+				std::string file_name = std::string(save_path_name) + std::string(save_file_name);
+
+				ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 0));
+				ImGui::PopStyleVar();
+
+				if(ImGui::Button("LOAD FILE", ImVec2(135, 0)) && save_file_name != '\0' && save_path_name != '\0') {
+					load_scene(file_name);
+				}
+				ImGui::SetItemDefaultFocus();
+				ImGui::SameLine();
+				if(ImGui::Button("Cancel", ImVec2(135, 0))) {
+					show_scene_load = false;
 
 					ImGui::CloseCurrentPopup();
 				}
@@ -936,7 +1023,7 @@ class MyImGui {
 
 		template<class T>
 		void object_add_copy(unsigned int current_object, std::vector<std::shared_ptr<Hittable>>& objects) {
-			// TODO: Too many copies. Can be optimized
+			// TODO: Fix the material shared_ptr
 			T copy = *static_cast<T*>(objects[current_object].get());
 
 			world.add(make_shared<T>(copy));
@@ -948,13 +1035,13 @@ class MyImGui {
 
 			if(copy) {
 				// TODO: Make proper obj mesh copy
-				if(objects[current_object]->id == t_xy_rect)       { object_add_copy<xy_rect>(current_object, objects); }
-				if(objects[current_object]->id == t_xz_rect)       { object_add_copy<xz_rect>(current_object, objects); }
-				if(objects[current_object]->id == t_yz_rect)       { object_add_copy<yz_rect>(current_object, objects); }
-				if(objects[current_object]->id == t_box)           { object_add_copy<Box>(current_object, objects); }
-				// if(objects[current_object]->id == t_obj)           { object_add_copy<Obj>(current_object, objects); }
-				if(objects[current_object]->id == t_sphere_moving) { object_add_copy<Sphere_moving>(current_object, objects); }
-				if(objects[current_object]->id == t_sphere)        { object_add_copy<Sphere>(current_object, objects); }
+				if     (objects[current_object]->id == t_xy_rect)       { object_add_copy<xy_rect>(current_object, objects); }
+				else if(objects[current_object]->id == t_xz_rect)       { object_add_copy<xz_rect>(current_object, objects); }
+				else if(objects[current_object]->id == t_yz_rect)       { object_add_copy<yz_rect>(current_object, objects); }
+				else if(objects[current_object]->id == t_box)           { object_add_copy<Box>(current_object, objects); }
+				// else if(objects[current_object]->id == t_obj)           { object_add_copy<Obj>(current_object, objects); }
+				else if(objects[current_object]->id == t_sphere_moving) { object_add_copy<Sphere_moving>(current_object, objects); }
+				else if(objects[current_object]->id == t_sphere)        { object_add_copy<Sphere>(current_object, objects); }
 			}
 		}
 
@@ -974,13 +1061,13 @@ class MyImGui {
 			bool remove_all = ImGui::Button("REMOVE ALL");
 			if(ImGui::IsItemActive()) { change_edit_stop = true; }
 
+
+			// TODO: Fix remove all button
 			if(remove_all) {
 				change_object_list = true;
 
 				if(edit_allowed) {
-					while(!world.objects.empty()) {
-						world.remove(current_object);
-					}
+						world.objects.clear();
 				}
 			}
 			ImGui::EndGroup();
@@ -1005,32 +1092,32 @@ class MyImGui {
 							change_edit_stop = true;
 							world.add(make_shared<xy_rect>(0, 0, 0, 0, 0, make_shared<Lambertian>(Color(1,1,1))));
 						}
-						if(i == 1) {
+						else if(i == 1) {
 							change_object_list = true;
 							change_edit_stop = true;
 							world.add(make_shared<xz_rect>(0, 0, 0, 0, 0, make_shared<Lambertian>(Color(1,1,1))));
 						}
-						if(i == 2) {
+						else if(i == 2) {
 							change_object_list = true;
 							change_edit_stop = true;
 							world.add(make_shared<yz_rect>(0, 0, 0, 0, 0, make_shared<Lambertian>(Color(1,1,1))));
 						}
-						if(i == 3) {
+						else if(i == 3) {
 							change_object_list = true;
 							change_edit_stop = true;
 							world.add(make_shared<Box>(Point(0, 0, 0), Point(0, 0, 0), make_shared<Lambertian>(Color(1,1,1))));
 						}
-						if(i == 4) {
+						else if(i == 4) {
 							change_object_list = true;
 							change_edit_stop = true;
 							world.add(make_shared<Obj>(embree, "", "", make_shared<Lambertian>(Color(1,1,1))));
 						}
-						if(i == 5) {
+						else if(i == 5) {
 							change_object_list = true;
 							change_edit_stop = true;
 							world.add(make_shared<Sphere_moving>(Point(0, 0, 0), Point(0, 0, 0), 0, 0, 0, make_shared<Lambertian>(Color(1,1,1))));
 						}
-						if(i == 6) {
+						else if(i == 6) {
 							change_object_list = true;
 							change_edit_stop = true;
 							world.add(make_shared<Sphere>(Point(0, 0, 0), 0, make_shared<Lambertian>(Color(1,1,1))));
@@ -1192,13 +1279,15 @@ class MyImGui {
 		const char* materials[3] = { "None", "Lambertian", "Diffuse-Light" };
 		const char* textures[4] = { "None", "Solid-Color", "Checker-Texture", "Image-Texture" };
 
+		bool show_scene_save    = false;
+		bool show_scene_load    = false;
 		bool show_file_edit     = false;
+		bool show_img_save      = false;
 		bool show_details       = false;
 		bool show_camera        = false;
 		bool show_render        = false;
 		bool show_debug         = false;
 		bool show_demo          = false;
 		bool show_exit          = false;
-		bool show_save          = false;
 		bool show_overlay       = true;
 };
