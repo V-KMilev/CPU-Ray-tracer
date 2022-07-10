@@ -37,6 +37,7 @@ std::atomic<int> samples_in_counter = {0};                             //
 
 MyEmbree embree;
 
+
 //////////////////////////////////////////////////////////////
 
 /* Bucket parameters */
@@ -71,6 +72,59 @@ float dist_to_focus = 3.5f;
 
 //////////////////////////////////////////////////////////////
 
+/* Convolution parameters */
+int convolution_kernel_type = {-1};
+
+		float Custom[9] =  {
+			1, 0, 0,
+			0, 1, 0,
+			0, 0, 1
+		};
+
+		float Sharpen[9] = {
+			 0, -1,  0,
+			-1,  5, -1,
+			 0, -1, 0
+		};
+
+		float Sobel_t[9] = {
+			 1,  2,  1,
+			 0,  0,  0,
+			-1, -2, -1
+		};
+
+		float Sobel_b[9] = {
+			-1, -2, -1,
+			 0,  0,  0,
+			 1,  2,  1
+		};
+
+		float Sobel_l[9] = {
+			1, 0, -1,
+			2, 0, -2,
+			1, 0, -1
+		};
+
+		float Sobel_r[9] = {
+			-1, 0, 1,
+			-2, 0, 2,
+			-1, 0, 1
+		};
+
+		float Outline[9] = {
+			-1, -1, -1,
+			-1,  8, -1,
+			-1, -1, -1
+		};
+
+		float GaussianBlur3x3 [9] = {
+			0.0625, 0.125, 0.0625,
+			0.1250, 0.250, 0.1250,
+			0.0625, 0.125, 0.0625
+		};
+
+//////////////////////////////////////////////////////////////
+
 /* Move parameters */
 float precision = {0.1f};
 
@@ -88,6 +142,7 @@ bool change_camera         = false;
 bool change_clear          = false;
 bool change_default        = false;
 bool change_edit_stop      = false;
+bool change_convolution    = false;
 bool change_force_stop     = true;
 
 bool edit_allowed          = false;

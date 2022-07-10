@@ -65,5 +65,8 @@ Hittable_list get_scene() {
 	return world;
 }
 
+/* WORLD: */
+Hittable_list world = get_scene();
+
 // 7680
 // 1337

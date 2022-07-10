@@ -6,7 +6,8 @@
 
 #include "File_write.h"
 #include "Settings.h"
-#include "Render.h"
+#include "Matrices.h"
+#include "World.h"
 #include "Log.h"
 
 enum Resolution_ID : unsigned int {
@@ -141,6 +142,7 @@ class MyImGui {
 			image_save();
 			scene_save();
 			scene_load();
+
 			exit();
 
 			ImGuiWindowFlags my_window_flags = ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoFocusOnAppearing;
@@ -237,8 +239,8 @@ class MyImGui {
 			if(show_scene_save)
 				ImGui::OpenPopup("Save scene");
 
-				static char save_path_name[512] = {};
-				static char save_file_name[256] = {};
+			static char save_path_name[512] = {};
+			static char save_file_name[256] = {};
 
 			// Always center this window when appearing
 			ImVec2 center = ImGui::GetMainViewport()->GetCenter();
@@ -278,8 +280,8 @@ class MyImGui {
 			if(show_scene_load)
 				ImGui::OpenPopup("Load File");
 
-				static char save_path_name[512] = {};
-				static char save_file_name[256] = {};
+			static char save_path_name[512] = {};
+			static char save_file_name[256] = {};
 
 			// Always center this window when appearing
 			ImVec2 center = ImGui::GetMainViewport()->GetCenter();
@@ -340,6 +342,114 @@ class MyImGui {
 			}
 		}
 
+		void matrix_set(Matrix matrix) {
+			ImGui::OpenPopup("Matrix Set");
+
+			Matrix out = matrix;
+
+			// Always center this window when appearing
+			ImVec2 center = ImGui::GetMainViewport()->GetCenter();
+			ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
+
+			if(ImGui::BeginPopupModal("Matrix Set", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
+
+				ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 0));
+				ImGui::PopStyleVar();
+
+				ImGui::Text("Set matrix:");
+
+				ImGui::InputFloat("", &matrix.my_matrix[0]);
+				ImGui::SameLine();
+				ImGui::InputFloat("", &matrix.my_matrix[1]);
+				ImGui::SameLine();
+				ImGui::InputFloat("", &matrix.my_matrix[2]);
+				ImGui::SameLine();
+
+				ImGui::InputFloat("", &matrix.my_matrix[3]);
+				ImGui::SameLine();
+				ImGui::InputFloat("", &matrix.my_matrix[4]);
+				ImGui::SameLine();
+				ImGui::InputFloat("", &matrix.my_matrix[5]);
+				ImGui::SameLine();
+
+				ImGui::InputFloat("", &out.my_matrix[6]);
+				ImGui::SameLine();
+				ImGui::InputFloat("", &out.my_matrix[7]);
+				ImGui::SameLine();
+				ImGui::InputFloat("", &out.my_matrix[8]);
+				ImGui::NewLine();
+
+				ImGui::InputFloat("", &out.my_matrix[0]);
+				ImGui::SameLine();
+				ImGui::InputFloat("", &out.my_matrix[1]);
+				ImGui::SameLine();
+				ImGui::InputFloat("", &out.my_matrix[2]);
+				ImGui::SameLine();
+
+				ImGui::InputFloat("", &out.my_matrix[3]);
+				ImGui::SameLine();
+				ImGui::InputFloat("", &out.my_matrix[4]);
+				ImGui::SameLine();
+				ImGui::InputFloat("", &out.my_matrix[5]);
+				ImGui::SameLine();
+
+				ImGui::InputFloat("", &out.my_matrix[6]);
+				ImGui::SameLine();
+				ImGui::InputFloat("", &out.my_matrix[7]);
+				ImGui::SameLine();
+				ImGui::InputFloat("", &out.my_matrix[8]);
+				ImGui::SameLine();
+
+				if(ImGui::Button("SET", ImVec2(135, 0))) {
+					out *= matrix;
+				}
+
+				ImGui::SetItemDefaultFocus();
+				ImGui::SameLine();
+
+				if(ImGui::Button("Cancel", ImVec2(135, 0))) {
+					show_scene_load = false;
+
+					ImGui::CloseCurrentPopup();
+				}
+				ImGui::EndPopup();
+			}
+		}
+
+		void convolution() {
+			const char* kernel_names[] = { "Custom", "Sharpen", "Sobel-T", "Sobel-B", "Sobel-L", "Sobel-R", "Outline", "GaussianBlur3x3"};
+
+			const char* kernel_name = "Kernel";
+
+			Matrix custom;
+
+			if (ImGui::Button("Kernel"))
+				ImGui::OpenPopup("my_select_popup");
+
+			ImGui::SameLine();
+
+			ImGui::TextUnformatted(convolution_kernel_type == -1 ? "<None>" : kernel_names[convolution_kernel_type]);
+
+			if (ImGui::BeginPopup("my_select_popup")) {
+
+				ImGui::Text("Kernels");
+				ImGui::Separator();
+
+				for (int i = 0; i < IM_ARRAYSIZE(kernel_names); i++) {
+
+					if (ImGui::Selectable(kernel_names[i])) {
+						convolution_kernel_type = i;
+					}
+				}
+				ImGui::EndPopup();
+			}
+			ImGui::SameLine();
+
+			if (ImGui::Button("Custom matrix")) {
+				matrix_set(custom);
+			}
+		}
+
 		void settings() {
 			if(show_render) {
 				ImGui::Begin("Settings", &show_render);
@@ -359,10 +469,17 @@ class MyImGui {
 					}
 					ImGui::NewLine();
 
+					convolution();
+
+					ImGui::NewLine();
+
 					ImGui::Checkbox("Multithreading", &change_multithreading);
 					ImGui::SameLine();
 
 					ImGui::Checkbox("Static render", &change_static);
+					ImGui::SameLine();
+
+					ImGui::Checkbox("Convolution", &change_convolution);
 					ImGui::SameLine();
 
 					if(ImGui::Checkbox("Single cast", &change_single_cast)) {

@@ -21,9 +21,9 @@ class Color {
 		 * in return color value.
 		 */
 
-		float getRed() const { return e[0]; }
+		float getRed()   const { return e[0]; }
 		float getGreen() const { return e[1]; }
-		float getBlue() const { return e[2]; }
+		float getBlue()  const { return e[2]; }
 
 		Color& color_gama(int samples_per_pixel) {
 			/* Divide the color by the number of samples and gamma-correct for gamma=2.0. - GAMMA 2 */

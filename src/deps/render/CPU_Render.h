@@ -4,9 +4,6 @@
 #include "World.h"
 #include "Log.h"
 
-/* WORLD: */
-Hittable_list world = get_scene();
-
 /*
  * Function - tracer
  *
@@ -82,8 +79,6 @@ void render(const Bucket &my_bucket) {
 	/* CAMERA: */
 	Camera camera(lookfrom, lookat, view_up, fov, aspect_ratio, aperture, dist_to_focus, 0.0, 1.0);
 
-	// Logger::getDefaultLogger() << "\n\rStart Bucket: " << std::this_thread::get_id() << " -> + " << my_bucket.bucket_id;
-
 	#ifdef DEBUG
 		std::cerr << "\n\rStart Bucket: " << std::this_thread::get_id() << " -> + " << my_bucket.bucket_id;
 	#endif
@@ -116,7 +111,6 @@ void render(const Bucket &my_bucket) {
 				current_pixel += tracer(ray, background, world, max_depth);
 			}
 
-			/* 1.0f to converted to float */
 			/* We divide it by the samples so we can fix the value */
 			current_pixel *= (1.0f / samples_per_pixel);
 
@@ -144,8 +138,6 @@ void render(const Bucket &my_bucket) {
 
 	/* Update bucket_in if the bucket is finished */
 	buckets_in_counter++;
-
-	// Logger::getDefaultLogger() << "\n\rEnd   Bucket: " << std::this_thread::get_id() << " -> - " << my_bucket.bucket_id;
 
 	#ifdef DEBUG
 		std::cerr << "\n\rEnd   Bucket: " << std::this_thread::get_id() << " -> - " << my_bucket.bucket_id;

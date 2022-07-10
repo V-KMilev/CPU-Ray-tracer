@@ -2,21 +2,10 @@
 
 #include <fstream>
 
-#include "Hittable_list.h"
-#include "Hittable.h"
-
-#include "Material.h"
-#include "Texture.h"
-
-#include "Sphere_moving.h"
-#include "Sphere.h"
-#include "AArect.h"
-#include "Obj.h"
-#include "Box.h"
-
-#include "Render.h"
-#include "Color.h"
+#include "Utility_functions.h"
 #include "Settings.h"
+#include "Color.h"
+#include "World.h"
 
 /*
  * Function - fileToString
@@ -103,7 +92,7 @@ void load_scene(const std::string &file_scene) {
 	if (file) {
 		const std::string string_scene = fileToString(file_scene);
 
-		std::cerr << "[SCENE][LOADING] load_scene - " <<  file_scene << " is loading...\n";
+		std::cerr << "[SCENE][LOADING] load_scene - File: " <<  file_scene << " is loading...\n";
 
 		unsigned int lines = file_lines_count(string_scene);
 
@@ -429,4 +418,5 @@ void load_scene(const std::string &file_scene) {
 		}
 	}
 	fclose(file);
+	std::cerr << "[SCENE][LOADING] load_scene - File: "<<file_scene << " is loaded!\n";
 }

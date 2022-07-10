@@ -27,8 +27,9 @@
 #include "Glfw_controls.h"
 
 #include "Thread_manager.h"
+#include "Convolution.h"
 #include "File_write.h"
-#include "Render.h"
+#include "CPU_Render.h"
 
 const char* gl_version = "#version 330";
 
@@ -111,6 +112,8 @@ int window_setup() {
 			Shader shader("../src/shaders/vertexShader.shader", "../src/shaders/fragmentShader.shader");
 		#endif
 
+		Convolution convolution(pixels);
+
 		MyGLTexture texture(GL_RGB32F, image_width, image_height, GL_RGB, GL_FLOAT, &pixels[0]);
 		texture.bind();
 
@@ -144,6 +147,15 @@ int window_setup() {
 			myGlfw.fullControlSet(precision);
 
 			myImGui.newframe();
+
+			if(change_convolution) {
+				if(!convolution.filtered) {
+					convolution.matrix_filtering(convolution_kernel_type, pixels);
+					convolution.filtered = true;
+					change_force_stop = true;
+				}
+			}
+			else { convolution.filtered = false; }
 
 			if(change_multithreading) {
 				pool_onethread.clear();
@@ -218,7 +230,8 @@ int window_setup() {
 			#endif
 
 			{
-				texture.update(GL_RGB32F, image_width, image_height, GL_RGB, GL_FLOAT, &pixels[0]);
+				if(!change_convolution) { texture.update(GL_RGB32F, image_width, image_height, GL_RGB, GL_FLOAT, &pixels[0]); }
+				else                    { texture.update(GL_RGB32F, image_width, image_height, GL_RGB, GL_FLOAT, &convolution.copy_pixels[0]); }
 				texture.bind();
 
 				shader.bind();

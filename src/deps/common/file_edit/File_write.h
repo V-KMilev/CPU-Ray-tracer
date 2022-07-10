@@ -4,21 +4,8 @@
 
 #include "Utility_functions.h"
 #include "Settings.h"
-#include "Render.h"
-
-#include "Hittable_list.h"
-#include "Hittable.h"
-
-#include "Material.h"
-#include "Texture.h"
-
-#include "Sphere_moving.h"
-#include "Sphere.h"
-#include "AArect.h"
-#include "Obj.h"
-#include "Box.h"
-
 #include "Color.h"
+#include "World.h"
 
 /*
  * Function - image_file_write
